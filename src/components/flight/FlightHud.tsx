@@ -42,7 +42,7 @@ export function FlightHud() {
           <MapIcon />
         </Button>
       </header>
-      <div className="pointer-events-none absolute left-3 top-24 z-20 hidden rounded-lg bg-ink/65 px-3 py-2 font-mono text-[11px] leading-relaxed text-cream backdrop-blur-md sm:block">
+      <div className="pointer-events-none absolute left-3 top-24 z-20 rounded-lg bg-ink/65 px-3 py-2 font-mono text-[11px] leading-relaxed text-cream backdrop-blur-md">
         <p>{formatLatLon(hud.lat, hud.lon)}</p>
         <p>
           {Math.max(0, hud.altM).toFixed(0)} m AGL · hd {headingDeg(hud.yaw).toFixed(0)}°

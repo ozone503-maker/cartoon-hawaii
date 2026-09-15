@@ -352,6 +352,116 @@ export const PLACES: Place[] = [
     story:
       "A short high-country field between the volcanoes. Useful as a divert and as a waypoint on the saddle.",
   },
+  {
+    id: "volcano",
+    name: "Volcano",
+    also: "Volcano Village",
+    lat: 19.43,
+    lon: -155.238,
+    elevFt: 3750,
+    kind: "place",
+    region: "Volcanoes",
+    image: "/scenes/kilauea.jpg",
+    kicker: "Rainforest at the park gate",
+    story:
+      "A small village in the ʻōhiʻa on the rim of Kīlauea. The national park entrance is just up the road. Cool nights, coqui, and steam on the caldera.",
+  },
+  {
+    id: "keaau",
+    name: "Keaʻau",
+    lat: 19.621,
+    lon: -155.037,
+    kind: "place",
+    region: "Puna",
+    image: "/scenes/hilo.jpg",
+    kicker: "Hwy 11 junction",
+    story:
+      "Where Volcano Road meets the Puna grid. Keaʻau sits between Hilo and Mountain View — papaya country and a real town, not a cartoon one.",
+  },
+  {
+    id: "captain-cook",
+    name: "Captain Cook",
+    lat: 19.499,
+    lon: -155.921,
+    kind: "place",
+    region: "Kona",
+    image: "/scenes/kona.jpg",
+    kicker: "South Kona coffee belt",
+    story:
+      "A town on the slopes above Kealakekua. Coffee, mac nut, and the road down to the bay where Cook came ashore.",
+  },
+  {
+    id: "waikoloa",
+    name: "Waikoloa",
+    lat: 19.94,
+    lon: -155.79,
+    kind: "place",
+    region: "Kohala",
+    image: "/scenes/hapuna.jpg",
+    kicker: "Lava-field resort town",
+    story:
+      "A planned town on the South Kohala lava. Golf, kiawe, and the Kohala Coast resorts a few miles west on the water.",
+  },
+  {
+    id: "hawi",
+    name: "Hawi",
+    lat: 20.237,
+    lon: -155.83,
+    kind: "place",
+    region: "Kohala",
+    image: "/scenes/pololu.jpg",
+    kicker: "North Kohala’s town",
+    story:
+      "The old plantation town at the island’s north tip. Wind, galleries, and the road to Pololū.",
+  },
+  {
+    id: "kapaau",
+    name: "Kapaʻau",
+    lat: 20.231,
+    lon: -155.801,
+    kind: "place",
+    region: "Kohala",
+    image: "/scenes/pololu.jpg",
+    kicker: "King Kamehameha’s statue",
+    story:
+      "Next town east of Hawi. The original Kamehameha statue stands here — the king was born in nearby North Kohala.",
+  },
+  {
+    id: "naalehu",
+    name: "Nāʻālehu",
+    lat: 19.062,
+    lon: -155.588,
+    kind: "place",
+    region: "Kaʻū",
+    image: "/scenes/south-point.jpg",
+    kicker: "Southernmost town",
+    story:
+      "The southernmost town in the United States. Kaʻū winds, a painted theater, and the turn for South Point.",
+  },
+  {
+    id: "pahala",
+    name: "Pāhala",
+    lat: 19.202,
+    lon: -155.47,
+    kind: "place",
+    region: "Kaʻū",
+    image: "/scenes/punaluu.jpg",
+    kicker: "Kaʻū plantation town",
+    story:
+      "A quiet former sugar town above Punaluʻu. Macadamia orchards and the long Kaʻū coast below.",
+  },
+  {
+    id: "ocean-view",
+    name: "Ocean View",
+    lat: 19.102,
+    lon: -155.767,
+    kind: "place",
+    region: "Kaʻū",
+    image: "/scenes/south-point.jpg",
+    kicker: "Lots on the 1950 flow",
+    story:
+      "A huge subdivision on Mauna Loa’s southwest rift. Lava, catchment, and a view all the way to South Point.",
+  },
 ];
 
 export const TOUR_IDS = [
@@ -369,6 +479,10 @@ export const TOUR_IDS = [
   "punaluu",
   "kilauea",
   "mauna-kea",
+  "volcano",
+  "waimea",
+  "hawi",
+  "naalehu",
 ] as const;
 
 export function placeById(id: string): Place | undefined {

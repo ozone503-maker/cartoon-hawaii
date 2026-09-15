@@ -12,6 +12,7 @@ import { Roads } from "./Roads";
 import { Caldera } from "./Caldera";
 import { MaunaKea } from "./MaunaKea";
 import { ChaseCam } from "./ChaseCam";
+import { Locations } from "./Locations";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
 import { latLonToWorld, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE } from "@/lib/hawaii/world";
@@ -96,6 +97,7 @@ function Scene() {
           <MountainView />
           <MaunaKea />
           <Caldera />
+          <Locations />
           <Pads />
         </Suspense>
       ) : null}

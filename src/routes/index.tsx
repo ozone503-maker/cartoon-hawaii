@@ -18,7 +18,7 @@ function Home() {
   const started = useHawaii((s) => s.started);
 
   return (
-    <main className="relative h-dvh w-full overflow-hidden bg-ocean">
+    <main className="relative h-dvh w-full overflow-hidden" style={{ background: "#7ec8ee" }}>
       <div className="flight-stage relative size-full overflow-hidden">
         <MapBridge />
         <FlyGate>

@@ -16,6 +16,7 @@ import { KauCoast } from "./KauCoast";
 import { Rivers } from "./Rivers";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
+import { createFlightRenderer } from "@/lib/flight/gl";
 import { latLonToWorld, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE } from "@/lib/hawaii/world";
 import { HOME_ID, PLACES, placeById } from "@/lib/hawaii/places";
 import { useHawaii } from "@/lib/hawaii/store";
@@ -138,38 +139,15 @@ export function FlightCanvas() {
   if (!started) return null;
 
   return (
-    <div className="absolute inset-0 z-0" style={{ width: "100%", height: "100%" }}>
-      <Canvas
-        style={{ width: "100%", height: "100%", display: "block" }}
-        dpr={1}
-        camera={{ fov: 48, near: 0.12, far: 520, position: [0, 8, 12] }}
-        gl={{
-          antialias: false,
-          alpha: true,
-          premultipliedAlpha: false,
-          preserveDrawingBuffer: true,
-          powerPreference: "default",
-          failIfMajorPerformanceCaveat: false,
-        }}
-        onCreated={({ gl }) => {
-          gl.setClearColor("#7ec8ee", 1);
-          const canvas = gl.domElement;
-          canvas.style.width = "100%";
-          canvas.style.height = "100%";
-          canvas.style.display = "block";
-          const parent = canvas.parentElement;
-          const fit = () => {
-            const w = parent?.clientWidth || window.innerWidth;
-            const h = parent?.clientHeight || window.innerHeight;
-            if (w > 8 && h > 8) gl.setSize(w, h, false);
-          };
-          fit();
-          requestAnimationFrame(fit);
-          window.addEventListener("resize", fit);
-        }}
-      >
-        <Scene />
-      </Canvas>
-    </div>
+    <Canvas
+      className="absolute inset-0"
+      style={{ width: "100%", height: "100%", display: "block", background: "#7ec8ee" }}
+      dpr={1}
+      frameloop="always"
+      camera={{ fov: 48, near: 0.12, far: 520, position: [0, 8, 12] }}
+      gl={createFlightRenderer as never}
+    >
+      <Scene />
+    </Canvas>
   );
 }

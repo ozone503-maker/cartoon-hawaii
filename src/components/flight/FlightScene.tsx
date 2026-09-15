@@ -12,7 +12,6 @@ import { Roads } from "./Roads";
 import { Caldera } from "./Caldera";
 import { MaunaKea } from "./MaunaKea";
 import { ChaseCam } from "./ChaseCam";
-import { Clouds } from "./Clouds";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
 import { latLonToWorld, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE } from "@/lib/hawaii/world";
@@ -81,12 +80,11 @@ function Scene() {
 
   return (
     <>
-      <color attach="background" args={["#7eb7d4"]} />
-      <fog attach="fog" args={["#8ec4d8", 22, 110]} />
-      <hemisphereLight args={["#fff6e8", "#0e4a62", 0.82]} />
-      <directionalLight position={[48, 62, 22]} intensity={1.55} color="#fff6e0" />
-      <directionalLight position={[-28, 10, -16]} intensity={0.32} color="#7eb7d4" />
-      <Sky sunPosition={[48, 30, 20]} turbidity={5.4} rayleigh={1.25} mieCoefficient={0.0036} />
+      <color attach="background" args={["#7ec8ee"]} />
+      <fog attach="fog" args={["#c5e6f6", 48, 190]} />
+      <hemisphereLight args={["#fff8ee", "#7ec8a8", 1.05]} />
+      <directionalLight position={[60, 80, 28]} intensity={1.85} color="#fff4d0" />
+      <Sky sunPosition={[60, 48, 22]} turbidity={1.6} rayleigh={0.85} mieCoefficient={0.002} />
       {ready ? (
         <Suspense fallback={null}>
           <Island />
@@ -99,7 +97,6 @@ function Scene() {
           <MaunaKea />
           <Caldera />
           <Pads />
-          <Clouds craft={craft} />
         </Suspense>
       ) : null}
       <Craft craft={craft} />
@@ -132,7 +129,7 @@ export function FlightCanvas() {
     <Canvas
       className="absolute inset-0 touch-none"
       dpr={[1, 1.5]}
-      camera={{ fov: 54, near: 0.12, far: 520, position: [0, 8, 12] }}
+      camera={{ fov: 48, near: 0.12, far: 520, position: [0, 8, 12] }}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       <Scene />

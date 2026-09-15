@@ -151,7 +151,7 @@ function Leg({ x, z }: { x: number; z: number }) {
 
 function Mdp() {
   return (
-    <group position={[0, 0.22, 0.08]} scale={0.78} renderOrder={2}>
+    <group position={[0, 0.26, 0.1]} renderOrder={2}>
       <mesh position={[0, 0.2, 0.08]} scale={[1.05, 0.95, 0.85]}>
         <sphereGeometry args={[0.17, 16, 14]} />
         <meshStandardMaterial color={SKIN} roughness={0.5} />

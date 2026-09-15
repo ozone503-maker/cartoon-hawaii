@@ -3,6 +3,7 @@ import { Color, InstancedMesh, Object3D } from "three";
 import { MAP_SIZE } from "@/lib/hawaii/geo";
 import { TOWNS } from "@/lib/hawaii/highways";
 import { latLonToWorld, terrainY, WORLD } from "@/lib/hawaii/world";
+import { toonRamp } from "@/lib/hawaii/toon";
 
 const dummy = new Object3D();
 const PX = WORLD.w / MAP_SIZE.w;
@@ -64,12 +65,15 @@ function layout(): Building[] {
 
 export function Settlements() {
   const mesh = useRef<InstancedMesh>(null);
+  const roofs = useRef<InstancedMesh>(null);
   const buildings = useMemo(() => layout(), []);
   const colors = useMemo(() => buildings.map((b) => new Color(b.color)), [buildings]);
+  const ramp = useMemo(() => toonRamp(), []);
 
   useLayoutEffect(() => {
     const inst = mesh.current;
-    if (!inst) return;
+    const roof = roofs.current;
+    if (!inst || !roof) return;
     buildings.forEach((b, i) => {
       dummy.position.set(b.px, b.py, b.pz);
       dummy.scale.set(b.sx, b.sy, b.sz);
@@ -77,20 +81,34 @@ export function Settlements() {
       dummy.updateMatrix();
       inst.setMatrixAt(i, dummy.matrix);
       inst.setColorAt(i, colors[i]!);
+      dummy.position.set(b.px, b.py + b.sy / 2 + 0.05, b.pz);
+      dummy.scale.set(Math.max(b.sx, b.sz) * 0.72, 0.11, Math.max(b.sx, b.sz) * 0.72);
+      dummy.updateMatrix();
+      roof.setMatrixAt(i, dummy.matrix);
     });
     inst.instanceMatrix.needsUpdate = true;
+    roof.instanceMatrix.needsUpdate = true;
     if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
     return () => {
       inst.geometry.dispose();
+      roof.geometry.dispose();
       const mat = inst.material;
+      const rm = roof.material;
       if (mat && !Array.isArray(mat)) mat.dispose();
+      if (rm && !Array.isArray(rm)) rm.dispose();
     };
   }, [buildings, colors]);
 
   return (
-    <instancedMesh ref={mesh} args={[undefined, undefined, buildings.length]} castShadow>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial roughness={0.72} metalness={0.04} />
-    </instancedMesh>
+    <group>
+      <instancedMesh ref={mesh} args={[undefined, undefined, buildings.length]}>
+        <cylinderGeometry args={[0.55, 0.62, 1, 8]} />
+        <meshToonMaterial gradientMap={ramp} />
+      </instancedMesh>
+      <instancedMesh ref={roofs} args={[undefined, undefined, buildings.length]}>
+        <coneGeometry args={[1, 1, 8]} />
+        <meshToonMaterial color="#c45c4a" gradientMap={ramp} />
+      </instancedMesh>
+    </group>
   );
 }

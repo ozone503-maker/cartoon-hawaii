@@ -142,8 +142,8 @@ function LotTrees() {
             <meshStandardMaterial color="#5a3a28" />
           </mesh>
           <mesh position={[0, s * 0.95, 0]}>
-            <icosahedronGeometry args={[s * 0.55, 0]} />
-            <meshStandardMaterial color={i % 2 ? "#1d6a34" : "#2f8a44"} roughness={0.9} />
+            <sphereGeometry args={[s * 0.55, 10, 8]} />
+            <meshToonMaterial color={i % 2 ? "#2dad48" : "#3fbf55"} />
           </mesh>
         </group>
       ))}

@@ -1,12 +1,18 @@
-# Hawaiʻi Island Atlas
+# Fly Hawaiʻi Island
 
-The island on this map is a **NASA Landsat photograph**, not a drawing. Coastline, palis, lava, and volcanoes are the satellite. We did not generate the geography.
+The island is a **NASA Landsat photograph**, not a drawing. Coastline, palis, lava, and volcanoes are the satellite. We did not generate the geography.
 
-A lat/lon grid is locked to four surveyed extrema: Upolu (N), Ka Lae (S), Keahole (W), Kumukahi (E). Pins use published coordinates.
+A lat/lon grid is locked to four surveyed extrema: Upolu (N), Ka Lae (S), Keahole (W), Kumukahi (E). Pins use published coordinates. Height comes from the five real shield volcanoes (Mauna Kea, Mauna Loa, Hualālai, Kohala, Kīlauea) — not a conical cartoon peak.
 
 Repo: [ozone503-maker/cartoon-hawaii](https://github.com/ozone503-maker/cartoon-hawaii)
 
-Home base is **FlashTown** (Mountain View). Flight mechanics and cockpit plug in through the nav contract below.
+Home base is **FlashTown** (Mountain View). You fly MDP’s bubble UFO in a locked third-person chase camera. Climb and the camera pulls back toward the overhead atlas. Open the map anytime for the lat/lon grid.
+
+## Play
+
+W/S thrust · A/D turn left/right · Space lift · F drop · Shift boost.
+
+On a phone: four-arrow pad, lift / drop / boost on the opposite corner.
 
 ## Run
 
@@ -17,15 +23,15 @@ npm install
 npm run dev
 ```
 
-Drag to pan, pinch/scroll to zoom, tap pins. **Enter at FlashTown** starts at home. Grid toggles lat/lon.
-
 ## Source
 
 | | |
 |---|---|
 | Imagery | NASA Landsat / USGS (`public/maps/hawaii-usgs.jpg`) |
+| Height | Shield Gaussians at surveyed peaks (`public/maps/hawaii-height.png`) |
 | Grid | Equirectangular, island AABB → Upolu / Ka Lae / Keahole / Kumukahi |
 | Pins | Surveyed lat/lon in `src/lib/hawaii/places.ts` |
+| Forest | Instanced only where the Landsat pixel is already green |
 
 Place cards are labeled illustrations. They are not the map.
 

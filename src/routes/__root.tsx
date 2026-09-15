@@ -3,7 +3,7 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Hawaiʻi Island Atlas";
+const APP_NAME = "Fly Hawaiʻi Island";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -14,7 +14,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "NASA Landsat map of Hawaiʻi Island. Real coastline, lat/lon grid, pins at surveyed coordinates. Home base: FlashTown.",
+          "Fly MDP’s UFO over the real island. NASA Landsat terrain, shield volcanoes, chase camera from FlashTown.",
       },
       { name: "theme-color", content: "#0e4a62" },
     ],

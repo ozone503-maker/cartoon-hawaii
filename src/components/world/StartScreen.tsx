@@ -11,15 +11,15 @@ export function StartScreen() {
     <div className="absolute inset-0 z-50 flex items-end justify-center bg-ink/45 p-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:items-center">
       <div className="w-full max-w-lg rounded-xl bg-paper p-6 text-ink shadow-xl sm:p-8">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">
-          NASA Landsat terrain · chase cam
+          Cartoon world · Landsat geography
         </p>
         <h1 className="mt-2 font-display text-4xl leading-[1.1] tracking-tight text-balance sm:text-5xl">
           Fly Hawaiʻi Island
         </h1>
         <p className="mt-3 text-base leading-relaxed text-pretty text-ink/80">
-          MDP’s UFO over the real island — NASA Landsat draped on shield volcanoes
-          at their surveyed peaks. Climb and the camera pulls back toward the
-          overhead atlas. Descend and it tucks in behind the craft.
+          MDP’s UFO over the real island. The coastline is NASA Landsat. Forests,
+          lava, towns, roads, and FlashTown are the cartoon world built on top.
+          Climb and the camera pulls back toward the overhead atlas.
         </p>
         <p className="mt-2 text-sm leading-relaxed text-muted">
           W/S thrust · A/D turn left/right · Space lift · F drop · Shift boost.

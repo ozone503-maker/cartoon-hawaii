@@ -1,12 +1,12 @@
 # Fly Hawaiʻi Island
 
-The island is a **NASA Landsat photograph**, not a drawing. Coastline, palis, lava, and volcanoes are the satellite. We did not generate the geography.
+The island’s **coastline is NASA Landsat**. Forests, lava, ranchland, snow, towns, belt roads, and FlashTown are a cartoon world stamped through that mask — not a freehand drawing, not raw satellite.
 
-A lat/lon grid is locked to four surveyed extrema: Upolu (N), Ka Lae (S), Keahole (W), Kumukahi (E). Pins use published coordinates. Height comes from the five real shield volcanoes (Mauna Kea, Mauna Loa, Hualālai, Kohala, Kīlauea) — not a conical cartoon peak.
+A lat/lon grid is locked to four surveyed extrema: Upolu (N), Ka Lae (S), Keahole (W), Kumukahi (E). Pins use published coordinates. Height comes from the five real shield volcanoes (Mauna Kea, Mauna Loa, Hualālai, Kohala, Kīlauea).
 
 Repo: [ozone503-maker/cartoon-hawaii](https://github.com/ozone503-maker/cartoon-hawaii)
 
-Home base is **FlashTown** (Mountain View). You fly MDP’s bubble UFO in a locked third-person chase camera. Climb and the camera pulls back toward the overhead atlas. Open the map anytime for the lat/lon grid.
+Home base is **FlashTown** (Mountain View). You fly MDP’s bubble UFO in a locked third-person chase camera. Climb and the camera pulls back toward the overhead atlas. Open the map anytime for the lat/lon grid, and toggle Landsat if you want to inspect the source photograph.
 
 ## Play
 
@@ -27,13 +27,21 @@ npm run dev
 
 | | |
 |---|---|
-| Imagery | NASA Landsat / USGS (`public/maps/hawaii-usgs.jpg`) |
+| Coastline | NASA Landsat / USGS (`public/maps/hawaii-usgs.jpg`) — flood-fill land mask |
+| Atlas | Cartoon biomes + belt roads + towns (`public/maps/hawaii-cartoon.jpg`) |
 | Height | Shield Gaussians at surveyed peaks (`public/maps/hawaii-height.png`) |
 | Grid | Equirectangular, island AABB → Upolu / Ka Lae / Keahole / Kumukahi |
 | Pins | Surveyed lat/lon in `src/lib/hawaii/places.ts` |
+| Roads | Real belt / saddle / Kohala / Puna highways in `src/lib/hawaii/highways.json` |
 | Forest | Instanced only where the Landsat pixel is already green |
 
 Place cards are labeled illustrations. They are not the map.
+
+Rebuild the atlas (does not move the coastline):
+
+```bash
+python3 scripts/paint-cartoon-atlas.py
+```
 
 ## FlashTown
 

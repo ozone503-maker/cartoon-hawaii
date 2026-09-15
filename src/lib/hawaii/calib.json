@@ -15,5 +15,5 @@
     "lonMin": -156.0614,
     "lonMax": -154.806
   },
-  "source": "NASA Landsat of Hawai\u02bbi Island. Color graded only; coastline unaltered."
+  "source": "NASA Landsat coastline and height. Cartoon biomes, belt roads, and towns painted through that mask — no invented geography."
 }

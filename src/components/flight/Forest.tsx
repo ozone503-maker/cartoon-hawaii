@@ -24,7 +24,7 @@ export function Forest({ craft }: { craft: CraftState }) {
   const last = useRef("");
 
   const palette = useMemo(
-    () => [new Color("#16351c"), new Color("#1f4a28"), new Color("#245830"), new Color("#2f6a3a")],
+    () => [new Color("#14522a"), new Color("#1d6a34"), new Color("#2a7a3c"), new Color("#3a8c48")],
     [],
   );
 

@@ -6,7 +6,7 @@ export const GEO = {
   lonMax: -154.806,
 } as const;
 
-/** Pixel size of public/maps/hawaii-cartoon.jpg (and hawaii-usgs.jpg). */
+/** Pixel size of public/maps/hawaii-cartoon.jpg (and hawaii-usgs.jpg). Same frame. */
 export const MAP_SIZE = { w: 1118, h: 1280 } as const;
 
 /**

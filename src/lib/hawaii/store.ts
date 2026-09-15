@@ -33,6 +33,7 @@ type HawaiiState = {
   touring: boolean;
   tourIndex: number;
   grid: boolean;
+  basemap: "atlas" | "usgs";
   mapOpen: boolean;
   heightReady: boolean;
   flightHud: FlightHud;
@@ -45,6 +46,7 @@ type HawaiiState = {
   nextTourStop: () => void;
   stopTour: () => void;
   toggleGrid: () => void;
+  toggleBasemap: () => void;
   setMapOpen: (open: boolean) => void;
   setHeightReady: (ready: boolean) => void;
   setFlightHud: (hud: FlightHud) => void;
@@ -59,6 +61,7 @@ export const useHawaii = create<HawaiiState>((set, get) => ({
   touring: false,
   tourIndex: 0,
   grid: true,
+  basemap: "atlas",
   mapOpen: false,
   heightReady: false,
   flightHud: { lat: 19.5397, lon: -155.1417, altM: 0, speed: 0, yaw: 0 },
@@ -101,6 +104,7 @@ export const useHawaii = create<HawaiiState>((set, get) => ({
   },
   stopTour: () => set({ touring: false }),
   toggleGrid: () => set((s) => ({ grid: !s.grid })),
+  toggleBasemap: () => set((s) => ({ basemap: s.basemap === "atlas" ? "usgs" : "atlas" })),
   setMapOpen: (mapOpen) => set({ mapOpen }),
   setHeightReady: (heightReady) => set({ heightReady }),
   setFlightHud: (flightHud) => set({ flightHud }),

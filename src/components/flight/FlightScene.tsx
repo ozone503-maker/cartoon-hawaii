@@ -6,6 +6,10 @@ import { Vector3 } from "three";
 import { Island } from "./Island";
 import { Craft } from "./Craft";
 import { Forest } from "./Forest";
+import { Settlements } from "./Settlements";
+import { FlashTown } from "./FlashTown";
+import { Roads } from "./Roads";
+import { Caldera } from "./Caldera";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
 import { latLonToWorld, loadHeightmap, terrainY, UFO_LENGTH, worldToLatLon, HEIGHT_SCALE } from "@/lib/hawaii/world";
@@ -143,6 +147,10 @@ function Scene() {
         <Suspense fallback={null}>
           <Island />
           <Forest craft={craft} />
+          <Roads />
+          <Settlements />
+          <FlashTown />
+          <Caldera />
           <Pads />
         </Suspense>
       ) : null}

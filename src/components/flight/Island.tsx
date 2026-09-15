@@ -4,7 +4,7 @@ import { PlaneGeometry, SRGBColorSpace } from "three";
 import { terrainY, WORLD } from "@/lib/hawaii/world";
 
 export function Island() {
-  const color = useTexture("/maps/hawaii-usgs.jpg");
+  const color = useTexture("/maps/hawaii-cartoon.jpg?v=atlas2");
   color.colorSpace = SRGBColorSpace;
   color.anisotropy = 16;
 
@@ -27,11 +27,11 @@ export function Island() {
   return (
     <group>
       <mesh geometry={geometry} receiveShadow>
-        <meshStandardMaterial map={color} roughness={0.92} metalness={0.02} />
+        <meshStandardMaterial map={color} roughness={0.88} metalness={0.02} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.25, 0]}>
         <planeGeometry args={[WORLD.w * 3, WORLD.d * 3]} />
-        <meshStandardMaterial color="#0e4a62" roughness={0.35} metalness={0.08} />
+        <meshStandardMaterial color="#0c4a6a" roughness={0.32} metalness={0.08} />
       </mesh>
     </group>
   );

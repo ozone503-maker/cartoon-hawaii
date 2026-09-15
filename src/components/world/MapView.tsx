@@ -40,6 +40,7 @@ export function MapView() {
   const region = useHawaii((s) => s.region);
   const visited = useHawaii((s) => s.visited);
   const gridOn = useHawaii((s) => s.grid);
+  const basemap = useHawaii((s) => s.basemap);
   const [cursor, setCursor] = useState<string | null>(null);
 
   const grid = useMemo(() => gridLines(), []);
@@ -312,8 +313,12 @@ export function MapView() {
         }}
       >
         <img
-          src="/maps/hawaii-usgs.jpg?v=landsat"
-          alt="NASA Landsat photograph of Hawaiʻi Island"
+          src={basemap === "usgs" ? "/maps/hawaii-usgs.jpg?v=landsat" : "/maps/hawaii-cartoon.jpg?v=atlas2"}
+          alt={
+            basemap === "usgs"
+              ? "NASA Landsat photograph of Hawaiʻi Island"
+              : "Cartoon atlas of Hawaiʻi Island locked to NASA Landsat geography"
+          }
           draggable={false}
           onLoad={onImgLoad}
           className="absolute inset-0 size-full select-none"
@@ -367,7 +372,7 @@ export function MapView() {
             fontSize="18"
             fontFamily="ui-sans-serif, system-ui, sans-serif"
           >
-            Imagery: NASA Landsat / USGS
+            Imagery: {basemap === "usgs" ? "NASA Landsat / USGS" : "Cartoon atlas · Landsat coastline"}
           </text>
         </svg>
       </div>

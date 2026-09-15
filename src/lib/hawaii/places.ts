@@ -231,9 +231,9 @@ export const PLACES: Place[] = [
     kind: "place",
     region: "Volcanoes",
     image: "/scenes/mauna-kea.jpg",
-    kicker: "Highest point in the Pacific",
+    kicker: "Observatories above the clouds",
     story:
-      "From the seafloor it is the tallest mountain on Earth. The summit is alpine cinder, snow in winter, a sacred realm, and a ring of observatories above the clouds.",
+      "From the seafloor it is the tallest mountain on Earth. The true peak, Puʻu Wēkiu, is alpine cinder and snow — a sacred realm, with no dome on it. The telescopes sit on the ridge to the north: Keck, Subaru, Gemini, CFHT, and the rest, from an IFA survey of the summit.",
   },
   {
     id: "punaluu",

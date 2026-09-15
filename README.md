@@ -55,6 +55,10 @@ python3 scripts/paint-cartoon-atlas.py
 
 The Hwy 11 village (post office on Volcano Road) is a separate pin at 19.54925°N, 155.10907°W — `mountain-view`. Homes in this district sit on country lanes in the ʻōhiʻa, not in a downtown.
 
+## Mauna Kea summit
+
+Telescopes are placed on IFA 1996 survey coordinates. The USGS peak (19.8207°N, 155.4681°W) has no dome — observatories sit on the north ridge. CSO is omitted (dismantled).
+
 ## Nav contract (flight + cockpit)
 
 ```js

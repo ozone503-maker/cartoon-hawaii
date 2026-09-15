@@ -12,6 +12,7 @@ import { MountainView } from "./MountainView";
 import { PunaGrove } from "./PunaGrove";
 import { Roads } from "./Roads";
 import { Caldera } from "./Caldera";
+import { MaunaKea } from "./MaunaKea";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
 import { latLonToWorld, loadHeightmap, terrainY, UFO_LENGTH, worldToLatLon, HEIGHT_SCALE } from "@/lib/hawaii/world";
@@ -150,6 +151,7 @@ function Scene() {
           <Settlements />
           <FlashTown />
           <MountainView />
+          <MaunaKea />
           <Caldera />
           <Pads />
         </Suspense>

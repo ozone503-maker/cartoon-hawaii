@@ -2,16 +2,20 @@
 
 Interactive cartoon map of **Hawaiʻi Island** (the Big Island), painted from a real USGS satellite so the coastline and volcanoes stay in place.
 
+Repo: [ozone503-maker/cartoon-hawaii](https://github.com/ozone503-maker/cartoon-hawaii)
+
 **Grok owns this map.** Home base is **FlashTown** (Mountain View). Flight mechanics (Claude) and cockpit (MDP) plug in through the nav contract below.
 
 ## Run
 
 ```bash
+git clone https://github.com/ozone503-maker/cartoon-hawaii.git
+cd cartoon-hawaii
 npm install
 npm run dev
 ```
 
-Open the URL Vite prints. Drag to pan, pinch/scroll to zoom, tap pins. `Enter at FlashTown` starts at home.
+Open the URL Vite prints. Drag to pan, pinch/scroll to zoom, tap pins. **Enter at FlashTown** starts at home.
 
 ## FlashTown
 

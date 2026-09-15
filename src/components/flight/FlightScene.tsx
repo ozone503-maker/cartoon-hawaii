@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { createRoot, events, extend, unmountComponentAtNode, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 import { Island } from "./Island";
 import { Craft } from "./Craft";
 import { Forest } from "./Forest";
@@ -129,7 +130,7 @@ function Scene() {
 export function FlightCanvas() {
   const started = useHawaii((s) => s.started);
   const setHeightReady = useHawaii((s) => s.setHeightReady);
-  const [box, setBox] = useState({ w: 0, h: 0 });
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const unbind = bindKeyboard();
@@ -139,7 +140,7 @@ export function FlightCanvas() {
       done = true;
       setHeightReady(true);
     };
-    const t = window.setTimeout(ok, 2500);
+    const t = window.setTimeout(ok, 1800);
     loadHeightmap()
       .then(() => {
         const home = placeById(HOME_ID)!;
@@ -153,36 +154,60 @@ export function FlightCanvas() {
   }, [setHeightReady]);
 
   useLayoutEffect(() => {
-    setBox({
-      w: Math.max(2, window.innerWidth || document.documentElement.clientWidth || 390),
-      h: Math.max(2, window.innerHeight || document.documentElement.clientHeight || 844),
-    });
-  }, []);
+    const canvas = canvasRef.current;
+    if (!canvas || !started) return;
+    let dead = false;
 
-  if (!started || box.w < 2) return null;
+    const boot = async () => {
+      extend(THREE as never);
+      const w = Math.max(320, window.innerWidth || 390);
+      const h = Math.max(480, window.innerHeight || 844);
+      canvas.width = w;
+      canvas.height = h;
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      const look = chaseStart(spawnCraft());
+      const root = createRoot(canvas);
+      await root.configure({
+        events,
+        dpr: 1,
+        frameloop: "always",
+        size: { width: w, height: h, top: 0, left: 0 },
+        camera: { fov: 48, near: 0.12, far: 520, position: look.cam },
+        gl: {
+          antialias: false,
+          alpha: true,
+          powerPreference: "default",
+          failIfMajorPerformanceCaveat: false,
+        },
+        onCreated: (state) => {
+          state.gl.setClearColor(0x7ec8ee, 1);
+          state.camera.lookAt(look.look[0], look.look[1], look.look[2]);
+          state.gl.domElement.addEventListener(
+            "webglcontextlost",
+            (e) => e.preventDefault(),
+            false,
+          );
+        },
+      });
+      if (dead) return;
+      root.render(<Scene />);
+    };
 
-  const look = chaseStart(spawnCraft());
+    void boot();
+    return () => {
+      dead = true;
+      unmountComponentAtNode(canvas);
+    };
+  }, [started]);
+
+  if (!started) return null;
 
   return (
-    <div className="fixed inset-0 z-0" style={{ width: box.w, height: box.h }}>
-      <Canvas
-        style={{ width: box.w, height: box.h, display: "block", background: "#7ec8ee" }}
-        resize={{ scroll: false, debounce: 0 }}
-        dpr={1}
-        frameloop="always"
-        camera={{ fov: 48, near: 0.12, far: 520, position: look.cam }}
-        gl={{ antialias: false, alpha: false, powerPreference: "default", failIfMajorPerformanceCaveat: false }}
-        onCreated={({ gl, camera }) => {
-          gl.setClearColor(0x7ec8ee, 1);
-          camera.lookAt(look.look[0], look.look[1], look.look[2]);
-          const lost = (e: Event) => {
-            e.preventDefault();
-          };
-          gl.domElement.addEventListener("webglcontextlost", lost, false);
-        }}
-      >
-        <Scene />
-      </Canvas>
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 z-0 block"
+      style={{ width: "100%", height: "100%", background: "#7ec8ee", touchAction: "none" }}
+    />
   );
 }

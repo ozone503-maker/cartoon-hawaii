@@ -269,9 +269,9 @@ export const PLACES: Place[] = [
     kind: "place",
     region: "Kaʻū",
     image: "/scenes/south-point.jpg",
-    kicker: "The southernmost place",
+    kicker: "The southernmost cliffs",
     story:
-      "Wind, grass, and a cliff into deep water — the southernmost point in the United States. Canoe mooring holes in the rock are older than the flag.",
+      "Wind, grass, and a sheer drop into deep water — the southernmost point in the United States. People fish and jump from the west lip. The current below is no joke. Canoe mooring holes in the rock are older than the flag.",
   },
   {
     id: "puuhonua",

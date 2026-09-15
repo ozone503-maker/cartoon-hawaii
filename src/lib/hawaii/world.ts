@@ -54,7 +54,7 @@ async function decodePixels(src: string) {
 
 export async function loadHeightmap() {
   if (!heightPx) {
-    const h = await decodePixels("/maps/hawaii-height.png?v=kau2");
+    const h = await decodePixels("/maps/hawaii-height.png?v=kau3");
     heightPx = h.data;
     hw = h.w;
     hh = h.h;

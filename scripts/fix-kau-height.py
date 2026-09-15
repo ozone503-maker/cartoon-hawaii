@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Lock Kaʻū heights to the real coast: Punaluʻu at the beach, Nāʻālehu upslope.
+"""Kaʻū-only height lock. Do not terrace the Kona / Hualālai shield.
 
-The Gaussian shields put Punaluʻu at ~940 m. It is a black-sand beach.
-Nāʻālehu is the town above it (~200 m), not at sea level.
+Punaluʻu = beach. Nāʻālehu = town upslope. West side stays a volcano slope,
+not a fake palis at the old 14 km clamp.
 """
 
 from __future__ import annotations
@@ -15,19 +15,23 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 USGS = ROOT / "public/maps/hawaii-usgs.jpg"
+BASE = ROOT / "public/maps/hawaii-height-shields.png"
 HEIGHT = ROOT / "public/maps/hawaii-height.png"
 
 GEO = dict(latMin=18.9108, latMax=20.268, lonMin=-156.0614, lonMax=-154.806)
 ISLAND_PX = dict(x=36, y=36, w=1046, h=1208)
 M_PER_PX = 150_000 / 1046
+KAU_LAT = 19.28  # south of this: Kaʻū terrace only
 
-# Surveyed spots (m). Used to terrace the Kaʻū slope.
 CONTROLS = [
-    (19.1358, -155.5044, 8, 2.2),  # Punaluʻu beach
-    (19.062, -155.588, 200, 3.0),  # Nāʻālehu
-    (19.202, -155.47, 280, 2.6),  # Pāhala
-    (18.9108, -155.6813, 12, 2.4),  # Ka Lae
-    (18.9364, -155.6464, 18, 1.6),  # Papakōlea
+    (19.1358, -155.5044, 8, 2.2),
+    (19.062, -155.588, 200, 3.0),
+    (19.202, -155.47, 280, 2.6),
+    (18.9108, -155.6813, 12, 2.4),
+    (18.9364, -155.6464, 18, 1.6),
+    (19.6399, -155.9969, 8, 2.8),  # Kailua-Kona waterfront
+    (19.7388, -156.0456, 14, 2.4),  # KOA
+    (19.4217, -155.9106, 6, 1.8),  # Puʻuhonua shore
 ]
 
 
@@ -105,48 +109,40 @@ def main() -> None:
     dist = dist_px(ocean)
     dist_km = dist.astype(np.float32) * (M_PER_PX / 1000.0)
 
-    src = np.asarray(Image.open(HEIGHT).convert("L"), dtype=np.float32)
+    src = np.asarray(Image.open(BASE).convert("L"), dtype=np.float32)
     meters = src / 255.0 * 4205.0
 
-    # Near the water, height cannot exceed a real coastal slope.
-    # 14 km inland ≈ 500 m; volcano interiors (Mauna Kea) are untouched.
-    near = dist_km < 14.0
+    h, w = meters.shape
+    lat = np.linspace(GEO["latMax"], GEO["latMin"], h)[:, None]
+    kau = (lat < KAU_LAT) & ~ocean
     cap = 8.0 + dist_km * 36.0
-    meters = np.where(near, np.minimum(meters, cap), meters)
-    meters[ocean] = 0
+    meters = np.where(kau & (dist_km < 12.0), np.minimum(meters, cap), meters)
 
     yy, xx = np.indices(meters.shape)
-    for lat, lon, elev, radius_km in CONTROLS:
-        px, py = project(lat, lon)
+    for clat, clon, elev, radius_km in CONTROLS:
+        px, py = project(clat, clon)
         dkm = np.hypot(xx - px, yy - py) * (M_PER_PX / 1000.0)
-        w = np.exp(-0.5 * (dkm / (radius_km * 0.55)) ** 2)
-        w = np.where(dkm < radius_km * 2.2, w, 0)
-        meters = meters * (1 - w) + elev * w
+        wt = np.exp(-0.5 * (dkm / (radius_km * 0.55)) ** 2)
+        wt = np.where(dkm < radius_km * 2.2, wt, 0)
+        meters = meters * (1 - wt) + elev * wt
 
     meters[ocean] = 0
     meters = np.clip(meters, 0, 4205)
     out = np.round(meters / 4205.0 * 255.0).astype(np.uint8)
     Image.fromarray(out, mode="L").save(HEIGHT)
 
-    print(f"{'place':20} {'dist_km':>8} {'before':>8} {'after':>8} {'real':>8}")
-    samples = [
+    print(f"{'place':20} {'after':>8} {'real':>8}")
+    for name, clat, clon, real in [
         ("Punaluu", 19.1358, -155.5044, 8),
         ("Naalehu", 19.062, -155.588, 200),
-        ("Pahala", 19.202, -155.47, 280),
         ("Ka Lae", 18.9108, -155.6813, 12),
-        ("Papakolea", 18.9364, -155.6464, 18),
+        ("Kona", 19.6399, -155.9969, 5),
+        ("Hualalai", 19.6869, -155.8586, 2521),
         ("Ocean View", 19.102, -155.767, 640),
-        ("Hilo", 19.7074, -155.0817, 10),
         ("Mauna Kea", 19.8207, -155.4681, 4205),
-        ("FlashTown", 19.5397, -155.1417, 550),
-        ("Kilauea", 19.4069, -155.2834, 1247),
-    ]
-    for name, lat, lon, real in samples:
-        px, py = project(lat, lon)
-        xi, yi = int(round(px)), int(round(py))
-        before = src[yi, xi] / 255.0 * 4205
-        after = meters[yi, xi]
-        print(f"{name:20} {dist_km[yi, xi]:8.2f} {before:8.0f} {after:8.0f} {real:8.0f}")
+    ]:
+        px, py = project(clat, clon)
+        print(f"{name:20} {meters[int(round(py)), int(round(px))]:8.0f} {real:8.0f}")
 
 
 if __name__ == "__main__":

@@ -41,7 +41,21 @@ export const PLACES: Place[] = [
     image: "/scenes/flashtown.jpg",
     kicker: "Home base",
     story:
-      "A one-acre jungle lot in Mountain View — ʻōhiʻa, ferns, fruit trees, and a cabin on catchment and solar, perched at 1,800 feet in the Kīlauea foothills. Thirty minutes to Hilo or Pāhoa, twenty to the caldera. This is the map’s home.",
+      "A one-acre jungle lot in Mountain View — ʻōhiʻa, ferns, fruit trees, and a cabin on catchment and solar, perched at 1,800 feet in the Kīlauea foothills. Thirty minutes to Hilo or Pāhoa, twenty to the caldera. The highway village sits east on Volcano Road. This is the map’s home.",
+  },
+  {
+    id: "mountain-view",
+    name: "Mountain View",
+    also: "Volcano Road",
+    lat: 19.54925,
+    lon: -155.10907,
+    elevFt: 1434,
+    kind: "place",
+    region: "Puna",
+    image: "/scenes/mountain-view.jpg",
+    kicker: "Hwy 11 village",
+    story:
+      "The real strip is on Volcano Road — post office, a couple of shops, jungle crowding the pavement. Homes hide on country lanes in the ʻōhiʻa. FlashTown is the lot west of here, not a downtown.",
   },
   {
     id: "pololu",
@@ -342,6 +356,7 @@ export const PLACES: Place[] = [
 
 export const TOUR_IDS = [
   "flashtown",
+  "mountain-view",
   "hilo",
   "akaka",
   "waipio",

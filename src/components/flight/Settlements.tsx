@@ -37,7 +37,7 @@ function layout(): Building[] {
   for (const t of TOWNS) {
     const { x, z } = latLonToWorld(t.lat, t.lon);
     const rad = Math.max(0.35, t.r * PX * 0.9);
-    const buildings = t.kind === "home" ? 12 : Math.max(6, Math.round(t.r * t.r * 0.22));
+    const buildings = t.kind === "home" ? 0 : Math.max(6, Math.round(t.r * t.r * 0.22));
     const pal = PALETTE[t.kind]!;
     for (let i = 0; i < buildings; i++) {
       const h = hash(n + 17);

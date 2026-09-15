@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { Color, InstancedMesh, Object3D } from "three";
 import type { CraftState } from "@/lib/flight/craft";
 import { isCanopy, terrainY } from "@/lib/hawaii/world";
+import { inFlashTownClearing } from "@/lib/hawaii/puna";
 
 const CELL = 1.15;
 const RADIUS = 24;
@@ -69,7 +70,7 @@ export function Forest({ craft }: { craft: CraftState }) {
         if (h < 0.12) continue;
         const jx = cx + (h - 0.5) * 0.9;
         const jz = cz + (hash(gx + ix + 19, gz + iz + 7) - 0.5) * 0.9;
-        if (!isCanopy(jx, jz)) continue;
+        if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz)) continue;
         const y = terrainY(jx, jz);
         const s = 0.28 + h * 0.42;
         dummy.position.set(jx, y + s * 0.45, jz);

@@ -8,6 +8,8 @@ import { Craft } from "./Craft";
 import { Forest } from "./Forest";
 import { Settlements } from "./Settlements";
 import { FlashTown } from "./FlashTown";
+import { MountainView } from "./MountainView";
+import { PunaGrove } from "./PunaGrove";
 import { Roads } from "./Roads";
 import { Caldera } from "./Caldera";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
@@ -99,7 +101,7 @@ function Sim({ craft }: { craft: CraftState }) {
 
 function Pads() {
   const pads = useMemo(() => {
-    return PLACES.filter((p) => p.kind === "home" || p.kind === "airport").map((p) => {
+    return PLACES.filter((p) => p.kind === "airport").map((p) => {
       const { x, z } = latLonToWorld(p.lat, p.lon);
       return { ...p, x, z, y: terrainY(x, z) + 0.08 };
     });
@@ -108,12 +110,8 @@ function Pads() {
     <group>
       {pads.map((p) => (
         <mesh key={p.id} position={[p.x, p.y, p.z]} rotation={[-Math.PI / 2, 0, 0]}>
-          <circleGeometry args={[p.kind === "home" ? 1.1 : 0.7, 20]} />
-          <meshStandardMaterial
-            color={p.kind === "home" ? "#d76a4d" : "#f4ecd6"}
-            emissive={p.kind === "home" ? "#d76a4d" : "#f4ecd6"}
-            emissiveIntensity={0.35}
-          />
+          <circleGeometry args={[0.7, 20]} />
+          <meshStandardMaterial color="#f4ecd6" emissive="#f4ecd6" emissiveIntensity={0.35} />
         </mesh>
       ))}
     </group>
@@ -147,9 +145,11 @@ function Scene() {
         <Suspense fallback={null}>
           <Island />
           <Forest craft={craft} />
+          <PunaGrove />
           <Roads />
           <Settlements />
           <FlashTown />
+          <MountainView />
           <Caldera />
           <Pads />
         </Suspense>

@@ -4,7 +4,7 @@ import { PlaneGeometry, SRGBColorSpace } from "three";
 import { terrainY, WORLD } from "@/lib/hawaii/world";
 
 export function Island() {
-  const color = useTexture("/maps/hawaii-cartoon.jpg?v=atlas2");
+  const color = useTexture("/maps/hawaii-cartoon.jpg?v=atlas3");
   color.colorSpace = SRGBColorSpace;
   color.anisotropy = 16;
 

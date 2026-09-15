@@ -47,11 +47,13 @@ python3 scripts/paint-cartoon-atlas.py
 
 | | |
 |---|---|
-| Where | Mountain View, Puna, Kīlauea foothills |
+| Where | Jungle lot west of Volcano Road, Mountain View, Puna |
 | Lat / lon | 19.5397°N, 155.1417°W |
 | Elevation | 1,800 ft |
 | Map id | `flashtown` |
 | Kind | `home` |
+
+The Hwy 11 village (post office on Volcano Road) is a separate pin at 19.54925°N, 155.10907°W — `mountain-view`. Homes in this district sit on country lanes in the ʻōhiʻa, not in a downtown.
 
 ## Nav contract (flight + cockpit)
 

@@ -32,6 +32,18 @@
       "also": "Mountain View"
     },
     {
+      "id": "mountain-view",
+      "name": "Mountain View",
+      "lat": 19.54925,
+      "lon": -155.10907,
+      "elevFt": 1434,
+      "kind": "place",
+      "region": "Puna",
+      "mapX": 829.5,
+      "mapY": 675.8,
+      "also": "Volcano Road"
+    },
+    {
       "id": "pololu",
       "name": "Polol\u016b Valley",
       "lat": 20.2042,

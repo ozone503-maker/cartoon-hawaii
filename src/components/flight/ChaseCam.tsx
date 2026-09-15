@@ -3,16 +3,14 @@ import { useFrame, useThree } from "@react-three/fiber";
 import type { Fog, PerspectiveCamera } from "three";
 import { Vector3 } from "three";
 import type { CraftState } from "@/lib/flight/craft";
-import { terrainY, UFO_LENGTH } from "@/lib/hawaii/world";
+import { UFO_LENGTH } from "@/lib/hawaii/world";
 
 const _desired = new Vector3();
 const _look = new Vector3();
 
-/** Original close chase: 1½ lengths, 23° down. Climb eases to a high atlas. */
-const CRUISE_LEN = 1.5;
-const CRUISE_DEG = 23;
-const HIGH_LEN = 19;
-const HIGH_DEG = 72;
+/** Locked chase — 1½ lengths back, 23° down, always behind MDP. */
+const LEN = 1.5;
+const DEG = 23;
 
 export function ChaseCam({ craft }: { craft: CraftState }) {
   const { camera, scene } = useThree();
@@ -23,20 +21,8 @@ export function ChaseCam({ craft }: { craft: CraftState }) {
     const cam = camera as PerspectiveCamera;
     const fx = -Math.sin(craft.yaw);
     const fz = -Math.cos(craft.yaw);
-    const ground = terrainY(craft.x, craft.z);
-    const agl = Math.max(0.2, craft.y - ground);
-    const t = Math.min(1, Math.max(0, (agl - 2.2) / 46));
-    const ease = t * t * (3 - 2 * t);
-
-    let dist = UFO_LENGTH * (CRUISE_LEN + ease * (HIGH_LEN - CRUISE_LEN));
-    const deg = CRUISE_DEG + ease * (HIGH_DEG - CRUISE_DEG);
-    let height = dist * Math.tan((deg * Math.PI) / 180);
-
-    if (agl < 2.8) {
-      const land = 1 - agl / 2.8;
-      height += land * 0.7;
-      dist *= 1 - land * 0.1;
-    }
+    const dist = UFO_LENGTH * LEN;
+    const height = dist * Math.tan((DEG * Math.PI) / 180);
 
     _desired.set(craft.x - fx * dist, craft.y + height, craft.z - fz * dist);
     if (!primed.current) {
@@ -46,14 +32,13 @@ export function ChaseCam({ craft }: { craft: CraftState }) {
       cam.position.lerp(_desired, 1 - Math.exp(-4.8 * dt));
     }
 
-    const ahead = UFO_LENGTH * (0.85 + ease * 4);
-    _look.set(craft.x + fx * ahead, craft.y + 0.22 * (1 - ease), craft.z + fz * ahead);
+    _look.set(craft.x + fx * UFO_LENGTH * 0.85, craft.y + 0.22, craft.z + fz * UFO_LENGTH * 0.85);
     cam.lookAt(_look);
 
     const fog = scene.fog as Fog | null;
     if (fog) {
-      fog.near = 36 + ease * 50;
-      fog.far = 160 + ease * 180;
+      fog.near = 36;
+      fog.far = 160;
     }
   });
 

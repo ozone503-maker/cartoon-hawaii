@@ -19,8 +19,7 @@ export function StartScreen() {
         <p className="mt-3 text-base leading-relaxed text-pretty text-ink/80">
           MDP’s UFO over the real island. The coastline is NASA Landsat. Forests,
           lava, towns, roads, and FlashTown are the cartoon world built on top.
-          You start on the lot in Mountain View. Climb and the camera eases
-          toward the overhead atlas.
+          You start on the lot in Mountain View. Camera stays behind MDP.
         </p>
         <p className="mt-2 text-sm leading-relaxed text-muted">
           W/S thrust · A/D turn left/right · Space lift · F drop · Shift boost.

@@ -68,6 +68,28 @@ export function Waterfall({ fall, points }: { fall: Fall; points: Vector3[] }) {
   );
 }
 
+export function RapidSheet({
+  w,
+  h,
+  x,
+  y,
+  z,
+  yaw,
+}: {
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+  z: number;
+  yaw: number;
+}) {
+  return (
+    <group position={[x, y, z]} rotation={[0, yaw, 0]}>
+      <Sheet w={w} h={h} y={0} z={0.03} />
+    </group>
+  );
+}
+
 function Sheet({ w, h, y, z }: { w: number; h: number; y: number; z: number }) {
   return (
     <mesh position={[0, y, z]} material={waterMat}>

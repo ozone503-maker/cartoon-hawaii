@@ -115,7 +115,7 @@ for (const r of RIVERS) {
   for (let i = 0; i < r.pts.length - 1; i++) {
     const a = latLonToWorld(r.pts[i]![0], r.pts[i]![1]);
     const b = latLonToWorld(r.pts[i + 1]![0], r.pts[i + 1]![1]);
-    const n = 6;
+    const n = Math.max(8, Math.ceil(Math.hypot(b.x - a.x, b.z - a.z) / 0.22));
     for (let k = 0; k <= n; k++) {
       const t = k / n;
       xz.push({ x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t });

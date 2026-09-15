@@ -46,6 +46,9 @@ export function PlacePanel() {
                 ? place.icao ?? "Airport"
                 : place.region}
           </Badge>
+          <p className="absolute bottom-2 left-3 text-[10px] uppercase tracking-[0.14em] text-cream/80">
+            Illustration — not the map
+          </p>
         </div>
         <div className="space-y-3 p-4 sm:p-5">
           <div>

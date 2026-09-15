@@ -1,10 +1,12 @@
-# Cartoon Hawaiʻi
+# Hawaiʻi Island Atlas
 
-The Big Island from a NASA Landsat frame so the coastline and volcanoes stay in place. Color-graded only — no invented waterfalls, extra islands, or redrawn geography. A lat/lon grid is locked to Upolu, Ka Lae, Keahole, and Kumukahi.
+The island on this map is a **NASA Landsat photograph**, not a drawing. Coastline, palis, lava, and volcanoes are the satellite. We did not generate the geography.
+
+A lat/lon grid is locked to four surveyed extrema: Upolu (N), Ka Lae (S), Keahole (W), Kumukahi (E). Pins use published coordinates.
 
 Repo: [ozone503-maker/cartoon-hawaii](https://github.com/ozone503-maker/cartoon-hawaii)
 
-**Grok owns this map.** Home base is **FlashTown** (Mountain View). Flight mechanics (Claude) and cockpit (MDP) plug in through the nav contract below.
+Home base is **FlashTown** (Mountain View). Flight mechanics and cockpit plug in through the nav contract below.
 
 ## Run
 
@@ -15,7 +17,17 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints. Drag to pan, pinch/scroll to zoom, tap pins. **Enter at FlashTown** starts at home. The grid button toggles lat/lon; the satellite button shows the raw NASA frame.
+Drag to pan, pinch/scroll to zoom, tap pins. **Enter at FlashTown** starts at home. Grid toggles lat/lon.
+
+## Source
+
+| | |
+|---|---|
+| Imagery | NASA Landsat / USGS (`public/maps/hawaii-usgs.jpg`) |
+| Grid | Equirectangular, island AABB → Upolu / Ka Lae / Keahole / Kumukahi |
+| Pins | Surveyed lat/lon in `src/lib/hawaii/places.ts` |
+
+Place cards are labeled illustrations. They are not the map.
 
 ## FlashTown
 
@@ -29,33 +41,14 @@ Open the URL Vite prints. Drag to pan, pinch/scroll to zoom, tap pins. **Enter a
 
 ## Nav contract (flight + cockpit)
 
-When the map is running:
-
 ```js
 window.__hawaiiMap.flyTo("flashtown")
-window.__hawaiiMap.flyTo("koa")      // Kona Airport
+window.__hawaiiMap.flyTo("koa")
 window.__hawaiiMap.fit()
-window.__hawaiiMap.project(19.54, -155.14)  // → { x, y } in map pixels
+window.__hawaiiMap.project(19.54, -155.14)
 window.__hawaiiMap.waypoints
-window.__hawaiiMap.airports
-window.__hawaiiMap.home
 ```
 
-Static copy (same payload, no functions): [`public/hawaii-nav.json`](public/hawaii-nav.json)
+Static copy: [`public/hawaii-nav.json`](public/hawaii-nav.json)
 
-Airports on the map:
-
-| Id | ICAO | Name |
-|---|---|---|
-| `ito` | PHTO | Hilo International |
-| `koa` | PHKO | Kona International |
-| `mue` | PHMU | Waimea-Kohala |
-
-Projection: linear lon/lat onto the painted island blob in `src/lib/hawaii/geo.ts`.
-
-## Layout
-
-- `src/lib/hawaii/` — geo, places, coastline, nav
-- `src/components/world/` — map, HUD, panels
-- `public/maps/hawaii-cartoon.jpg` — island painting
-- `public/scenes/` — place illustrations
+Airports: `ito` PHTO, `koa` PHKO, `mue` PHMU.

@@ -3,7 +3,7 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Cartoon Hawaiʻi";
+const APP_NAME = "Hawaiʻi Island Atlas";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -14,7 +14,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "The entire Big Island of Hawaiʻi, restyled from a real map into a cartoon world you can wander.",
+          "NASA Landsat map of Hawaiʻi Island. Real coastline, lat/lon grid, pins at surveyed coordinates. Home base: FlashTown.",
       },
       { name: "theme-color", content: "#0e4a62" },
     ],

@@ -5,7 +5,6 @@ import {
   MAP_SIZE,
   ISLAND_PX,
   clamp,
-  coastlinePath,
   project,
   unproject,
   gridLines,
@@ -41,10 +40,8 @@ export function MapView() {
   const region = useHawaii((s) => s.region);
   const visited = useHawaii((s) => s.visited);
   const gridOn = useHawaii((s) => s.grid);
-  const basemap = useHawaii((s) => s.basemap);
   const [cursor, setCursor] = useState<string | null>(null);
 
-  const path = useMemo(() => coastlinePath(COASTLINE), []);
   const grid = useMemo(() => gridLines(), []);
   const visible = region === "all" ? PLACES : PLACES.filter((p) => p.region === region);
 
@@ -315,8 +312,8 @@ export function MapView() {
         }}
       >
         <img
-          src={basemap === "usgs" ? "/maps/hawaii-usgs.jpg?v=grid" : "/maps/hawaii-cartoon.jpg?v=grid"}
-          alt="Map of Hawaiʻi Island from NASA Landsat"
+          src="/maps/hawaii-usgs.jpg?v=landsat"
+          alt="NASA Landsat photograph of Hawaiʻi Island"
           draggable={false}
           onLoad={onImgLoad}
           className="absolute inset-0 size-full select-none"
@@ -334,14 +331,14 @@ export function MapView() {
                     y1={line.a.y}
                     x2={line.b.x}
                     y2={line.b.y}
-                    stroke={line.major ? "rgba(244,236,214,0.45)" : "rgba(244,236,214,0.18)"}
+                    stroke={line.major ? "rgba(244,236,214,0.5)" : "rgba(244,236,214,0.2)"}
                     strokeWidth={line.major ? 1.6 : 0.9}
                   />
                   {line.major && line.kind === "lat" ? (
                     <text
                       x={line.a.x + 8}
                       y={line.a.y - 6}
-                      fill="rgba(244,236,214,0.85)"
+                      fill="rgba(244,236,214,0.9)"
                       fontSize="22"
                       fontFamily="ui-sans-serif, system-ui, sans-serif"
                     >
@@ -352,7 +349,7 @@ export function MapView() {
                     <text
                       x={line.b.x + 6}
                       y={line.b.y + 22}
-                      fill="rgba(244,236,214,0.85)"
+                      fill="rgba(244,236,214,0.9)"
                       fontSize="22"
                       fontFamily="ui-sans-serif, system-ui, sans-serif"
                     >
@@ -362,13 +359,16 @@ export function MapView() {
                 </g>
               ))
             : null}
-          <path
-            d={path}
-            fill="none"
-            stroke="rgba(244,236,214,0.35)"
-            strokeWidth={2}
-            strokeLinejoin="round"
-          />
+          <text
+            x={MAP_SIZE.w - 16}
+            y={MAP_SIZE.h - 18}
+            textAnchor="end"
+            fill="rgba(244,236,214,0.75)"
+            fontSize="18"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+          >
+            Imagery: NASA Landsat / USGS
+          </text>
         </svg>
       </div>
       {started && cursor ? (

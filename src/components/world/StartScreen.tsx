@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { useHawaii } from "@/lib/hawaii/store";
 
 export function StartScreen() {
@@ -8,7 +7,15 @@ export function StartScreen() {
   if (started) return null;
 
   return (
-    <div className="absolute inset-0 z-50 flex items-center justify-center bg-ink/45 p-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(5rem,env(safe-area-inset-bottom))]">
+    <div
+      className="absolute inset-0 z-[100] flex items-center justify-center bg-ink/45 p-4"
+      style={{ touchAction: "manipulation" }}
+      onClick={start}
+      onTouchEnd={(e) => {
+        e.stopPropagation();
+        start();
+      }}
+    >
       <div className="w-full max-w-lg rounded-xl bg-paper p-6 text-ink shadow-xl sm:p-8">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">
           Cartoon world · Landsat geography
@@ -25,17 +32,13 @@ export function StartScreen() {
           Circle stick to fly · lift / boost / drop on the right. Open the map
           anytime for the lat/lon grid.
         </p>
-        <Button
-          size="lg"
-          className="mt-6 min-h-14 w-full"
-          onPointerUp={(e) => {
-            e.preventDefault();
-            start();
-          }}
-          onClick={start}
+        <button
+          type="button"
+          className="mt-6 min-h-14 w-full rounded-lg bg-coral text-base font-medium text-cream"
+          style={{ touchAction: "manipulation" }}
         >
           Fly from FlashTown
-        </Button>
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, Suspense } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Sky } from "@react-three/drei";
 import { Island } from "./Island";
@@ -89,7 +89,7 @@ function Scene() {
       <directionalLight position={[60, 80, 28]} intensity={1.85} color="#fff4d0" />
       <Sky sunPosition={[60, 48, 22]} turbidity={1.6} rayleigh={0.85} mieCoefficient={0.002} />
       {ready ? (
-        <Suspense fallback={null}>
+        <>
           <Island />
           <Forest craft={craft} />
           <PunaGrove />
@@ -103,7 +103,7 @@ function Scene() {
           <Locations />
           <KauCoast />
           <Pads />
-        </Suspense>
+        </>
       ) : null}
       <Craft craft={craft} />
       <ChaseCam craft={craft} />
@@ -134,9 +134,9 @@ export function FlightCanvas() {
   return (
     <Canvas
       className="absolute inset-0 touch-none"
-      dpr={[1, 1.5]}
+      dpr={[1, 1.25]}
       camera={{ fov: 48, near: 0.12, far: 520, position: [0, 8, 12] }}
-      gl={{ antialias: true, powerPreference: "high-performance" }}
+      gl={{ antialias: false, powerPreference: "default", alpha: false, failIfMajorPerformanceCaveat: false }}
     >
       <Scene />
     </Canvas>

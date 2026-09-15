@@ -42,8 +42,18 @@ let ch = 0;
 async function decodePixels(src: string) {
   const img = new Image();
   img.crossOrigin = "anonymous";
-  img.src = src;
-  await img.decode();
+  await new Promise<void>((resolve, reject) => {
+    const t = window.setTimeout(() => reject(new Error(`timeout ${src}`)), 12000);
+    img.onload = () => {
+      window.clearTimeout(t);
+      resolve();
+    };
+    img.onerror = () => {
+      window.clearTimeout(t);
+      reject(new Error(src));
+    };
+    img.src = src;
+  });
   const c = document.createElement("canvas");
   c.width = img.width;
   c.height = img.height;

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FlightCanvas } from "@/components/flight/FlightScene";
+import { FlyGate } from "@/components/flight/FlyGate";
 import { FlightHud } from "@/components/flight/FlightHud";
 import { MiniMap } from "@/components/flight/MiniMap";
 import { TouchPad } from "@/components/flight/TouchPad";
@@ -21,7 +22,9 @@ function Home() {
     <main className="relative h-dvh w-full overflow-hidden bg-ocean">
       <div className="flight-stage relative size-full overflow-hidden">
         <MapBridge />
-        <FlightCanvas />
+        <FlyGate>
+          <FlightCanvas />
+        </FlyGate>
         <FlightHud />
         <MiniMap />
         <TouchPad />

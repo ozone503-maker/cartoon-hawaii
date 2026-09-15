@@ -8,7 +8,7 @@ export function StartScreen() {
   if (started) return null;
 
   return (
-    <div className="absolute inset-0 z-50 flex items-end justify-center bg-ink/45 p-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:items-center">
+    <div className="absolute inset-0 z-50 flex items-center justify-center bg-ink/45 p-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(5rem,env(safe-area-inset-bottom))]">
       <div className="w-full max-w-lg rounded-xl bg-paper p-6 text-ink shadow-xl sm:p-8">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">
           Cartoon world · Landsat geography
@@ -22,10 +22,18 @@ export function StartScreen() {
           You start on the lot in Mountain View. Camera stays behind MDP.
         </p>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          W/S thrust · A/D turn left/right · Space lift · F drop · Shift boost.
-          Open the map anytime for the lat/lon grid.
+          Circle stick to fly · lift / boost / drop on the right. Open the map
+          anytime for the lat/lon grid.
         </p>
-        <Button size="lg" className="mt-6 w-full" onClick={start}>
+        <Button
+          size="lg"
+          className="mt-6 min-h-14 w-full"
+          onPointerUp={(e) => {
+            e.preventDefault();
+            start();
+          }}
+          onClick={start}
+        >
           Fly from FlashTown
         </Button>
       </div>

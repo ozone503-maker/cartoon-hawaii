@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Sky } from "@react-three/drei";
 import { Island } from "./Island";
 import { Craft } from "./Craft";
 import { Forest } from "./Forest";
@@ -87,7 +86,6 @@ function Scene() {
       <fog attach="fog" args={["#c5e6f6", 48, 190]} />
       <hemisphereLight args={["#fff8ee", "#7ec8a8", 1.05]} />
       <directionalLight position={[60, 80, 28]} intensity={1.85} color="#fff4d0" />
-      <Sky sunPosition={[60, 48, 22]} turbidity={1.6} rayleigh={0.85} mieCoefficient={0.002} />
       {ready ? (
         <>
           <Island />
@@ -132,13 +130,38 @@ export function FlightCanvas() {
   if (!started) return null;
 
   return (
-    <Canvas
-      className="absolute inset-0 touch-none"
-      dpr={[1, 1.25]}
-      camera={{ fov: 48, near: 0.12, far: 520, position: [0, 8, 12] }}
-      gl={{ antialias: false, powerPreference: "default", alpha: false, failIfMajorPerformanceCaveat: false }}
-    >
-      <Scene />
-    </Canvas>
+    <div className="absolute inset-0 z-0" style={{ width: "100%", height: "100%" }}>
+      <Canvas
+        style={{ width: "100%", height: "100%", display: "block" }}
+        dpr={1}
+        camera={{ fov: 48, near: 0.12, far: 520, position: [0, 8, 12] }}
+        gl={{
+          antialias: false,
+          alpha: true,
+          premultipliedAlpha: false,
+          preserveDrawingBuffer: true,
+          powerPreference: "default",
+          failIfMajorPerformanceCaveat: false,
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor("#7ec8ee", 1);
+          const canvas = gl.domElement;
+          canvas.style.width = "100%";
+          canvas.style.height = "100%";
+          canvas.style.display = "block";
+          const parent = canvas.parentElement;
+          const fit = () => {
+            const w = parent?.clientWidth || window.innerWidth;
+            const h = parent?.clientHeight || window.innerHeight;
+            if (w > 8 && h > 8) gl.setSize(w, h, false);
+          };
+          fit();
+          requestAnimationFrame(fit);
+          window.addEventListener("resize", fit);
+        }}
+      >
+        <Scene />
+      </Canvas>
+    </div>
   );
 }

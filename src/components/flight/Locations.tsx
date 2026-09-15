@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Html } from "@react-three/drei";
+import { useFrame, useThree } from "@react-three/fiber";
 import { AIRPORTS } from "@/lib/hawaii/highways";
 import { MAP_SIZE } from "@/lib/hawaii/geo";
 import { PLACES } from "@/lib/hawaii/places";
@@ -28,6 +30,16 @@ export function Locations() {
 function PlaceLabel({ lat, lon, name }: { lat: number; lon: number; name: string }) {
   const { x, z } = latLonToWorld(lat, lon);
   const y = terrainY(x, z);
+  const camera = useThree((s) => s.camera);
+  const [show, setShow] = useState(false);
+  useFrame(() => {
+    const dx = camera.position.x - x;
+    const dy = camera.position.y - y;
+    const dz = camera.position.z - z;
+    const near = dx * dx + dy * dy + dz * dz < 22 * 22;
+    if (near !== show) setShow(near);
+  });
+  if (!show) return null;
   return (
     <Html position={[x, y + 1.15, z]} center distanceFactor={28} zIndexRange={[4, 8]} style={{ pointerEvents: "none" }}>
       <div className="whitespace-nowrap rounded-md bg-ink/80 px-2 py-0.5 font-display text-[11px] tracking-tight text-cream shadow-md">

@@ -16,9 +16,20 @@ import { KauCoast } from "./KauCoast";
 import { Rivers } from "./Rivers";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
-import { latLonToWorld, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE } from "@/lib/hawaii/world";
+import { latLonToWorld, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE, UFO_LENGTH } from "@/lib/hawaii/world";
 import { HOME_ID, PLACES, placeById } from "@/lib/hawaii/places";
 import { useHawaii } from "@/lib/hawaii/store";
+
+function chaseStart(c: CraftState) {
+  const fx = -Math.sin(c.yaw);
+  const fz = -Math.cos(c.yaw);
+  const dist = UFO_LENGTH * 1.5;
+  const height = dist * Math.tan((23 * Math.PI) / 180);
+  return {
+    cam: [c.x - fx * dist, c.y + height, c.z - fz * dist] as [number, number, number],
+    look: [c.x + fx * UFO_LENGTH * 0.85, c.y + 0.22, c.z + fz * UFO_LENGTH * 0.85] as [number, number, number],
+  };
+}
 
 function Sim({ craft }: { craft: CraftState }) {
   const paused = useHawaii((s) => s.mapOpen);
@@ -89,11 +100,13 @@ function Scene() {
 
   return (
     <>
-      <color attach="background" args={["#7ec8ee"]} />
-      <fog attach="fog" args={["#c5e6f6", 48, 190]} />
       <hemisphereLight args={["#fff8ee", "#7ec8a8", 1.05]} />
       <directionalLight position={[60, 80, 28]} intensity={1.85} color="#fff4d0" />
       {ready ? <Island /> : null}
+      <FlashTown />
+      <Craft craft={craft} />
+      <ChaseCam craft={craft} />
+      <Sim craft={craft} />
       {rest ? (
         <>
           <Forest craft={craft} />
@@ -101,7 +114,6 @@ function Scene() {
           <Roads />
           <Rivers />
           <Settlements />
-          <FlashTown />
           <MountainView />
           <MaunaKea />
           <Caldera />
@@ -110,9 +122,6 @@ function Scene() {
           <Pads />
         </>
       ) : null}
-      <Craft craft={craft} />
-      <ChaseCam craft={craft} />
-      <Sim craft={craft} />
     </>
   );
 }
@@ -152,6 +161,8 @@ export function FlightCanvas() {
 
   if (!started || box.w < 2) return null;
 
+  const look = chaseStart(spawnCraft());
+
   return (
     <div className="fixed inset-0 z-0" style={{ width: box.w, height: box.h }}>
       <Canvas
@@ -159,10 +170,11 @@ export function FlightCanvas() {
         resize={{ scroll: false, debounce: 0 }}
         dpr={1}
         frameloop="always"
-        camera={{ fov: 48, near: 0.12, far: 520, position: [0, 8, 12] }}
+        camera={{ fov: 48, near: 0.12, far: 520, position: look.cam }}
         gl={{ antialias: false, alpha: false, powerPreference: "default", failIfMajorPerformanceCaveat: false }}
-        onCreated={({ gl }) => {
+        onCreated={({ gl, camera }) => {
           gl.setClearColor(0x7ec8ee, 1);
+          camera.lookAt(look.look[0], look.look[1], look.look[2]);
           const lost = (e: Event) => {
             e.preventDefault();
           };

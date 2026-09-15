@@ -43,7 +43,7 @@ export function Craft({ craft }: { craft: CraftState }) {
           <meshBasicMaterial color="#061018" transparent opacity={0.28} depthWrite={false} />
         </mesh>
       </group>
-      <group ref={ref} scale={s}>
+      <group ref={ref} scale={s} position={[craft.x, craft.y, craft.z]} rotation={[0, craft.yaw, 0]}>
         <pointLight position={[0, 0.5, 0.15]} color="#d7eef6" intensity={2.1} distance={5} />
         <Hull />
         <Cockpit />
@@ -62,11 +62,11 @@ function Hull() {
     <group>
       <mesh position={[0, 0.02, 0]} castShadow>
         <cylinderGeometry args={[1.32, 1.42, 0.18, 40]} />
-        <meshPhysicalMaterial color="#c9d3da" metalness={0.72} roughness={0.22} clearcoat={0.35} clearcoatRoughness={0.35} />
+        <meshStandardMaterial color="#c9d3da" metalness={0.55} roughness={0.28} />
       </mesh>
       <mesh position={[0, 0.16, 0]}>
         <cylinderGeometry args={[1.18, 1.32, 0.16, 40]} />
-        <meshPhysicalMaterial color="#dde4ea" metalness={0.68} roughness={0.24} clearcoat={0.4} clearcoatRoughness={0.3} />
+        <meshStandardMaterial color="#dde4ea" metalness={0.5} roughness={0.3} />
       </mesh>
       <mesh position={[0, -0.1, 0]}>
         <cylinderGeometry args={[0.95, 0.55, 0.16, 28]} />
@@ -119,14 +119,12 @@ function Dome() {
   return (
     <mesh position={[0, 0.4, 0]} renderOrder={4}>
       <sphereGeometry args={[0.86, 32, 20, 0, Math.PI * 2, 0, Math.PI / 1.72]} />
-      <meshPhysicalMaterial
-        color="#eef8ff"
+      <meshStandardMaterial
+        color="#d8eef8"
         transparent
-        opacity={0.13}
-        roughness={0.02}
-        metalness={0.04}
-        transmission={0.12}
-        thickness={0.15}
+        opacity={0.22}
+        roughness={0.08}
+        metalness={0.08}
         depthWrite={false}
       />
     </mesh>

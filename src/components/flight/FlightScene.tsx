@@ -14,6 +14,7 @@ import { MaunaKea } from "./MaunaKea";
 import { ChaseCam } from "./ChaseCam";
 import { Locations } from "./Locations";
 import { KauCoast } from "./KauCoast";
+import { Rivers } from "./Rivers";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
 import { latLonToWorld, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE } from "@/lib/hawaii/world";
@@ -93,6 +94,7 @@ function Scene() {
           <Forest craft={craft} />
           <PunaGrove />
           <Roads />
+          <Rivers />
           <Settlements />
           <FlashTown />
           <MountainView />

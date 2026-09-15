@@ -13,8 +13,6 @@ export function Locations() {
       {AIRPORTS.map((a) => (
         <Runway key={a.id} {...a} />
       ))}
-      <Falls lat={19.8539} lon={-155.1522} h={2.4} />
-      <Falls lat={19.7194} lon={-155.1094} h={1.35} />
       <Sand lat={19.9919} lon={-155.8244} color="#f3ead2" rx={0.7} rz={0.32} />
       <Taro lat={20.1185} lon={-155.5908} />
       <Pier lat={19.6399} lon={-155.9969} heading={250} />
@@ -53,23 +51,6 @@ function Runway({ lat, lon, len, heading }: { lat: number; lon: number; len: num
       <mesh position={[0, 0.03, 0]}>
         <boxGeometry args={[w * 0.92, 0.01, 0.035]} />
         <meshStandardMaterial color="#f4ecd6" />
-      </mesh>
-    </group>
-  );
-}
-
-function Falls({ lat, lon, h }: { lat: number; lon: number; h: number }) {
-  const { x, z } = latLonToWorld(lat, lon);
-  const y = terrainY(x, z);
-  return (
-    <group position={[x, y, z]}>
-      <mesh position={[0, h / 2, 0]}>
-        <boxGeometry args={[0.09, h, 0.09]} />
-        <meshStandardMaterial color="#dceef8" emissive="#8fd4f0" emissiveIntensity={0.7} transparent opacity={0.85} />
-      </mesh>
-      <mesh position={[0, 0.08, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.22, 12]} />
-        <meshStandardMaterial color="#1f6a88" roughness={0.3} />
       </mesh>
     </group>
   );

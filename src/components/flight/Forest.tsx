@@ -6,6 +6,7 @@ import { isCanopy, terrainY } from "@/lib/hawaii/world";
 import { inFlashTownClearing } from "@/lib/hawaii/puna";
 import { inMaunaKeaSummit } from "@/lib/hawaii/maunakea";
 import { inOpenCoast } from "@/lib/hawaii/coast";
+import { inRiver } from "@/lib/hawaii/rivers";
 import { toonRamp } from "@/lib/hawaii/toon";
 
 const CELL = 1.2;
@@ -69,7 +70,7 @@ export function Forest({ craft }: { craft: CraftState }) {
         if (h < 0.22) continue;
         const jx = cx + (h - 0.5) * 0.7;
         const jz = cz + (hash(gx + ix + 19, gz + iz + 7) - 0.5) * 0.7;
-        if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz) || inMaunaKeaSummit(jx, jz) || inOpenCoast(jx, jz)) continue;
+        if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz) || inMaunaKeaSummit(jx, jz) || inOpenCoast(jx, jz) || inRiver(jx, jz)) continue;
         const y = terrainY(jx, jz);
         spots.push({ x: jx, y, z: jz, s: 0.32 + h * 0.38, h });
       }

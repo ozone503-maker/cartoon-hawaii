@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { createRoot, events, unmountComponentAtNode, useFrame } from "@react-three/fiber";
 import { Island } from "./Island";
 import { Craft } from "./Craft";
 import { Forest } from "./Forest";
@@ -114,6 +114,7 @@ function Scene() {
 export function FlightCanvas() {
   const started = useHawaii((s) => s.started);
   const setHeightReady = useHawaii((s) => s.setHeightReady);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const unbind = bindKeyboard();
@@ -136,18 +137,42 @@ export function FlightCanvas() {
     return unbind;
   }, [setHeightReady]);
 
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !started) return;
+    const root = createRoot(canvas);
+    const fit = () => {
+      const width = Math.max(320, window.innerWidth || 390);
+      const height = Math.max(480, window.innerHeight || 844);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      void root.configure({
+        events,
+        dpr: 1,
+        frameloop: "always",
+        size: { width, height, top: 0, left: 0 },
+        camera: { fov: 48, near: 0.12, far: 520, position: [0, 8, 12] },
+        gl: createFlightRenderer as never,
+      });
+    };
+    fit();
+    root.render(<Scene />);
+    window.addEventListener("resize", fit);
+    const poll = window.setInterval(fit, 1000);
+    return () => {
+      window.removeEventListener("resize", fit);
+      window.clearInterval(poll);
+      unmountComponentAtNode(canvas);
+    };
+  }, [started]);
+
   if (!started) return null;
 
   return (
-    <Canvas
-      className="absolute inset-0"
-      style={{ width: "100%", height: "100%", display: "block", background: "#7ec8ee" }}
-      dpr={1}
-      frameloop="always"
-      camera={{ fov: 48, near: 0.12, far: 520, position: [0, 8, 12] }}
-      gl={createFlightRenderer as never}
-    >
-      <Scene />
-    </Canvas>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 z-0 block"
+      style={{ width: "100vw", height: "100dvh", background: "#7ec8ee", touchAction: "none" }}
+    />
   );
 }

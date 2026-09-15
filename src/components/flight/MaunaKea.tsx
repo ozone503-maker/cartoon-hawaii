@@ -1,19 +1,16 @@
 import { useMemo } from "react";
-import { Line, useTexture } from "@react-three/drei";
-import { SRGBColorSpace, Vector3 } from "three";
-import { ACCESS_ROAD, SUMMIT_R, TELESCOPES, summitWorld } from "@/lib/hawaii/maunakea";
+import { Line } from "@react-three/drei";
+import { Vector3 } from "three";
+import { ACCESS_ROAD, TELESCOPES, summitWorld } from "@/lib/hawaii/maunakea";
 import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
 
 /**
  * Summit ridge of Mauna Kea. Telescopes sit on surveyed IFA pins.
- * The true peak (Puʻu Wēkiu) has no dome.
+ * The true peak (Puʻu Wēkiu) has no dome and no fake cinder disc.
  */
 export function MaunaKea() {
   const p = summitWorld();
   const y = terrainY(p.x, p.z);
-  const cinder = useTexture("/maps/mauna-kea-summit.jpg");
-  cinder.colorSpace = SRGBColorSpace;
-  cinder.anisotropy = 8;
 
   const road = useMemo(
     () =>
@@ -26,10 +23,6 @@ export function MaunaKea() {
 
   return (
     <group>
-      <mesh position={[p.x, y + 0.04, p.z]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[SUMMIT_R, 40]} />
-        <meshStandardMaterial map={cinder} roughness={0.95} />
-      </mesh>
       <Peak />
       {TELESCOPES.map((t) => (
         <Observatory key={t.id} {...t} />

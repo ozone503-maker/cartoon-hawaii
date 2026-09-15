@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import type { Group } from "three";
 import type { CraftState } from "@/lib/flight/craft";
-import { UFO_LENGTH } from "@/lib/hawaii/world";
+import { UFO_LENGTH, terrainY } from "@/lib/hawaii/world";
 
 const SKIN = "#6aa8c8";
 const SKIN_DEEP = "#5a96b6";
@@ -15,6 +15,7 @@ const SKIN_DEEP = "#5a96b6";
 export function Craft({ craft }: { craft: CraftState }) {
   const ref = useRef<Group>(null);
   const bank = useRef(0);
+  const shadow = useRef<Group>(null);
 
   useFrame((_, rawDt) => {
     const g = ref.current;
@@ -27,20 +28,32 @@ export function Craft({ craft }: { craft: CraftState }) {
     g.rotation.y = craft.yaw;
     g.rotation.x = craft.vy * 0.018;
     g.rotation.z = bank.current;
+    if (shadow.current) {
+      const gy = terrainY(craft.x, craft.z) + 0.05;
+      shadow.current.position.set(craft.x, gy, craft.z);
+    }
   });
 
   const s = UFO_LENGTH / 2.2;
   return (
-    <group ref={ref} scale={s}>
-      <pointLight position={[0, 0.5, 0.15]} color="#d7eef6" intensity={1.8} distance={4.5} />
-      <Hull />
-      <Cockpit />
-      <Mdp />
-      <Dome />
-      <Leg x={-0.62} z={0.58} />
-      <Leg x={0.62} z={0.58} />
-      <Leg x={0} z={-0.78} />
-    </group>
+    <>
+      <group ref={shadow} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh>
+          <circleGeometry args={[1.15, 20]} />
+          <meshBasicMaterial color="#061018" transparent opacity={0.28} depthWrite={false} />
+        </mesh>
+      </group>
+      <group ref={ref} scale={s}>
+        <pointLight position={[0, 0.5, 0.15]} color="#d7eef6" intensity={2.1} distance={5} />
+        <Hull />
+        <Cockpit />
+        <Mdp />
+        <Dome />
+        <Leg x={-0.62} z={0.58} />
+        <Leg x={0.62} z={0.58} />
+        <Leg x={0} z={-0.78} />
+      </group>
+    </>
   );
 }
 
@@ -49,11 +62,11 @@ function Hull() {
     <group>
       <mesh position={[0, 0.02, 0]} castShadow>
         <cylinderGeometry args={[1.32, 1.42, 0.18, 40]} />
-        <meshStandardMaterial color="#c5d0d8" metalness={0.78} roughness={0.26} />
+        <meshPhysicalMaterial color="#c9d3da" metalness={0.72} roughness={0.22} clearcoat={0.35} clearcoatRoughness={0.35} />
       </mesh>
       <mesh position={[0, 0.16, 0]}>
         <cylinderGeometry args={[1.18, 1.32, 0.16, 40]} />
-        <meshStandardMaterial color="#d5dee4" metalness={0.7} roughness={0.3} />
+        <meshPhysicalMaterial color="#dde4ea" metalness={0.68} roughness={0.24} clearcoat={0.4} clearcoatRoughness={0.3} />
       </mesh>
       <mesh position={[0, -0.1, 0]}>
         <cylinderGeometry args={[0.95, 0.55, 0.16, 28]} />
@@ -107,11 +120,13 @@ function Dome() {
     <mesh position={[0, 0.4, 0]} renderOrder={4}>
       <sphereGeometry args={[0.86, 32, 20, 0, Math.PI * 2, 0, Math.PI / 1.72]} />
       <meshPhysicalMaterial
-        color="#f3fbff"
+        color="#eef8ff"
         transparent
-        opacity={0.11}
-        roughness={0.03}
-        metalness={0.05}
+        opacity={0.13}
+        roughness={0.02}
+        metalness={0.04}
+        transmission={0.12}
+        thickness={0.15}
         depthWrite={false}
       />
     </mesh>

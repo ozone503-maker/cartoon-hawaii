@@ -56,6 +56,11 @@
   }
 }
 
+.flight-stage {
+  width: min(100dvw, calc(100dvh * 16 / 9));
+  height: min(100dvh, calc(100dvw * 9 / 16));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .honu-bob {
     animation: none;

@@ -18,21 +18,23 @@ function Home() {
   const started = useHawaii((s) => s.started);
 
   return (
-    <main className="relative h-dvh w-full overflow-hidden bg-ocean">
-      <MapBridge />
-      <FlightCanvas />
-      <FlightHud />
-      <MiniMap />
-      <TouchPad />
-      {mapOpen && started ? (
-        <div className="absolute inset-0 z-40">
-          <MapView />
-          <Hud />
-          <PlacePanel />
-          <StampBook />
-        </div>
-      ) : null}
-      <StartScreen />
+    <main className="relative grid h-dvh w-full place-items-center overflow-hidden bg-ink">
+      <div className="flight-stage relative overflow-hidden bg-ocean">
+        <MapBridge />
+        <FlightCanvas />
+        <FlightHud />
+        <MiniMap />
+        <TouchPad />
+        {mapOpen && started ? (
+          <div className="absolute inset-0 z-40">
+            <MapView />
+            <Hud />
+            <PlacePanel />
+            <StampBook />
+          </div>
+        ) : null}
+        <StartScreen />
+      </div>
     </main>
   );
 }

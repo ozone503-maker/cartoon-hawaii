@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Vector3 } from "three";
 import { RIVERS } from "@/lib/hawaii/rivers";
 import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
-import { Waterfall, WaterTick, RapidSheet } from "./Waterfalls";
+import { Waterfall, WaterTick } from "./Waterfalls";
 
 const WATER = "#3aaed4";
 
@@ -64,33 +64,21 @@ function Ribbon({ points, width }: { points: Vector3[]; width: number }) {
         const len = Math.hypot(dx, dy, dz) || 0.01;
         const yaw = Math.atan2(dx, dz);
         const pitch = -Math.atan2(dy, xz);
-        const drop = a.y - b.y;
         return (
-          <group key={i}>
-            <mesh
-              position={[(a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2]}
-              rotation={[pitch, yaw, 0]}
-            >
-              <boxGeometry args={[width, 0.07, len]} />
-              <meshStandardMaterial
-                color={WATER}
-                roughness={0.2}
-                metalness={0.1}
-                emissive="#1a6a88"
-                emissiveIntensity={0.45}
-              />
-            </mesh>
-            {drop > 0.14 && xz < 0.55 ? (
-              <RapidSheet
-                w={width * 0.7}
-                h={Math.min(1.1, drop * 0.95)}
-                x={(a.x + b.x) / 2}
-                y={(a.y + b.y) / 2}
-                z={(a.z + b.z) / 2}
-                yaw={yaw}
-              />
-            ) : null}
-          </group>
+          <mesh
+            key={i}
+            position={[(a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2]}
+            rotation={[pitch, yaw, 0]}
+          >
+            <boxGeometry args={[width, 0.07, len]} />
+            <meshStandardMaterial
+              color={WATER}
+              roughness={0.2}
+              metalness={0.1}
+              emissive="#1a6a88"
+              emissiveIntensity={0.45}
+            />
+          </mesh>
         );
       })}
     </group>

@@ -36,10 +36,10 @@ export const RIVERS: River[] = [
       [19.72778, -155.0875],
     ],
     falls: [
-      { lat: 19.7154, lon: -155.1404, h: 1.35, w: 0.4, kind: "cascade" },
-      { lat: 19.7153, lon: -155.1306, h: 0.55, w: 0.42, kind: "pots" },
-      { lat: 19.7215, lon: -155.1165, h: 1.05, w: 0.3, kind: "cascade" },
-      { lat: 19.7194, lon: -155.1094, h: 2.15, w: 0.34, kind: "rainbow" },
+      { lat: 19.7154, lon: -155.1404, h: 0.95, w: 0.32, kind: "cascade" },
+      { lat: 19.7153, lon: -155.1306, h: 0.45, w: 0.36, kind: "pots" },
+      { lat: 19.7215, lon: -155.1165, h: 0.75, w: 0.26, kind: "cascade" },
+      { lat: 19.7194, lon: -155.1094, h: 1.35, w: 0.32, kind: "rainbow" },
     ],
   },
   {
@@ -74,7 +74,7 @@ export const RIVERS: River[] = [
       [19.868, -155.13],
       [19.8783, -155.1225],
     ],
-    falls: [{ lat: 19.8539, lon: -155.1522, h: 3.85, w: 0.18, kind: "plunge" }],
+    falls: [{ lat: 19.8539, lon: -155.1522, h: 2.15, w: 0.16, kind: "plunge" }],
   },
   {
     id: "umauma",
@@ -96,7 +96,7 @@ export const RIVERS: River[] = [
       [20.116, -155.6],
       [20.1185, -155.5908],
     ],
-    falls: [{ lat: 20.114, lon: -155.611, h: 4.35, w: 0.16, kind: "plunge" }],
+    falls: [{ lat: 20.114, lon: -155.611, h: 2.45, w: 0.14, kind: "plunge" }],
   },
   {
     id: "pololu",

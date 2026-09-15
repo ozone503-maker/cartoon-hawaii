@@ -26,7 +26,7 @@ const waterMat = new ShaderMaterial({
       vec3 deep = vec3(0.42, 0.78, 0.92);
       vec3 foam = vec3(0.95, 0.98, 1.0);
       vec3 col = mix(deep, foam, streak * 0.75 + flow * 0.22);
-      float alpha = 0.52 + streak * 0.4;
+      float alpha = 0.62 + streak * 0.35;
       gl_FragColor = vec4(col, alpha);
     }
   `,
@@ -68,32 +68,10 @@ export function Waterfall({ fall, points }: { fall: Fall; points: Vector3[] }) {
   );
 }
 
-export function RapidSheet({
-  w,
-  h,
-  x,
-  y,
-  z,
-  yaw,
-}: {
-  w: number;
-  h: number;
-  x: number;
-  y: number;
-  z: number;
-  yaw: number;
-}) {
-  return (
-    <group position={[x, y, z]} rotation={[0, yaw, 0]}>
-      <Sheet w={w} h={h} y={0} z={0.03} />
-    </group>
-  );
-}
-
 function Sheet({ w, h, y, z }: { w: number; h: number; y: number; z: number }) {
   return (
     <mesh position={[0, y, z]} material={waterMat}>
-      <planeGeometry args={[w, h]} />
+      <boxGeometry args={[w, h, 0.1]} />
     </mesh>
   );
 }
@@ -101,7 +79,7 @@ function Sheet({ w, h, y, z }: { w: number; h: number; y: number; z: number }) {
 function Pool({ r, z, dark }: { r: number; z: number; dark?: boolean }) {
   return (
     <mesh position={[0, 0.04, z]} rotation={[-Math.PI / 2, 0, 0]}>
-      <circleGeometry args={[r, 18]} />
+      <circleGeometry args={[r, 16]} />
       <meshStandardMaterial color={dark ? "#163a4a" : "#1f6a88"} roughness={0.22} metalness={0.12} />
     </mesh>
   );
@@ -116,57 +94,46 @@ function Mist({ y, z, s }: { y: number; z: number; s: number }) {
   );
 }
 
-function Bowl({ r, h }: { r: number; h: number }) {
+/** A cliff FACE, not a silo. */
+function CliffFace({ w, h }: { w: number; h: number }) {
   return (
-    <group>
-      <mesh position={[0, h / 2, -r * 0.12]} rotation={[0, Math.PI, 0]}>
-        <cylinderGeometry args={[r, r * 0.92, h, 18, 1, true, 0, Math.PI]} />
-        <meshStandardMaterial color="#3a4634" roughness={0.96} side={DoubleSide} />
-      </mesh>
-      <mesh position={[0, h + 0.03, -r * 0.08]} rotation={[-Math.PI / 2, 0, Math.PI]}>
-        <ringGeometry args={[r * 0.55, r * 1.08, 16, 1, 0, Math.PI]} />
-        <meshStandardMaterial color="#3d8a4a" roughness={0.9} side={DoubleSide} />
-      </mesh>
-    </group>
+    <mesh position={[0, h / 2, -0.16]}>
+      <boxGeometry args={[w * 2.6, h, 0.32]} />
+      <meshStandardMaterial color="#4a5340" roughness={0.96} />
+    </mesh>
   );
 }
 
-/** Waiānuenue — cave in the lava, plunge into a round pool, rainbow in the mist. */
 function RainbowFall({ h, w }: { h: number; w: number }) {
-  const r = 1.15;
   return (
     <group>
-      <Bowl r={r} h={h * 0.95} />
-      <mesh position={[-0.42, h * 0.38, -0.08]}>
-        <sphereGeometry args={[0.32, 12, 10, 0, Math.PI]} />
+      <CliffFace w={w * 1.8} h={h} />
+      <mesh position={[-0.38, h * 0.35, -0.02]}>
+        <boxGeometry args={[0.42, h * 0.5, 0.28]} />
         <meshStandardMaterial color="#0e0c0a" roughness={1} />
       </mesh>
-      <Sheet w={w} h={h} y={h / 2} z={0.06} />
-      <Sheet w={w * 0.45} h={h} y={h / 2} z={0.09} />
-      <Pool r={0.95} z={0.42} />
-      <Mist y={0.28} z={0.38} s={0.42} />
-      <Mist y={0.45} z={0.32} s={0.28} />
+      <Sheet w={w} h={h} y={h / 2} z={0.08} />
+      <Sheet w={w * 0.4} h={h} y={h / 2} z={0.12} />
+      <Pool r={0.7} z={0.38} />
+      <Mist y={0.22} z={0.32} s={0.32} />
       {["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#9b59b6"].map((c, i) => (
-        <mesh key={c} position={[0, 0.42, 0.5]} rotation={[0.2, 0, 0]}>
-          <torusGeometry args={[0.62 + i * 0.035, 0.016, 6, 22, Math.PI]} />
-          <meshBasicMaterial color={c} transparent opacity={0.42} />
+        <mesh key={c} position={[0, 0.32, 0.42]} rotation={[0.25, 0, 0]}>
+          <torusGeometry args={[0.48 + i * 0.03, 0.014, 6, 20, Math.PI]} />
+          <meshBasicMaterial color={c} transparent opacity={0.4} />
         </mesh>
       ))}
     </group>
   );
 }
 
-/** ʻAkaka / Hiʻilawe — tall thin ribbon in a rainforest gorge. */
 function PlungeFall({ h, w }: { h: number; w: number }) {
-  const r = Math.max(0.85, h * 0.32);
   return (
     <group>
-      <Bowl r={r} h={h} />
-      <Sheet w={w} h={h} y={h / 2} z={0.05} />
-      <Sheet w={w * 0.4} h={h} y={h / 2} z={0.08} />
-      <Pool r={w * 2.4} z={0.22} dark />
-      <Mist y={0.35} z={0.2} s={w * 1.6} />
-      <Mist y={h * 0.22} z={0.12} s={w * 1.1} />
+      <CliffFace w={w * 1.4} h={h} />
+      <Sheet w={w} h={h} y={h / 2} z={0.08} />
+      <Sheet w={w * 0.4} h={h} y={h / 2} z={0.12} />
+      <Pool r={w * 1.8} z={0.22} dark />
+      <Mist y={0.22} z={0.18} s={w * 1.3} />
     </group>
   );
 }
@@ -175,33 +142,34 @@ function CascadeFall({ h, w }: { h: number; w: number }) {
   const n = 3;
   return (
     <group>
+      <CliffFace w={w} h={h * 0.9} />
       {Array.from({ length: n }, (_, i) => {
         const th = h / n;
-        const y = th * (i + 0.5);
-        const z = 0.04 + i * 0.14;
         return (
           <group key={i}>
-            <Sheet w={w * (1 - i * 0.08)} h={th} y={y} z={z} />
-            <Pool r={w * 0.55} z={z + 0.08} />
+            <Sheet w={w * (1 - i * 0.08)} h={th} y={th * (i + 0.5)} z={0.08 + i * 0.1} />
+            <Pool r={w * 0.5} z={0.16 + i * 0.1} />
           </group>
         );
       })}
-      <Mist y={0.2} z={0.28} s={w * 0.7} />
+      <Mist y={0.16} z={0.22} s={w * 0.6} />
     </group>
   );
 }
 
 function PotsFall({ w }: { w: number }) {
-  const pots = [-0.55, -0.18, 0.18, 0.55];
+  const pots = [-0.45, -0.15, 0.15, 0.45];
   return (
     <group>
       {pots.map((z, i) => (
         <group key={i}>
           <mesh position={[0, 0.03, z]} rotation={[-Math.PI / 2, 0, 0]}>
-            <circleGeometry args={[w * 0.38, 12]} />
+            <circleGeometry args={[w * 0.32, 12]} />
             <meshStandardMaterial color="#1a4a5c" roughness={0.25} emissive="#0a3040" emissiveIntensity={0.35} />
           </mesh>
-          {i < pots.length - 1 ? <Sheet w={w * 0.22} h={0.22} y={0.16} z={(z + pots[i + 1]!) / 2} /> : null}
+          {i < pots.length - 1 ? (
+            <Sheet w={w * 0.2} h={0.18} y={0.12} z={(z + pots[i + 1]!) / 2} />
+          ) : null}
         </group>
       ))}
     </group>
@@ -211,9 +179,10 @@ function PotsFall({ w }: { w: number }) {
 function ThreadFall({ h, w }: { h: number; w: number }) {
   return (
     <group>
-      <Sheet w={w} h={h} y={h / 2} z={0.04} />
-      <Pool r={w * 1.3} z={0.14} />
-      <Mist y={0.16} z={0.12} s={w * 0.9} />
+      <CliffFace w={w * 0.9} h={h} />
+      <Sheet w={w} h={h} y={h / 2} z={0.08} />
+      <Pool r={w * 1.1} z={0.14} />
+      <Mist y={0.12} z={0.1} s={w * 0.8} />
     </group>
   );
 }

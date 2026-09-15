@@ -71,8 +71,24 @@ export function Waterfall({ fall, points }: { fall: Fall; points: Vector3[] }) {
 function Sheet({ w, h, y, z }: { w: number; h: number; y: number; z: number }) {
   return (
     <mesh position={[0, y, z]} material={waterMat}>
-      <boxGeometry args={[w, h, 0.1]} />
+      <boxGeometry args={[w, h, 0.14]} />
     </mesh>
+  );
+}
+
+function Veil({ w, h }: { w: number; h: number }) {
+  return (
+    <group>
+      <mesh position={[0, h + 0.05, -0.04]}>
+        <boxGeometry args={[w * 1.5, 0.1, 0.28]} />
+        <meshStandardMaterial color="#6a6358" roughness={0.95} />
+      </mesh>
+      <Sheet w={w} h={h} y={h / 2} z={0.06} />
+      <Sheet w={w * 0.62} h={h} y={h / 2} z={0.12} />
+      <Sheet w={w * 0.35} h={h * 0.92} y={h / 2} z={0.18} />
+      <Mist y={h * 0.12} z={0.16} s={w * 0.7} />
+      <Mist y={h * 0.08} z={0.22} s={w * 0.45} />
+    </group>
   );
 }
 
@@ -89,17 +105,7 @@ function Mist({ y, z, s }: { y: number; z: number; s: number }) {
   return (
     <mesh position={[0, y, z]}>
       <sphereGeometry args={[s, 8, 6]} />
-      <meshStandardMaterial color="#e8f6ff" transparent opacity={0.28} depthWrite={false} />
-    </mesh>
-  );
-}
-
-/** A cliff FACE, not a silo. */
-function CliffFace({ w, h }: { w: number; h: number }) {
-  return (
-    <mesh position={[0, h / 2, -0.16]}>
-      <boxGeometry args={[w * 2.6, h, 0.32]} />
-      <meshStandardMaterial color="#4a5340" roughness={0.96} />
+      <meshStandardMaterial color="#e8f6ff" transparent opacity={0.32} depthWrite={false} />
     </mesh>
   );
 }
@@ -107,18 +113,15 @@ function CliffFace({ w, h }: { w: number; h: number }) {
 function RainbowFall({ h, w }: { h: number; w: number }) {
   return (
     <group>
-      <CliffFace w={w * 1.8} h={h} />
-      <mesh position={[-0.38, h * 0.35, -0.02]}>
-        <boxGeometry args={[0.42, h * 0.5, 0.28]} />
-        <meshStandardMaterial color="#0e0c0a" roughness={1} />
+      <Veil w={w} h={h} />
+      <mesh position={[-0.28, h * 0.28, -0.08]}>
+        <sphereGeometry args={[0.22, 10, 8]} />
+        <meshStandardMaterial color="#12100e" roughness={1} />
       </mesh>
-      <Sheet w={w} h={h} y={h / 2} z={0.08} />
-      <Sheet w={w * 0.4} h={h} y={h / 2} z={0.12} />
-      <Pool r={0.7} z={0.38} />
-      <Mist y={0.22} z={0.32} s={0.32} />
+      <Pool r={0.65} z={0.32} />
       {["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#9b59b6"].map((c, i) => (
-        <mesh key={c} position={[0, 0.32, 0.42]} rotation={[0.25, 0, 0]}>
-          <torusGeometry args={[0.48 + i * 0.03, 0.014, 6, 20, Math.PI]} />
+        <mesh key={c} position={[0, 0.28, 0.38]} rotation={[0.25, 0, 0]}>
+          <torusGeometry args={[0.42 + i * 0.028, 0.012, 6, 18, Math.PI]} />
           <meshBasicMaterial color={c} transparent opacity={0.4} />
         </mesh>
       ))}
@@ -129,11 +132,8 @@ function RainbowFall({ h, w }: { h: number; w: number }) {
 function PlungeFall({ h, w }: { h: number; w: number }) {
   return (
     <group>
-      <CliffFace w={w * 1.4} h={h} />
-      <Sheet w={w} h={h} y={h / 2} z={0.08} />
-      <Sheet w={w * 0.4} h={h} y={h / 2} z={0.12} />
-      <Pool r={w * 1.8} z={0.22} dark />
-      <Mist y={0.22} z={0.18} s={w * 1.3} />
+      <Veil w={w} h={h} />
+      <Pool r={w * 1.6} z={0.2} dark />
     </group>
   );
 }
@@ -142,17 +142,17 @@ function CascadeFall({ h, w }: { h: number; w: number }) {
   const n = 3;
   return (
     <group>
-      <CliffFace w={w} h={h * 0.9} />
       {Array.from({ length: n }, (_, i) => {
         const th = h / n;
         return (
-          <group key={i}>
-            <Sheet w={w * (1 - i * 0.08)} h={th} y={th * (i + 0.5)} z={0.08 + i * 0.1} />
-            <Pool r={w * 0.5} z={0.16 + i * 0.1} />
+          <group key={i} position={[0, 0, i * 0.1]}>
+            <Veil w={w * (1 - i * 0.1)} h={th} />
+            <group position={[0, i * th, 0]}>
+              <Pool r={w * 0.45} z={0.14} />
+            </group>
           </group>
         );
       })}
-      <Mist y={0.16} z={0.22} s={w * 0.6} />
     </group>
   );
 }
@@ -168,7 +168,7 @@ function PotsFall({ w }: { w: number }) {
             <meshStandardMaterial color="#1a4a5c" roughness={0.25} emissive="#0a3040" emissiveIntensity={0.35} />
           </mesh>
           {i < pots.length - 1 ? (
-            <Sheet w={w * 0.2} h={0.18} y={0.12} z={(z + pots[i + 1]!) / 2} />
+            <Sheet w={w * 0.22} h={0.16} y={0.1} z={(z + pots[i + 1]!) / 2} />
           ) : null}
         </group>
       ))}
@@ -179,10 +179,8 @@ function PotsFall({ w }: { w: number }) {
 function ThreadFall({ h, w }: { h: number; w: number }) {
   return (
     <group>
-      <CliffFace w={w * 0.9} h={h} />
-      <Sheet w={w} h={h} y={h / 2} z={0.08} />
-      <Pool r={w * 1.1} z={0.14} />
-      <Mist y={0.12} z={0.1} s={w * 0.8} />
+      <Veil w={w} h={h} />
+      <Pool r={w * 1.05} z={0.14} />
     </group>
   );
 }

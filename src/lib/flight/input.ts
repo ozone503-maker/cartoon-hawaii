@@ -2,9 +2,11 @@
 
 export const held = new Set<string>();
 let probeLock = false;
+let stick: { throttle: number; steer: number } | null = null;
 
 export function setKeys(codes: string[]) {
   held.clear();
+  stick = null;
   for (const c of codes) held.add(c);
   probeLock = codes.length > 0;
 }
@@ -19,14 +21,28 @@ export function readAxes() {
   let throttle = 0;
   let steer = 0;
   let lift = 0;
-  if (held.has("KeyW") || held.has("ArrowUp")) throttle += 1;
-  if (held.has("KeyS") || held.has("ArrowDown")) throttle -= 1;
-  if (held.has("KeyA") || held.has("ArrowLeft")) steer += 1;
-  if (held.has("KeyD") || held.has("ArrowRight")) steer -= 1;
+  if (stick) {
+    throttle = stick.throttle;
+    steer = stick.steer;
+  } else {
+    if (held.has("KeyW") || held.has("ArrowUp")) throttle += 1;
+    if (held.has("KeyS") || held.has("ArrowDown")) throttle -= 1;
+    if (held.has("KeyA") || held.has("ArrowLeft")) steer += 1;
+    if (held.has("KeyD") || held.has("ArrowRight")) steer -= 1;
+  }
   if (held.has("Space") || held.has("KeyR")) lift += 1;
   if (held.has("ControlLeft") || held.has("KeyF") || held.has("KeyC")) lift -= 1;
   const boost = held.has("ShiftLeft") || held.has("ShiftRight") || held.has("KeyB");
   return { throttle, steer, lift, boost };
+}
+
+export function setStick(throttle: number, steer: number) {
+  probeLock = false;
+  stick = { throttle, steer };
+}
+
+export function clearStick() {
+  stick = null;
 }
 
 export function bindKeyboard() {

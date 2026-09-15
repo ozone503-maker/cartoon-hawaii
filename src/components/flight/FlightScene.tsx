@@ -116,14 +116,22 @@ export function FlightCanvas() {
 
   useEffect(() => {
     const unbind = bindKeyboard();
+    let done = false;
+    const ok = () => {
+      if (done) return;
+      done = true;
+      setHeightReady(true);
+    };
+    const t = window.setTimeout(ok, 2500);
     loadHeightmap()
       .then(() => {
         const home = placeById(HOME_ID)!;
         const w = latLonToWorld(home.lat, home.lon);
         terrainY(w.x, w.z);
-        setHeightReady(true);
+        ok();
       })
-      .catch(() => setHeightReady(true));
+      .catch(ok)
+      .finally(() => window.clearTimeout(t));
     return unbind;
   }, [setHeightReady]);
 

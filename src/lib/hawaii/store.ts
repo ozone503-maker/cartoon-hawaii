@@ -53,7 +53,7 @@ type HawaiiState = {
 };
 
 export const useHawaii = create<HawaiiState>((set, get) => ({
-  started: false,
+  started: true,
   selectedId: null,
   visited: [],
   region: "all",

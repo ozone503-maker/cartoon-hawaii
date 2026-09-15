@@ -9,7 +9,6 @@ import { MapBridge } from "@/components/world/MapBridge";
 import { MapView } from "@/components/world/MapView";
 import { PlacePanel } from "@/components/world/PlacePanel";
 import { StampBook } from "@/components/world/StampBook";
-import { StartScreen } from "@/components/world/StartScreen";
 import { useHawaii } from "@/lib/hawaii/store";
 
 export const Route = createFileRoute("/")({ component: Home });
@@ -36,7 +35,6 @@ function Home() {
             <StampBook />
           </div>
         ) : null}
-        <StartScreen />
       </div>
     </main>
   );

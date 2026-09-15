@@ -154,7 +154,33 @@ export const PLACES: Place[] = [
     image: "/scenes/akaka.jpg",
     kicker: "Hilo’s backyard waterfall",
     story:
-      "The Wailuku River pours over a lava lip into a pool behind a cave, inland of Hilo town. Morning sun turns the mist into the rainbow the Hawaiian name already promised. The river meets the bay farther east — the falls do not.",
+      "The Wailuku River pours over a lava lip into a pool behind a cave, inland of Hilo town. Morning sun turns the mist into the rainbow the Hawaiian name already promised. Upstream are Boiling Pots, Waiʻale, and Narnia. The river meets the bay farther east — the falls do not.",
+  },
+  {
+    id: "boiling-pots",
+    name: "Boiling Pots",
+    also: "Peʻepeʻe",
+    lat: 19.7153,
+    lon: -155.1306,
+    kind: "place",
+    region: "Hilo",
+    image: "/scenes/akaka.jpg",
+    kicker: "Wailuku River State Park",
+    story:
+      "Potholes in the lava where the Wailuku churns after rain. Peʻepeʻe Falls hides just upstream. One and a half miles above Rainbow Falls — still inland, still the same river.",
+  },
+  {
+    id: "narnia",
+    name: "Narnia",
+    also: "Hoʻokelekele",
+    lat: 19.7108,
+    lon: -155.155,
+    kind: "place",
+    region: "Hilo",
+    image: "/scenes/akaka.jpg",
+    kicker: "Seven streams in the forest",
+    story:
+      "Local name for the confluence in the Hilo Forest Reserve where Lauiole, Pukamaui, Kauwehu and the rest drop into Hoʻokelekele Stream, then join the Wailuku. Seven waterfalls, one lookout — above Boiling Pots, not a coastal plunge.",
   },
   {
     id: "ito",

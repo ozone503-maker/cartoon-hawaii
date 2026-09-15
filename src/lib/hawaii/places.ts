@@ -431,12 +431,13 @@ export const PLACES: Place[] = [
     name: "Nāʻālehu",
     lat: 19.062,
     lon: -155.588,
+    elevFt: 650,
     kind: "place",
     region: "Kaʻū",
     image: "/scenes/south-point.jpg",
-    kicker: "Southernmost town",
+    kicker: "Southernmost town, upslope",
     story:
-      "The southernmost town in the United States. Kaʻū winds, a painted theater, and the turn for South Point.",
+      "The southernmost town in the United States. It sits a few hundred feet above the Kaʻū coast — not on the sand. Punaluʻu is the black-sand beach downslope. The turn for South Point is west.",
   },
   {
     id: "pahala",

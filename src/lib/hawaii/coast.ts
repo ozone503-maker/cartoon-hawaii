@@ -6,6 +6,7 @@ const ZONES: { lat: number; lon: number; r: number }[] = [
   { lat: 18.9108, lon: -155.6813, r: 4.2 }, // Ka Lae cliffs
   { lat: 18.9364, lon: -155.6464, r: 1.8 }, // Papakōlea
   { lat: 19.9919, lon: -155.8244, r: 1.6 }, // Hāpuna
+  { lat: 19.4217, lon: -155.9106, r: 2.2 }, // Puʻuhonua lava flat
 ];
 
 const pts = ZONES.map((z) => ({ ...latLonToWorld(z.lat, z.lon), r2: z.r * z.r }));

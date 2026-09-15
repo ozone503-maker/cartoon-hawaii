@@ -1,5 +1,6 @@
 import { DoubleSide } from "three";
 import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
+import { Puuhonua } from "./Puuhonua";
 
 /**
  * Kaʻū shore as it actually is:
@@ -12,6 +13,7 @@ export function KauCoast() {
       <Punaluu />
       <KaLae />
       <Papakolea />
+      <Puuhonua />
     </group>
   );
 }

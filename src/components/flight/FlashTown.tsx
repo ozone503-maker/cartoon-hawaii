@@ -1,5 +1,3 @@
-import { useTexture } from "@react-three/drei";
-import { SRGBColorSpace } from "three";
 import { flashtownWorld, CLEARING_R } from "@/lib/hawaii/puna";
 import { terrainY } from "@/lib/hawaii/world";
 
@@ -10,15 +8,12 @@ import { terrainY } from "@/lib/hawaii/world";
 export function FlashTown() {
   const p = flashtownWorld();
   const y = terrainY(p.x, p.z);
-  const lot = useTexture("/maps/flashtown-lot.jpg");
-  lot.colorSpace = SRGBColorSpace;
-  lot.anisotropy = 8;
 
   return (
     <group position={[p.x, y, p.z]}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]} receiveShadow>
         <circleGeometry args={[CLEARING_R, 36]} />
-        <meshStandardMaterial map={lot} roughness={0.92} />
+        <meshStandardMaterial color="#7a9a4a" roughness={0.92} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.045, 0]}>
         <ringGeometry args={[1.05, 1.22, 28]} />

@@ -9,17 +9,14 @@ const _desired = new Vector3();
 const _look = new Vector3();
 
 /**
- * Locked chase cam — does not touch flight physics.
- * Cruise: 1½ lengths back, 23° down, saucer in the lower third.
- * Climb eases toward a high diagonal atlas. Never into MDP’s head,
- * never beside the craft, never a hard cut.
+ * Locked chase cam. Does not touch flight physics.
+ *
+ * Landscape: 1½ lengths, 23° down, saucer in the lower third.
+ * Portrait: pulls back so the island fills the frame — never MDP’s skull.
+ * Climb eases toward a high diagonal atlas. No cuts, no side-swing.
  */
-const CRUISE_LEN = 1.5;
 const CRUISE_DEG = 23;
-const HIGH_LEN = 7.4;
 const HIGH_DEG = 56;
-const MIN_LEN = 1.42;
-const MAX_LEN = 8.0;
 
 export function ChaseCam({ craft }: { craft: CraftState }) {
   const { camera, scene } = useThree();
@@ -35,35 +32,35 @@ export function ChaseCam({ craft }: { craft: CraftState }) {
     const t = Math.min(1, Math.max(0, (agl - 2.4) / 38));
     const ease = t * t * (3 - 2 * t);
 
-    let dist = UFO_LENGTH * (CRUISE_LEN + ease * (HIGH_LEN - CRUISE_LEN));
-    dist = Math.min(UFO_LENGTH * MAX_LEN, Math.max(UFO_LENGTH * MIN_LEN, dist));
+    const wide = Math.max(1, 1.55 / Math.max(0.42, cam.aspect));
+    const cruiseLen = 1.55 * wide;
+    const highLen = 7.2 * Math.min(wide, 1.55);
+    const minLen = cruiseLen * 0.92;
+
+    let dist = UFO_LENGTH * (cruiseLen + ease * (highLen - cruiseLen));
+    dist = Math.max(UFO_LENGTH * minLen, dist);
     const deg = CRUISE_DEG + ease * (HIGH_DEG - CRUISE_DEG);
     let height = dist * Math.tan((deg * Math.PI) / 180);
-
-    if (agl < 2.6) {
-      const land = 1 - agl / 2.6;
-      height += land * 0.55;
-    }
+    if (agl < 2.6) height += (1 - agl / 2.6) * 0.55;
 
     _desired.set(craft.x - fx * dist, craft.y + height, craft.z - fz * dist);
     if (!primed.current) {
       cam.position.copy(_desired);
       primed.current = true;
     } else {
-      const k = 1 - Math.exp(-7.4 * dt);
-      cam.position.lerp(_desired, k);
+      cam.position.lerp(_desired, 1 - Math.exp(-7.4 * dt));
     }
 
-    const ahead = UFO_LENGTH * (0.5 + ease * 1.8);
-    _look.set(craft.x + fx * ahead, craft.y + 0.05, craft.z + fz * ahead);
+    const ahead = dist * (0.38 + ease * 0.35);
+    _look.set(craft.x + fx * ahead, craft.y - height * 0.08, craft.z + fz * ahead);
     cam.lookAt(_look);
-    cam.fov = 54 + ease * 6;
+    cam.fov = (wide > 1.3 ? 58 : 52) + ease * 6;
     cam.updateProjectionMatrix();
 
     const fog = scene.fog as Fog | null;
     if (fog) {
-      fog.near = 22 + ease * 40;
-      fog.far = 110 + ease * 160;
+      fog.near = 18 + ease * 36;
+      fog.far = 95 + ease * 150;
     }
   });
 

@@ -18,8 +18,8 @@ function Home() {
   const started = useHawaii((s) => s.started);
 
   return (
-    <main className="relative grid h-dvh w-full place-items-center overflow-hidden bg-ink">
-      <div className="flight-stage relative overflow-hidden bg-ocean">
+    <main className="relative h-dvh w-full overflow-hidden bg-ocean">
+      <div className="flight-stage relative size-full overflow-hidden">
         <MapBridge />
         <FlightCanvas />
         <FlightHud />

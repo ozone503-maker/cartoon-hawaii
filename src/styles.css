@@ -1,0 +1,63 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-ocean: #0e4a62;
+  --color-lagoon: #1f8a7a;
+  --color-ink: #1c1916;
+  --color-cream: #f4ecd6;
+  --color-coral: #d76a4d;
+  --color-paper: #fff8ea;
+  --color-muted: #6b6458;
+  --font-display: "Fraunces", "Palatino Linotype", Palatino, serif;
+  --font-sans: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-fast: 250ms;
+  --motion-quick: 150ms;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+.honu-bob {
+  animation: honu-bob 2.4s var(--ease-smooth-out) infinite;
+}
+
+@keyframes honu-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .honu-bob {
+    animation: none;
+  }
+}

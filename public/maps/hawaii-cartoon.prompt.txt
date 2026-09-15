@@ -1,0 +1,1 @@
+Restyle USGS satellite of Hawaiʻi Island into storybook cartoon atlas. Preserve coastline.

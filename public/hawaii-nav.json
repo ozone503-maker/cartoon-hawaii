@@ -1,0 +1,352 @@
+{
+  "version": 1,
+  "owner": "grok-map",
+  "homeId": "flashtown",
+  "geo": {
+    "latMin": 18.9108,
+    "latMax": 20.268,
+    "lonMin": -156.0614,
+    "lonMax": -154.806
+  },
+  "mapSize": {
+    "w": 1728,
+    "h": 1152
+  },
+  "islandPx": {
+    "x": 328,
+    "y": 46,
+    "w": 1216,
+    "h": 1088
+  },
+  "waypoints": [
+    {
+      "id": "flashtown",
+      "name": "FlashTown",
+      "lat": 19.5397,
+      "lon": -155.1417,
+      "elevFt": 1800,
+      "kind": "home",
+      "region": "Puna",
+      "mapX": 1218.8,
+      "mapY": 629.8,
+      "also": "Mountain View"
+    },
+    {
+      "id": "pololu",
+      "name": "Polol\u016b Valley",
+      "lat": 20.2042,
+      "lon": -155.733,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Kohala",
+      "mapX": 646.1,
+      "mapY": 97.1
+    },
+    {
+      "id": "hapuna",
+      "name": "H\u0101puna Beach",
+      "lat": 19.9919,
+      "lon": -155.8244,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Kohala",
+      "mapX": 557.6,
+      "mapY": 267.3
+    },
+    {
+      "id": "waimea",
+      "name": "Waimea",
+      "lat": 20.023,
+      "lon": -155.6716,
+      "elevFt": 2670,
+      "kind": "place",
+      "region": "Kohala",
+      "mapX": 705.6,
+      "mapY": 242.4,
+      "also": "Kamuela"
+    },
+    {
+      "id": "waipio",
+      "name": "Waipi\u02bbo Valley",
+      "lat": 20.1185,
+      "lon": -155.5908,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "H\u0101m\u0101kua",
+      "mapX": 783.8,
+      "mapY": 165.8
+    },
+    {
+      "id": "honokaa",
+      "name": "Honoka\u02bba",
+      "lat": 20.0794,
+      "lon": -155.4675,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "H\u0101m\u0101kua",
+      "mapX": 903.3,
+      "mapY": 197.2
+    },
+    {
+      "id": "akaka",
+      "name": "\u02bbAkaka Falls",
+      "lat": 19.8539,
+      "lon": -155.1522,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "H\u0101m\u0101kua",
+      "mapX": 1208.7,
+      "mapY": 378.0
+    },
+    {
+      "id": "hilo",
+      "name": "Hilo",
+      "lat": 19.7074,
+      "lon": -155.0817,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Hilo",
+      "mapX": 1277.0,
+      "mapY": 495.4
+    },
+    {
+      "id": "rainbow-falls",
+      "name": "Rainbow Falls",
+      "lat": 19.7194,
+      "lon": -155.1094,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Hilo",
+      "mapX": 1250.1,
+      "mapY": 485.8,
+      "also": "Wai\u0101nuenue"
+    },
+    {
+      "id": "ito",
+      "name": "Hilo Airport",
+      "lat": 19.7214,
+      "lon": -155.0485,
+      "elevFt": 38,
+      "kind": "airport",
+      "region": "Hilo",
+      "mapX": 1309.1,
+      "mapY": 484.2,
+      "also": "ITO / PHTO",
+      "icao": "PHTO"
+    },
+    {
+      "id": "pahoa",
+      "name": "P\u0101hoa",
+      "lat": 19.4944,
+      "lon": -154.9508,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Puna",
+      "mapX": 1403.7,
+      "mapY": 666.2
+    },
+    {
+      "id": "kumukahi",
+      "name": "Cape Kumukahi",
+      "lat": 19.516,
+      "lon": -154.806,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Puna",
+      "mapX": 1544.0,
+      "mapY": 648.8
+    },
+    {
+      "id": "kilauea",
+      "name": "K\u012blauea",
+      "lat": 19.4069,
+      "lon": -155.2834,
+      "elevFt": 4091,
+      "kind": "place",
+      "region": "Volcanoes",
+      "mapX": 1081.6,
+      "mapY": 736.3
+    },
+    {
+      "id": "mauna-loa",
+      "name": "Mauna Loa",
+      "lat": 19.4756,
+      "lon": -155.6081,
+      "elevFt": 13679,
+      "kind": "place",
+      "region": "Volcanoes",
+      "mapX": 767.1,
+      "mapY": 681.2
+    },
+    {
+      "id": "mauna-kea",
+      "name": "Mauna Kea",
+      "lat": 19.8207,
+      "lon": -155.4681,
+      "elevFt": 13796,
+      "kind": "place",
+      "region": "Volcanoes",
+      "mapX": 902.7,
+      "mapY": 404.6,
+      "also": "Mauna a W\u0101kea"
+    },
+    {
+      "id": "punaluu",
+      "name": "Punalu\u02bbu",
+      "lat": 19.1358,
+      "lon": -155.5044,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Ka\u02bb\u016b",
+      "mapX": 867.5,
+      "mapY": 953.6
+    },
+    {
+      "id": "papakolea",
+      "name": "Papak\u014dlea",
+      "lat": 18.9364,
+      "lon": -155.6464,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Ka\u02bb\u016b",
+      "mapX": 730.0,
+      "mapY": 1113.5,
+      "also": "Green Sand Beach"
+    },
+    {
+      "id": "south-point",
+      "name": "Ka Lae",
+      "lat": 18.9108,
+      "lon": -155.6813,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Ka\u02bb\u016b",
+      "mapX": 696.2,
+      "mapY": 1134.0,
+      "also": "South Point"
+    },
+    {
+      "id": "puuhonua",
+      "name": "Pu\u02bbuhonua o H\u014dnaunau",
+      "lat": 19.4217,
+      "lon": -155.9106,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Kona",
+      "mapX": 474.1,
+      "mapY": 724.4
+    },
+    {
+      "id": "kealakekua",
+      "name": "Kealakekua Bay",
+      "lat": 19.4786,
+      "lon": -155.927,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Kona",
+      "mapX": 458.2,
+      "mapY": 678.8
+    },
+    {
+      "id": "kona",
+      "name": "Kailua-Kona",
+      "lat": 19.6399,
+      "lon": -155.9969,
+      "elevFt": 0,
+      "kind": "place",
+      "region": "Kona",
+      "mapX": 390.5,
+      "mapY": 549.5
+    },
+    {
+      "id": "koa",
+      "name": "Kona Airport",
+      "lat": 19.7388,
+      "lon": -156.0456,
+      "elevFt": 47,
+      "kind": "airport",
+      "region": "Kona",
+      "mapX": 343.3,
+      "mapY": 470.2,
+      "also": "KOA / PHKO",
+      "icao": "PHKO"
+    },
+    {
+      "id": "hualalai",
+      "name": "Hual\u0101lai",
+      "lat": 19.6869,
+      "lon": -155.8586,
+      "elevFt": 8271,
+      "kind": "place",
+      "region": "Kona",
+      "mapX": 524.4,
+      "mapY": 511.8
+    },
+    {
+      "id": "mue",
+      "name": "Waimea-Kohala Airport",
+      "lat": 20.0013,
+      "lon": -155.6681,
+      "elevFt": 2671,
+      "kind": "airport",
+      "region": "Kohala",
+      "mapX": 709.0,
+      "mapY": 259.8,
+      "also": "MUE / PHMU",
+      "icao": "PHMU"
+    }
+  ],
+  "airports": [
+    {
+      "id": "ito",
+      "name": "Hilo Airport",
+      "lat": 19.7214,
+      "lon": -155.0485,
+      "elevFt": 38,
+      "kind": "airport",
+      "region": "Hilo",
+      "mapX": 1309.1,
+      "mapY": 484.2,
+      "also": "ITO / PHTO",
+      "icao": "PHTO"
+    },
+    {
+      "id": "koa",
+      "name": "Kona Airport",
+      "lat": 19.7388,
+      "lon": -156.0456,
+      "elevFt": 47,
+      "kind": "airport",
+      "region": "Kona",
+      "mapX": 343.3,
+      "mapY": 470.2,
+      "also": "KOA / PHKO",
+      "icao": "PHKO"
+    },
+    {
+      "id": "mue",
+      "name": "Waimea-Kohala Airport",
+      "lat": 20.0013,
+      "lon": -155.6681,
+      "elevFt": 2671,
+      "kind": "airport",
+      "region": "Kohala",
+      "mapX": 709.0,
+      "mapY": 259.8,
+      "also": "MUE / PHMU",
+      "icao": "PHMU"
+    }
+  ],
+  "home": {
+    "id": "flashtown",
+    "name": "FlashTown",
+    "lat": 19.5397,
+    "lon": -155.1417,
+    "elevFt": 1800,
+    "kind": "home",
+    "region": "Puna",
+    "mapX": 1218.8,
+    "mapY": 629.8,
+    "also": "Mountain View"
+  }
+}

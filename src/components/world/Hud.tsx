@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { BookOpen, Compass, Home, Map as MapIcon, Play, RotateCcw, X } from "lucide-react";
+import { BookOpen, Compass, Grid3x3, Home, Map as MapIcon, Play, RotateCcw, Satellite, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HOME_ID, PLACES, REGIONS, TOUR_IDS } from "@/lib/hawaii/places";
 import { useHawaii } from "@/lib/hawaii/store";
@@ -17,6 +17,10 @@ export function Hud() {
   const started = useHawaii((s) => s.started);
   const selectedId = useHawaii((s) => s.selectedId);
   const select = useHawaii((s) => s.select);
+  const grid = useHawaii((s) => s.grid);
+  const toggleGrid = useHawaii((s) => s.toggleGrid);
+  const basemap = useHawaii((s) => s.basemap);
+  const setBasemap = useHawaii((s) => s.setBasemap);
 
   if (!started) return null;
 
@@ -27,7 +31,7 @@ export function Hud() {
           <p className="font-display text-lg leading-tight tracking-tight sm:text-xl">
             Cartoon Hawaiʻi
           </p>
-          <p className="mt-0.5 text-xs text-cream/70">Home: FlashTown</p>
+          <p className="mt-0.5 text-xs text-cream/70">NASA Landsat · lat/lon grid</p>
         </div>
         <div className="pointer-events-auto flex items-center gap-2">
           <div className="hidden items-center gap-2 rounded-xl bg-ink/70 px-3 py-2 text-cream backdrop-blur-md sm:flex">
@@ -37,6 +41,22 @@ export function Hud() {
               <span className="text-cream/60"> / {PLACES.length}</span>
             </span>
           </div>
+          <Button
+            variant={grid ? "cream" : "outline"}
+            size="icon"
+            aria-label={grid ? "Hide lat/lon grid" : "Show lat/lon grid"}
+            onClick={toggleGrid}
+          >
+            <Grid3x3 />
+          </Button>
+          <Button
+            variant={basemap === "usgs" ? "cream" : "outline"}
+            size="icon"
+            aria-label={basemap === "usgs" ? "Show color atlas" : "Show USGS satellite"}
+            onClick={() => setBasemap(basemap === "usgs" ? "atlas" : "usgs")}
+          >
+            <Satellite />
+          </Button>
           <Button
             variant="cream"
             size="icon"

@@ -1,10 +1,19 @@
 {
-  "imgW": 1728,
-  "imgH": 1152,
-  "island": {
-    "x": 312,
-    "y": 32,
-    "x2": 1556,
-    "y2": 1152
-  }
+  "mapSize": {
+    "w": 1118,
+    "h": 1280
+  },
+  "islandPx": {
+    "x": 36,
+    "y": 36,
+    "w": 1046,
+    "h": 1208
+  },
+  "geo": {
+    "latMin": 18.9108,
+    "latMax": 20.268,
+    "lonMin": -156.0614,
+    "lonMax": -154.806
+  },
+  "source": "NASA Landsat of Hawai\u02bbi Island. Color graded only; coastline unaltered."
 }

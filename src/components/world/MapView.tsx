@@ -7,6 +7,9 @@ import {
   clamp,
   coastlinePath,
   project,
+  unproject,
+  gridLines,
+  formatLatLon,
 } from "@/lib/hawaii/geo";
 import { PLACES, type Place } from "@/lib/hawaii/places";
 import { useHawaii } from "@/lib/hawaii/store";
@@ -37,8 +40,12 @@ export function MapView() {
   const started = useHawaii((s) => s.started);
   const region = useHawaii((s) => s.region);
   const visited = useHawaii((s) => s.visited);
+  const gridOn = useHawaii((s) => s.grid);
+  const basemap = useHawaii((s) => s.basemap);
+  const [cursor, setCursor] = useState<string | null>(null);
 
   const path = useMemo(() => coastlinePath(COASTLINE), []);
+  const grid = useMemo(() => gridLines(), []);
   const visible = region === "all" ? PLACES : PLACES.filter((p) => p.region === region);
 
   const publish = useCallback((next: Cam) => {
@@ -240,6 +247,12 @@ export function MapView() {
     if (!pointers.current.has(e.pointerId)) return;
     const p = clientPoint(e);
     pointers.current.set(e.pointerId, p);
+    if (started) {
+      const wx = (p.x - camRef.current.tx) / camRef.current.scale;
+      const wy = (p.y - camRef.current.ty) / camRef.current.scale;
+      const ll = unproject(wx, wy);
+      setCursor(formatLatLon(ll.lat, ll.lon));
+    }
     if (pinch.current && pointers.current.size >= 2) {
       const pts = [...pointers.current.values()];
       const d = Math.hypot(pts[0]!.x - pts[1]!.x, pts[0]!.y - pts[1]!.y);
@@ -302,8 +315,8 @@ export function MapView() {
         }}
       >
         <img
-          src="/maps/hawaii-cartoon.jpg"
-          alt="Cartoon map of Hawaiʻi Island"
+          src={basemap === "usgs" ? "/maps/hawaii-usgs.jpg?v=grid" : "/maps/hawaii-cartoon.jpg?v=grid"}
+          alt="Map of Hawaiʻi Island from NASA Landsat"
           draggable={false}
           onLoad={onImgLoad}
           className="absolute inset-0 size-full select-none"
@@ -313,15 +326,56 @@ export function MapView() {
           viewBox={`0 0 ${MAP_SIZE.w} ${MAP_SIZE.h}`}
           aria-hidden
         >
+          {gridOn
+            ? grid.map((line) => (
+                <g key={`${line.kind}-${line.value}`}>
+                  <line
+                    x1={line.a.x}
+                    y1={line.a.y}
+                    x2={line.b.x}
+                    y2={line.b.y}
+                    stroke={line.major ? "rgba(244,236,214,0.45)" : "rgba(244,236,214,0.18)"}
+                    strokeWidth={line.major ? 1.6 : 0.9}
+                  />
+                  {line.major && line.kind === "lat" ? (
+                    <text
+                      x={line.a.x + 8}
+                      y={line.a.y - 6}
+                      fill="rgba(244,236,214,0.85)"
+                      fontSize="22"
+                      fontFamily="ui-sans-serif, system-ui, sans-serif"
+                    >
+                      {line.value.toFixed(1)}°N
+                    </text>
+                  ) : null}
+                  {line.major && line.kind === "lon" ? (
+                    <text
+                      x={line.b.x + 6}
+                      y={line.b.y + 22}
+                      fill="rgba(244,236,214,0.85)"
+                      fontSize="22"
+                      fontFamily="ui-sans-serif, system-ui, sans-serif"
+                    >
+                      {Math.abs(line.value).toFixed(1)}°W
+                    </text>
+                  ) : null}
+                </g>
+              ))
+            : null}
           <path
             d={path}
             fill="none"
-            stroke="rgba(244,236,214,0.2)"
-            strokeWidth={3}
+            stroke="rgba(244,236,214,0.35)"
+            strokeWidth={2}
             strokeLinejoin="round"
           />
         </svg>
       </div>
+      {started && cursor ? (
+        <div className="pointer-events-none absolute bottom-24 left-3 z-20 hidden rounded-md bg-ink/70 px-2.5 py-1 font-mono text-[11px] tabular-nums text-cream backdrop-blur-md sm:block sm:bottom-28">
+          {cursor}
+        </div>
+      ) : null}
       {started
         ? visible.map((place) => {
             const p = project(place.lat, place.lon);

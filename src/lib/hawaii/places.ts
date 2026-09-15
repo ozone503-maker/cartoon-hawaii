@@ -115,7 +115,7 @@ export const PLACES: Place[] = [
     image: "/scenes/akaka.jpg",
     kicker: "A 442-foot plunge",
     story:
-      "A thin white ribbon through a rainforest amphitheater of ferns, bamboo, and ʻōhiʻa. The loop trail is short; the drop is not.",
+      "A thin white ribbon through a rainforest amphitheater of ferns, bamboo, and ʻōhiʻa. The falls sit inland on Kolekole Stream — the water reaches the Hāmākua coast miles below, not as a sea-cliff plunge.",
   },
   {
     id: "hilo",
@@ -140,7 +140,7 @@ export const PLACES: Place[] = [
     image: "/scenes/akaka.jpg",
     kicker: "Hilo’s backyard waterfall",
     story:
-      "The Wailuku River pours over a lava lip into a pool behind a cave. Morning sun turns the mist into the rainbow the Hawaiian name already promised.",
+      "The Wailuku River pours over a lava lip into a pool behind a cave, inland of Hilo town. Morning sun turns the mist into the rainbow the Hawaiian name already promised. The river meets the bay farther east — the falls do not.",
   },
   {
     id: "ito",

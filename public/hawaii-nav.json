@@ -9,14 +9,14 @@
     "lonMax": -154.806
   },
   "mapSize": {
-    "w": 1728,
-    "h": 1152
+    "w": 1118,
+    "h": 1280
   },
   "islandPx": {
-    "x": 328,
-    "y": 46,
-    "w": 1216,
-    "h": 1088
+    "x": 36,
+    "y": 36,
+    "w": 1046,
+    "h": 1208
   },
   "waypoints": [
     {
@@ -27,8 +27,8 @@
       "elevFt": 1800,
       "kind": "home",
       "region": "Puna",
-      "mapX": 1218.8,
-      "mapY": 629.8,
+      "mapX": 802.3,
+      "mapY": 684.2,
       "also": "Mountain View"
     },
     {
@@ -39,8 +39,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Kohala",
-      "mapX": 646.1,
-      "mapY": 97.1
+      "mapX": 309.6,
+      "mapY": 92.8
     },
     {
       "id": "hapuna",
@@ -50,8 +50,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Kohala",
-      "mapX": 557.6,
-      "mapY": 267.3
+      "mapX": 233.5,
+      "mapY": 281.7
     },
     {
       "id": "waimea",
@@ -61,8 +61,8 @@
       "elevFt": 2670,
       "kind": "place",
       "region": "Kohala",
-      "mapX": 705.6,
-      "mapY": 242.4,
+      "mapX": 360.8,
+      "mapY": 254.1,
       "also": "Kamuela"
     },
     {
@@ -73,8 +73,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "H\u0101m\u0101kua",
-      "mapX": 783.8,
-      "mapY": 165.8
+      "mapX": 428.1,
+      "mapY": 169.1
     },
     {
       "id": "honokaa",
@@ -84,8 +84,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "H\u0101m\u0101kua",
-      "mapX": 903.3,
-      "mapY": 197.2
+      "mapX": 530.8,
+      "mapY": 203.9
     },
     {
       "id": "akaka",
@@ -95,8 +95,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "H\u0101m\u0101kua",
-      "mapX": 1208.7,
-      "mapY": 378.0
+      "mapX": 793.5,
+      "mapY": 404.6
     },
     {
       "id": "hilo",
@@ -106,8 +106,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Hilo",
-      "mapX": 1277.0,
-      "mapY": 495.4
+      "mapX": 852.3,
+      "mapY": 535.0
     },
     {
       "id": "rainbow-falls",
@@ -117,8 +117,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Hilo",
-      "mapX": 1250.1,
-      "mapY": 485.8,
+      "mapX": 829.2,
+      "mapY": 524.3,
       "also": "Wai\u0101nuenue"
     },
     {
@@ -129,8 +129,8 @@
       "elevFt": 38,
       "kind": "airport",
       "region": "Hilo",
-      "mapX": 1309.1,
-      "mapY": 484.2,
+      "mapX": 879.9,
+      "mapY": 522.5,
       "also": "ITO / PHTO",
       "icao": "PHTO"
     },
@@ -142,8 +142,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Puna",
-      "mapX": 1403.7,
-      "mapY": 666.2
+      "mapX": 961.4,
+      "mapY": 724.6
     },
     {
       "id": "kumukahi",
@@ -153,8 +153,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Puna",
-      "mapX": 1544.0,
-      "mapY": 648.8
+      "mapX": 1082.0,
+      "mapY": 705.3
     },
     {
       "id": "kilauea",
@@ -164,8 +164,8 @@
       "elevFt": 4091,
       "kind": "place",
       "region": "Volcanoes",
-      "mapX": 1081.6,
-      "mapY": 736.3
+      "mapX": 684.2,
+      "mapY": 802.4
     },
     {
       "id": "mauna-loa",
@@ -175,8 +175,8 @@
       "elevFt": 13679,
       "kind": "place",
       "region": "Volcanoes",
-      "mapX": 767.1,
-      "mapY": 681.2
+      "mapX": 413.7,
+      "mapY": 741.3
     },
     {
       "id": "mauna-kea",
@@ -186,8 +186,8 @@
       "elevFt": 13796,
       "kind": "place",
       "region": "Volcanoes",
-      "mapX": 902.7,
-      "mapY": 404.6,
+      "mapX": 530.3,
+      "mapY": 434.1,
       "also": "Mauna a W\u0101kea"
     },
     {
@@ -198,8 +198,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Ka\u02bb\u016b",
-      "mapX": 867.5,
-      "mapY": 953.6
+      "mapX": 500.1,
+      "mapY": 1043.7
     },
     {
       "id": "papakolea",
@@ -209,8 +209,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Ka\u02bb\u016b",
-      "mapX": 730.0,
-      "mapY": 1113.5,
+      "mapX": 381.8,
+      "mapY": 1221.2,
       "also": "Green Sand Beach"
     },
     {
@@ -221,8 +221,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Ka\u02bb\u016b",
-      "mapX": 696.2,
-      "mapY": 1134.0,
+      "mapX": 352.7,
+      "mapY": 1244.0,
       "also": "South Point"
     },
     {
@@ -233,8 +233,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Kona",
-      "mapX": 474.1,
-      "mapY": 724.4
+      "mapX": 161.6,
+      "mapY": 789.3
     },
     {
       "id": "kealakekua",
@@ -244,8 +244,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Kona",
-      "mapX": 458.2,
-      "mapY": 678.8
+      "mapX": 148.0,
+      "mapY": 738.6
     },
     {
       "id": "kona",
@@ -255,8 +255,8 @@
       "elevFt": 0,
       "kind": "place",
       "region": "Kona",
-      "mapX": 390.5,
-      "mapY": 549.5
+      "mapX": 89.7,
+      "mapY": 595.1
     },
     {
       "id": "koa",
@@ -266,8 +266,8 @@
       "elevFt": 47,
       "kind": "airport",
       "region": "Kona",
-      "mapX": 343.3,
-      "mapY": 470.2,
+      "mapX": 49.2,
+      "mapY": 507.0,
       "also": "KOA / PHKO",
       "icao": "PHKO"
     },
@@ -279,8 +279,8 @@
       "elevFt": 8271,
       "kind": "place",
       "region": "Kona",
-      "mapX": 524.4,
-      "mapY": 511.8
+      "mapX": 205.0,
+      "mapY": 553.2
     },
     {
       "id": "mue",
@@ -290,8 +290,8 @@
       "elevFt": 2671,
       "kind": "airport",
       "region": "Kohala",
-      "mapX": 709.0,
-      "mapY": 259.8,
+      "mapX": 363.7,
+      "mapY": 273.4,
       "also": "MUE / PHMU",
       "icao": "PHMU"
     }
@@ -305,8 +305,8 @@
       "elevFt": 38,
       "kind": "airport",
       "region": "Hilo",
-      "mapX": 1309.1,
-      "mapY": 484.2,
+      "mapX": 879.9,
+      "mapY": 522.5,
       "also": "ITO / PHTO",
       "icao": "PHTO"
     },
@@ -318,8 +318,8 @@
       "elevFt": 47,
       "kind": "airport",
       "region": "Kona",
-      "mapX": 343.3,
-      "mapY": 470.2,
+      "mapX": 49.2,
+      "mapY": 507.0,
       "also": "KOA / PHKO",
       "icao": "PHKO"
     },
@@ -331,8 +331,8 @@
       "elevFt": 2671,
       "kind": "airport",
       "region": "Kohala",
-      "mapX": 709.0,
-      "mapY": 259.8,
+      "mapX": 363.7,
+      "mapY": 273.4,
       "also": "MUE / PHMU",
       "icao": "PHMU"
     }
@@ -345,8 +345,8 @@
     "elevFt": 1800,
     "kind": "home",
     "region": "Puna",
-    "mapX": 1218.8,
-    "mapY": 629.8,
+    "mapX": 802.3,
+    "mapY": 684.2,
     "also": "Mountain View"
   }
 }

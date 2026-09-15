@@ -19,12 +19,12 @@ export function StartScreen() {
           Cartoon Hawaiʻi
         </h1>
         <p className="mt-3 text-base leading-relaxed text-pretty text-ink/80">
-          The entire Big Island, restyled from a real USGS satellite map. Coastline
-          and volcanoes stay put. Home base is FlashTown in Mountain View.
+          The Big Island from a NASA Landsat frame — same coastline, same
+          volcanoes. Color-graded, not redrawn. The grid is real lat/lon.
         </p>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          Drag to wander. Pinch or scroll to zoom. Tap a pin to visit. Airports are
-          waypoints for later flight.
+          Waterfalls stay inland. ʻAkaka and Rainbow sit on their streams, not
+          painted onto the sea cliffs. Flip USGS to see the raw satellite.
         </p>
         <Button
           size="lg"

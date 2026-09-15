@@ -24,6 +24,8 @@ type HawaiiState = {
   stampsOpen: boolean;
   touring: boolean;
   tourIndex: number;
+  grid: boolean;
+  basemap: "atlas" | "usgs";
   start: () => void;
   select: (id: string | null) => void;
   visit: (id: string) => void;
@@ -32,6 +34,8 @@ type HawaiiState = {
   startTour: () => void;
   nextTourStop: () => void;
   stopTour: () => void;
+  toggleGrid: () => void;
+  setBasemap: (basemap: "atlas" | "usgs") => void;
 };
 
 export const useHawaii = create<HawaiiState>((set, get) => ({
@@ -42,6 +46,8 @@ export const useHawaii = create<HawaiiState>((set, get) => ({
   stampsOpen: false,
   touring: false,
   tourIndex: 0,
+  grid: true,
+  basemap: "atlas",
   start: () => {
     const visited = loadVisited();
     set({ started: true, visited });
@@ -80,4 +86,6 @@ export const useHawaii = create<HawaiiState>((set, get) => ({
     if (id) get().visit(id);
   },
   stopTour: () => set({ touring: false }),
+  toggleGrid: () => set((s) => ({ grid: !s.grid })),
+  setBasemap: (basemap) => set({ basemap }),
 }));

@@ -1,6 +1,6 @@
 # Cartoon Hawaiʻi
 
-Interactive cartoon map of **Hawaiʻi Island** (the Big Island), painted from a real USGS satellite so the coastline and volcanoes stay in place.
+The Big Island from a NASA Landsat frame so the coastline and volcanoes stay in place. Color-graded only — no invented waterfalls, extra islands, or redrawn geography. A lat/lon grid is locked to Upolu, Ka Lae, Keahole, and Kumukahi.
 
 Repo: [ozone503-maker/cartoon-hawaii](https://github.com/ozone503-maker/cartoon-hawaii)
 
@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints. Drag to pan, pinch/scroll to zoom, tap pins. **Enter at FlashTown** starts at home.
+Open the URL Vite prints. Drag to pan, pinch/scroll to zoom, tap pins. **Enter at FlashTown** starts at home. The grid button toggles lat/lon; the satellite button shows the raw NASA frame.
 
 ## FlashTown
 

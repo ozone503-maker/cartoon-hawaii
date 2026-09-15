@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Kaʻū-only height lock. Do not terrace the Kona / Hualālai shield.
+"""Kaʻū + South Kona heights.
 
-Punaluʻu = beach. Nāʻālehu = town upslope. West side stays a volcano slope,
-not a fake palis at the old 14 km clamp.
+Ocean View's long lava slope is the model for the whole west side down to
+Puʻuhonua. Cliffs belong at Ka Lae, not at the City of Refuge.
+Puʻuhonua is back-access: highway on the slope, sanctuary on the lava flat.
 """
 
 from __future__ import annotations
@@ -21,25 +22,24 @@ HEIGHT = ROOT / "public/maps/hawaii-height.png"
 GEO = dict(latMin=18.9108, latMax=20.268, lonMin=-156.0614, lonMax=-154.806)
 ISLAND_PX = dict(x=36, y=36, w=1046, h=1208)
 M_PER_PX = 150_000 / 1046
-KAU_LAT = 19.28  # south of this: Kaʻū terrace only
+KAU_LAT = 19.28
 
+# Surveyed pins. Captain Cook is the highway town, not the bay.
 CONTROLS = [
-    (19.1358, -155.5044, 8, 2.2),
-    (19.062, -155.588, 200, 3.0),
-    (19.202, -155.47, 280, 2.6),
-    (18.9108, -155.6813, 12, 2.4),
-    (18.9364, -155.6464, 18, 1.6),
-    (19.6399, -155.9969, 8, 2.8),  # Kailua-Kona waterfront
+    (19.1358, -155.5044, 8, 2.2),  # Punaluʻu
+    (19.062, -155.588, 200, 3.0),  # Nāʻālehu
+    (19.202, -155.47, 280, 2.6),  # Pāhala
+    (18.9108, -155.6813, 12, 2.4),  # Ka Lae
+    (18.9364, -155.6464, 18, 1.6),  # Papakōlea
+    (19.6399, -155.9969, 8, 2.8),  # Kona waterfront
     (19.7388, -156.0456, 14, 2.4),  # KOA
-    (19.4217, -155.9106, 6, 1.8),  # Puʻuhonua shore
     (19.102, -155.767, 640, 3.2),  # Ocean View
-    (19.20, -155.84, 380, 2.6),  # Hwy 11
-    (19.30, -155.88, 290, 2.8),  # Hwy 11 — kills the fake 1300 m wall
-    (19.38, -155.90, 240, 2.4),
-    (19.43, -155.88, 380, 2.2),  # coffee-belt above the refuge
-    (19.499, -155.921, 430, 2.4),  # Captain Cook
-    (19.4786, -155.927, 6, 1.5),  # Kealakekua Bay
-    (19.186, -155.908, 8, 1.6),  # Miloliʻi
+    (19.20, -155.84, 420, 2.8),  # Hwy 11
+    (19.30, -155.88, 360, 2.6),
+    (19.38, -155.89, 340, 2.4),
+    (19.498, -155.904, 350, 2.2),  # Captain Cook on Mamalahoa
+    (19.4217, -155.9106, 8, 1.0),  # Puʻuhonua lava flat only
+    (19.186, -155.908, 8, 1.4),  # Miloliʻi
 ]
 
 
@@ -122,9 +122,17 @@ def main() -> None:
 
     h, w = meters.shape
     lat = np.linspace(GEO["latMax"], GEO["latMin"], h)[:, None]
+    lon = np.linspace(GEO["lonMin"], GEO["lonMax"], w)[None, :]
+
+    # Kaʻū south of 19.28: keep Punaluʻu / Nāʻālehu terrace.
     kau = (lat < KAU_LAT) & ~ocean
-    cap = 8.0 + dist_km * 36.0
-    meters = np.where(kau & (dist_km < 12.0), np.minimum(meters, cap), meters)
+    meters = np.where(kau & (dist_km < 12.0), np.minimum(meters, 8.0 + dist_km * 36.0), meters)
+
+    # West side Ocean View → Puʻuhonua: SAME long lava slope, not a palis.
+    # ~52 m/km matches Ocean View (640 m / ~12 km). City of Refuge sits at the bottom.
+    west = (lon < -155.78) & (lat > 19.04) & (lat < 19.58) & ~ocean
+    target = 8.0 + dist_km * 52.0
+    meters = np.where(west, np.minimum(meters, target), meters)
 
     yy, xx = np.indices(meters.shape)
     for clat, clon, elev, radius_km in CONTROLS:
@@ -134,23 +142,28 @@ def main() -> None:
         wt = np.where(dkm < radius_km * 2.2, wt, 0)
         meters = meters * (1 - wt) + elev * wt
 
+    # Re-apply the west slope AFTER pins so Captain Cook cannot rebuild a cliff.
+    meters = np.where(west, np.minimum(meters, target), meters)
+
     meters[ocean] = 0
     meters = np.clip(meters, 0, 4205)
-    out = np.round(meters / 4205.0 * 255.0).astype(np.uint8)
-    Image.fromarray(out, mode="L").save(HEIGHT)
+    Image.fromarray(np.round(meters / 4205.0 * 255.0).astype(np.uint8), mode="L").save(HEIGHT)
 
-    print(f"{'place':20} {'after':>8} {'real':>8}")
-    for name, clat, clon, real in [
-        ("Punaluu", 19.1358, -155.5044, 8),
-        ("Naalehu", 19.062, -155.588, 200),
-        ("Ka Lae", 18.9108, -155.6813, 12),
-        ("Kona", 19.6399, -155.9969, 5),
-        ("Hualalai", 19.6869, -155.8586, 2521),
-        ("Ocean View", 19.102, -155.767, 640),
-        ("Mauna Kea", 19.8207, -155.4681, 4205),
+    print(f"{'place':22} {'m':>7} {'dist':>6}")
+    for name, clat, clon in [
+        ("Ocean View", 19.102, -155.767),
+        ("Hi11 19.30", 19.30, -155.88),
+        ("Captain Cook hwy", 19.498, -155.904),
+        ("upslope refuge", 19.43, -155.88),
+        ("Puuhonua", 19.4217, -155.9106),
+        ("Kealakekua", 19.4786, -155.927),
+        ("Ka Lae", 18.9108, -155.6813),
+        ("Hualalai", 19.6869, -155.8586),
+        ("Mauna Loa", 19.4756, -155.6081),
     ]:
         px, py = project(clat, clon)
-        print(f"{name:20} {meters[int(round(py)), int(round(px))]:8.0f} {real:8.0f}")
+        yi, xi = int(round(py)), int(round(px))
+        print(f"{name:22} {meters[yi, xi]:7.0f} {dist_km[yi, xi]:6.1f}")
 
 
 if __name__ == "__main__":

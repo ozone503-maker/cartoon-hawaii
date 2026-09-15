@@ -281,9 +281,9 @@ export const PLACES: Place[] = [
     kind: "place",
     region: "Kona",
     image: "/scenes/puuhonua.jpg",
-    kicker: "Place of refuge",
+    kicker: "Place of refuge, back access",
     story:
-      "A walled sanctuary on a lava shore. In the old kapu system, reaching this ground meant the chase ended. Kiʻi still watch the cove.",
+      "A walled sanctuary on a lava shore at the bottom of the South Kona slope. You come in from the highway above — back access, not a sea cliff. In the old kapu system, reaching this ground meant the chase ended. Kiʻi still watch the cove.",
   },
   {
     id: "kealakekua",
@@ -381,8 +381,8 @@ export const PLACES: Place[] = [
   {
     id: "captain-cook",
     name: "Captain Cook",
-    lat: 19.499,
-    lon: -155.921,
+    lat: 19.498,
+    lon: -155.904,
     kind: "place",
     region: "Kona",
     image: "/scenes/kona.jpg",

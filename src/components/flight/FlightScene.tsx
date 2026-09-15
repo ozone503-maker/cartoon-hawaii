@@ -67,6 +67,7 @@ function Pads() {
 function Scene() {
   const craft = useMemo(() => spawnCraft(), []);
   const ready = useHawaii((s) => s.heightReady);
+  const [rest, setRest] = useState(false);
 
   useEffect(() => {
     attachControlsProbe(
@@ -80,15 +81,21 @@ function Scene() {
     if (ready) snapToGround(craft);
   }, [ready, craft]);
 
+  useEffect(() => {
+    if (!ready) return;
+    const id = window.setTimeout(() => setRest(true), 450);
+    return () => window.clearTimeout(id);
+  }, [ready]);
+
   return (
     <>
       <color attach="background" args={["#7ec8ee"]} />
       <fog attach="fog" args={["#c5e6f6", 48, 190]} />
       <hemisphereLight args={["#fff8ee", "#7ec8a8", 1.05]} />
       <directionalLight position={[60, 80, 28]} intensity={1.85} color="#fff4d0" />
-      {ready ? (
+      {ready ? <Island /> : null}
+      {rest ? (
         <>
-          <Island />
           <Forest craft={craft} />
           <PunaGrove />
           <Roads />
@@ -137,21 +144,10 @@ export function FlightCanvas() {
   }, [setHeightReady]);
 
   useLayoutEffect(() => {
-    const fit = () => {
-      setBox({
-        w: Math.max(2, window.innerWidth || document.documentElement.clientWidth || 390),
-        h: Math.max(2, window.innerHeight || document.documentElement.clientHeight || 844),
-      });
-    };
-    fit();
-    window.addEventListener("resize", fit);
-    window.addEventListener("orientationchange", fit);
-    const again = window.setTimeout(fit, 250);
-    return () => {
-      window.removeEventListener("resize", fit);
-      window.removeEventListener("orientationchange", fit);
-      window.clearTimeout(again);
-    };
+    setBox({
+      w: Math.max(2, window.innerWidth || document.documentElement.clientWidth || 390),
+      h: Math.max(2, window.innerHeight || document.documentElement.clientHeight || 844),
+    });
   }, []);
 
   if (!started || box.w < 2) return null;
@@ -167,6 +163,10 @@ export function FlightCanvas() {
         gl={{ antialias: false, alpha: false, powerPreference: "default", failIfMajorPerformanceCaveat: false }}
         onCreated={({ gl }) => {
           gl.setClearColor(0x7ec8ee, 1);
+          const lost = (e: Event) => {
+            e.preventDefault();
+          };
+          gl.domElement.addEventListener("webglcontextlost", lost, false);
         }}
       >
         <Scene />

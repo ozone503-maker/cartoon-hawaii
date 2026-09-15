@@ -9,14 +9,14 @@ export function Island() {
     const loader = new TextureLoader();
     const t = loader.load("/maps/hawaii-cartoon.jpg?v=atlas3", (tex) => {
       tex.colorSpace = SRGBColorSpace;
-      tex.anisotropy = 8;
+      tex.anisotropy = 1;
       setMap(tex);
     });
     return () => t.dispose();
   }, []);
 
   const geometry = useMemo(() => {
-    const g = new PlaneGeometry(WORLD.w, WORLD.d, 180, 206);
+    const g = new PlaneGeometry(WORLD.w, WORLD.d, 96, 110);
     g.rotateX(-Math.PI / 2);
     const pos = g.attributes.position!;
     for (let i = 0; i < pos.count; i++) {

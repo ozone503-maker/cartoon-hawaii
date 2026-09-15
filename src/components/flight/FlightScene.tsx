@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { createRoot, events, unmountComponentAtNode, useFrame } from "@react-three/fiber";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Island } from "./Island";
 import { Craft } from "./Craft";
 import { Forest } from "./Forest";
@@ -16,7 +16,6 @@ import { KauCoast } from "./KauCoast";
 import { Rivers } from "./Rivers";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
-import { createFlightRenderer } from "@/lib/flight/gl";
 import { latLonToWorld, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE } from "@/lib/hawaii/world";
 import { HOME_ID, PLACES, placeById } from "@/lib/hawaii/places";
 import { useHawaii } from "@/lib/hawaii/store";
@@ -114,7 +113,7 @@ function Scene() {
 export function FlightCanvas() {
   const started = useHawaii((s) => s.started);
   const setHeightReady = useHawaii((s) => s.setHeightReady);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [box, setBox] = useState({ w: 0, h: 0 });
 
   useEffect(() => {
     const unbind = bindKeyboard();
@@ -138,41 +137,40 @@ export function FlightCanvas() {
   }, [setHeightReady]);
 
   useLayoutEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !started) return;
-    const root = createRoot(canvas);
     const fit = () => {
-      const width = Math.max(320, window.innerWidth || 390);
-      const height = Math.max(480, window.innerHeight || 844);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      void root.configure({
-        events,
-        dpr: 1,
-        frameloop: "always",
-        size: { width, height, top: 0, left: 0 },
-        camera: { fov: 48, near: 0.12, far: 520, position: [0, 8, 12] },
-        gl: createFlightRenderer as never,
+      setBox({
+        w: Math.max(2, window.innerWidth || document.documentElement.clientWidth || 390),
+        h: Math.max(2, window.innerHeight || document.documentElement.clientHeight || 844),
       });
     };
     fit();
-    root.render(<Scene />);
     window.addEventListener("resize", fit);
-    const poll = window.setInterval(fit, 1000);
+    window.addEventListener("orientationchange", fit);
+    const again = window.setTimeout(fit, 250);
     return () => {
       window.removeEventListener("resize", fit);
-      window.clearInterval(poll);
-      unmountComponentAtNode(canvas);
+      window.removeEventListener("orientationchange", fit);
+      window.clearTimeout(again);
     };
-  }, [started]);
+  }, []);
 
-  if (!started) return null;
+  if (!started || box.w < 2) return null;
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 z-0 block"
-      style={{ width: "100vw", height: "100dvh", background: "#7ec8ee", touchAction: "none" }}
-    />
+    <div className="fixed inset-0 z-0" style={{ width: box.w, height: box.h }}>
+      <Canvas
+        style={{ width: box.w, height: box.h, display: "block", background: "#7ec8ee" }}
+        resize={{ scroll: false, debounce: 0 }}
+        dpr={1}
+        frameloop="always"
+        camera={{ fov: 48, near: 0.12, far: 520, position: [0, 8, 12] }}
+        gl={{ antialias: false, alpha: false, powerPreference: "default", failIfMajorPerformanceCaveat: false }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x7ec8ee, 1);
+        }}
+      >
+        <Scene />
+      </Canvas>
+    </div>
   );
 }

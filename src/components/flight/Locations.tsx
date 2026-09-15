@@ -15,14 +15,11 @@ export function Locations() {
       ))}
       <Falls lat={19.8539} lon={-155.1522} h={2.4} />
       <Falls lat={19.7194} lon={-155.1094} h={1.35} />
-      <Sand lat={19.1358} lon={-155.5044} color="#1a1a1c" rx={0.85} rz={0.4} />
       <Sand lat={19.9919} lon={-155.8244} color="#f3ead2" rx={0.7} rz={0.32} />
-      <Sand lat={18.9364} lon={-155.6464} color="#6a8a48" rx={0.45} rz={0.28} />
       <Taro lat={20.1185} lon={-155.5908} />
       <Pier lat={19.6399} lon={-155.9969} heading={250} />
       <Pier lat={19.73} lon={-155.06} heading={20} />
       <Wall lat={19.4217} lon={-155.9106} />
-      <Point lat={18.9108} lon={-155.6813} />
       {PLACES.filter((p) => p.kind !== "home").map((p) => (
         <PlaceLabel key={p.id} lat={p.lat} lon={p.lon} name={p.name} />
       ))}
@@ -123,17 +120,6 @@ function Wall({ lat, lon }: { lat: number; lon: number }) {
     <mesh position={[x, y + 0.12, z]} rotation={[-Math.PI / 2, 0, 0]}>
       <ringGeometry args={[0.35, 0.48, 16, 1, 0, Math.PI * 1.2]} />
       <meshStandardMaterial color="#6a5a48" roughness={0.95} />
-    </mesh>
-  );
-}
-
-function Point({ lat, lon }: { lat: number; lon: number }) {
-  const { x, z } = latLonToWorld(lat, lon);
-  const y = terrainY(x, z);
-  return (
-    <mesh position={[x, y + 0.35, z]}>
-      <cylinderGeometry args={[0.06, 0.08, 0.7, 6]} />
-      <meshStandardMaterial color="#c45c4a" roughness={0.5} />
     </mesh>
   );
 }

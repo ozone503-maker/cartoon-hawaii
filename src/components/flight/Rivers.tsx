@@ -1,13 +1,13 @@
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { InstancedMesh, Object3D, Vector3 } from "three";
-import { RIVERS } from "@/lib/hawaii/rivers";
+import { RIVERS, type Fall } from "@/lib/hawaii/rivers";
 import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
 import { Waterfall } from "./Waterfalls";
 
 const WATER = "#3aaed4";
 const dummy = new Object3D();
 
-function drape(pts: [number, number][]) {
+function drape(pts: [number, number][], falls: Fall[]) {
   const out: Vector3[] = [];
   for (let i = 0; i < pts.length - 1; i++) {
     const a = latLonToWorld(pts[i]![0], pts[i]![1]);
@@ -24,6 +24,24 @@ function drape(pts: [number, number][]) {
   const last = pts[pts.length - 1]!;
   const end = latLonToWorld(last[0], last[1]);
   out.push(new Vector3(end.x, terrainY(end.x, end.z) + 0.08, end.z));
+
+  for (const f of falls) {
+    const fp = latLonToWorld(f.lat, f.lon);
+    let best = 0;
+    let d = Infinity;
+    out.forEach((p, i) => {
+      const dd = (p.x - fp.x) ** 2 + (p.z - fp.z) ** 2;
+      if (dd < d) {
+        d = dd;
+        best = i;
+      }
+    });
+    const drop = Math.max(f.h, 0.85);
+    const span = 5;
+    for (let i = 0; i <= span && best + i < out.length; i++) {
+      out[best + i]!.y -= (i / span) * drop;
+    }
+  }
   return out;
 }
 
@@ -33,7 +51,7 @@ export function Rivers() {
       id: r.id,
       w: r.w,
       falls: r.falls,
-      points: drape(r.pts),
+      points: drape(r.pts, r.falls),
     }));
   }, []);
 

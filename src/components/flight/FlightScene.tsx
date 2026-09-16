@@ -24,7 +24,7 @@ import { useHawaii } from "@/lib/hawaii/store";
 function chaseStart(c: CraftState) {
   const fx = -Math.sin(c.yaw);
   const fz = -Math.cos(c.yaw);
-  const dist = UFO_LENGTH * 1.5;
+  const dist = UFO_LENGTH * 2.1;
   const height = dist * Math.tan((23 * Math.PI) / 180);
   return {
     cam: [c.x - fx * dist, c.y + height, c.z - fz * dist] as [number, number, number],
@@ -105,13 +105,13 @@ function Scene() {
       <directionalLight position={[60, 80, 28]} intensity={1.85} color="#fff4d0" />
       {ready ? <Island /> : null}
       <FlashTown />
+      <PunaGrove />
       <Craft craft={craft} />
       <ChaseCam craft={craft} />
       <Sim craft={craft} />
       {rest ? (
         <>
           <Forest craft={craft} />
-          <PunaGrove />
           <Roads />
           <Rivers />
           <Settlements />

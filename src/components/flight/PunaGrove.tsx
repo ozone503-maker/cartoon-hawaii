@@ -2,7 +2,6 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 import { Color, InstancedMesh, Object3D } from "three";
 import { CLEARING_R, flashtownWorld, mountainViewWorld } from "@/lib/hawaii/puna";
 import { isCanopy, terrainY } from "@/lib/hawaii/world";
-import { toonRamp } from "@/lib/hawaii/toon";
 
 const dummy = new Object3D();
 const MAX = 520;
@@ -58,7 +57,6 @@ export function PunaGrove() {
     () => [new Color("#1a8a38"), new Color("#2dad48"), new Color("#3fbf55"), new Color("#58c96a")],
     [],
   );
-  const ramp = useMemo(() => toonRamp(), []);
 
   useLayoutEffect(() => {
     const c = canopy.current;
@@ -101,11 +99,11 @@ export function PunaGrove() {
     <group>
       <instancedMesh ref={canopy} args={[undefined, undefined, MAX]} frustumCulled={false}>
         <sphereGeometry args={[0.55, 10, 8]} />
-        <meshToonMaterial gradientMap={ramp} />
+        <meshStandardMaterial vertexColors roughness={0.72} />
       </instancedMesh>
       <instancedMesh ref={trunk} args={[undefined, undefined, MAX]} frustumCulled={false}>
         <cylinderGeometry args={[1, 1.15, 1, 6]} />
-        <meshToonMaterial color="#6a3e24" gradientMap={ramp} />
+        <meshStandardMaterial color="#6a3e24" roughness={0.85} />
       </instancedMesh>
     </group>
   );

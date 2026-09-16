@@ -7,7 +7,6 @@ import { inFlashTownClearing } from "@/lib/hawaii/puna";
 import { inMaunaKeaSummit } from "@/lib/hawaii/maunakea";
 import { inOpenCoast } from "@/lib/hawaii/coast";
 import { inRiver } from "@/lib/hawaii/rivers";
-import { toonRamp } from "@/lib/hawaii/toon";
 
 const CELL = 1.2;
 const RADIUS = 22;
@@ -33,7 +32,6 @@ export function Forest({ craft }: { craft: CraftState }) {
     () => [new Color("#1a8a38"), new Color("#2dad48"), new Color("#3fbf55"), new Color("#58c96a")],
     [],
   );
-  const ramp = useMemo(() => toonRamp(), []);
 
   useLayoutEffect(() => {
     return () => {
@@ -105,11 +103,11 @@ export function Forest({ craft }: { craft: CraftState }) {
     <group>
       <instancedMesh ref={canopy} args={[undefined, undefined, MAX]} frustumCulled={false}>
         <sphereGeometry args={[0.55, 10, 8]} />
-        <meshToonMaterial gradientMap={ramp} />
+        <meshStandardMaterial vertexColors roughness={0.72} />
       </instancedMesh>
       <instancedMesh ref={trunk} args={[undefined, undefined, MAX]} frustumCulled={false}>
         <cylinderGeometry args={[1, 1.15, 1, 6]} />
-        <meshToonMaterial color="#6a3e24" gradientMap={ramp} />
+        <meshStandardMaterial color="#6a3e24" roughness={0.85} />
       </instancedMesh>
     </group>
   );

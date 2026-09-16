@@ -9,7 +9,7 @@ const _desired = new Vector3();
 const _look = new Vector3();
 
 /** Locked chase — 1½ lengths back, 23° down, always behind MDP. */
-const LEN = 1.5;
+const LEN = 2.1;
 const DEG = 23;
 
 export function ChaseCam({ craft }: { craft: CraftState }) {

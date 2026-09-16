@@ -3,7 +3,6 @@ import { Color, InstancedMesh, Object3D } from "three";
 import { MAP_SIZE } from "@/lib/hawaii/geo";
 import { TOWNS } from "@/lib/hawaii/highways";
 import { latLonToWorld, terrainY, WORLD } from "@/lib/hawaii/world";
-import { toonRamp } from "@/lib/hawaii/toon";
 
 const dummy = new Object3D();
 const PX = WORLD.w / MAP_SIZE.w;
@@ -68,7 +67,6 @@ export function Settlements() {
   const roofs = useRef<InstancedMesh>(null);
   const buildings = useMemo(() => layout(), []);
   const colors = useMemo(() => buildings.map((b) => new Color(b.color)), [buildings]);
-  const ramp = useMemo(() => toonRamp(), []);
 
   useLayoutEffect(() => {
     const inst = mesh.current;
@@ -103,11 +101,11 @@ export function Settlements() {
     <group>
       <instancedMesh ref={mesh} args={[undefined, undefined, buildings.length]}>
         <cylinderGeometry args={[0.55, 0.62, 1, 8]} />
-        <meshToonMaterial gradientMap={ramp} />
+        <meshStandardMaterial vertexColors roughness={0.8} />
       </instancedMesh>
       <instancedMesh ref={roofs} args={[undefined, undefined, buildings.length]}>
         <coneGeometry args={[1, 1, 8]} />
-        <meshToonMaterial color="#c45c4a" gradientMap={ramp} />
+        <meshStandardMaterial color="#c45c4a" roughness={0.7} />
       </instancedMesh>
     </group>
   );

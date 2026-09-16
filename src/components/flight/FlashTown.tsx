@@ -138,7 +138,7 @@ function LotTrees() {
           </mesh>
           <mesh position={[0, s * 0.95, 0]}>
             <sphereGeometry args={[s * 0.55, 10, 8]} />
-            <meshToonMaterial color={i % 2 ? "#2dad48" : "#3fbf55"} />
+            <meshStandardMaterial color={i % 2 ? "#2dad48" : "#3fbf55"} roughness={0.7} />
           </mesh>
         </group>
       ))}

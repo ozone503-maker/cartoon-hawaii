@@ -4,8 +4,10 @@ import type { Group } from "three";
 import type { CraftState } from "@/lib/flight/craft";
 import { UFO_LENGTH, terrainY } from "@/lib/hawaii/world";
 
-const SKIN = "#6aa8c8";
-const SKIN_DEEP = "#5a96b6";
+const SKIN = "#f2ead8";
+const HELMET = "#efe6d2";
+const VISOR = "#1c2a38";
+const ACCENT = "#d76a4d";
 
 /**
  * MDP faces local −Z (flight forward). The chase cam sits on local +Z,
@@ -149,52 +151,54 @@ function Leg({ x, z }: { x: number; z: number }) {
 
 function Mdp() {
   return (
-    <group position={[0, 0.26, 0.1]} renderOrder={2}>
-      <mesh position={[0, 0.2, 0.08]} scale={[1.05, 0.95, 0.85]}>
-        <sphereGeometry args={[0.17, 16, 14]} />
-        <meshStandardMaterial color={SKIN} roughness={0.5} />
+    <group position={[0, 0.22, 0.08]} renderOrder={2}>
+      <mesh position={[0, 0.18, 0.02]}>
+        <cylinderGeometry args={[0.13, 0.16, 0.28, 12]} />
+        <meshStandardMaterial color={SKIN} roughness={0.55} />
       </mesh>
-      <mesh position={[0, 0.4, 0.06]}>
-        <cylinderGeometry args={[0.04, 0.055, 0.18, 10]} />
-        <meshStandardMaterial color={SKIN} roughness={0.5} />
+      <mesh position={[0, 0.34, 0.02]}>
+        <sphereGeometry args={[0.15, 16, 12]} />
+        <meshStandardMaterial color={HELMET} roughness={0.38} metalness={0.12} />
       </mesh>
-      {/* Bulbous cranium — the camera-facing (+Z) mass hides the face */}
-      <mesh position={[0, 0.64, 0.08]} scale={[0.95, 1.22, 1.12]}>
-        <sphereGeometry args={[0.24, 22, 18]} />
-        <meshStandardMaterial color={SKIN_DEEP} roughness={0.44} />
+      <mesh position={[0, 0.42, 0.02]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.145, 0.028, 8, 20]} />
+        <meshStandardMaterial color={ACCENT} roughness={0.4} />
       </mesh>
-      <mesh position={[-0.2, 0.6, 0.08]} scale={[0.42, 0.65, 0.5]}>
-        <sphereGeometry args={[0.11, 10, 8]} />
-        <meshStandardMaterial color={SKIN} roughness={0.48} />
+      <mesh position={[0, 0.36, -0.09]} rotation={[0.15, 0, 0]}>
+        <boxGeometry args={[0.22, 0.1, 0.04]} />
+        <meshStandardMaterial color={VISOR} roughness={0.2} metalness={0.35} />
       </mesh>
-      <mesh position={[0.2, 0.6, 0.08]} scale={[0.42, 0.65, 0.5]}>
-        <sphereGeometry args={[0.11, 10, 8]} />
-        <meshStandardMaterial color={SKIN} roughness={0.48} />
+      <mesh position={[0, 0.58, 0.02]}>
+        <cylinderGeometry args={[0.012, 0.018, 0.16, 8]} />
+        <meshStandardMaterial color="#c8c0b4" metalness={0.4} roughness={0.35} />
       </mesh>
-      {/* Face lives on −Z, away from the chase cam */}
-      <mesh position={[-0.09, 0.58, -0.18]} rotation={[0.2, 0.4, 0.15]} scale={[1.2, 0.7, 0.4]}>
-        <sphereGeometry args={[0.075, 12, 10]} />
-        <meshStandardMaterial color="#0b0d10" roughness={0.22} />
+      <mesh position={[0, 0.68, 0.02]}>
+        <sphereGeometry args={[0.035, 10, 8]} />
+        <meshStandardMaterial color={ACCENT} emissive={ACCENT} emissiveIntensity={0.7} />
       </mesh>
-      <mesh position={[0.09, 0.58, -0.18]} rotation={[0.2, -0.4, -0.15]} scale={[1.2, 0.7, 0.4]}>
-        <sphereGeometry args={[0.075, 12, 10]} />
-        <meshStandardMaterial color="#0b0d10" roughness={0.22} />
+      <mesh position={[-0.16, 0.34, 0.02]}>
+        <sphereGeometry args={[0.045, 10, 8]} />
+        <meshStandardMaterial color={HELMET} roughness={0.4} />
       </mesh>
-      <mesh position={[-0.16, 0.26, 0.04]} rotation={[0.85, 0, 0.35]}>
-        <cylinderGeometry args={[0.03, 0.038, 0.34, 8]} />
-        <meshStandardMaterial color={SKIN} roughness={0.5} />
+      <mesh position={[0.16, 0.34, 0.02]}>
+        <sphereGeometry args={[0.045, 10, 8]} />
+        <meshStandardMaterial color={HELMET} roughness={0.4} />
       </mesh>
-      <mesh position={[0.16, 0.26, 0.04]} rotation={[0.85, 0, -0.35]}>
-        <cylinderGeometry args={[0.03, 0.038, 0.34, 8]} />
-        <meshStandardMaterial color={SKIN} roughness={0.5} />
+      <mesh position={[-0.18, 0.12, 0.02]} rotation={[0.9, 0, 0.4]}>
+        <cylinderGeometry args={[0.025, 0.03, 0.28, 8]} />
+        <meshStandardMaterial color={SKIN} roughness={0.55} />
       </mesh>
-      <mesh position={[-0.2, 0.28, -0.3]}>
-        <sphereGeometry args={[0.04, 10, 8]} />
-        <meshStandardMaterial color={SKIN} roughness={0.5} />
+      <mesh position={[0.18, 0.12, 0.02]} rotation={[0.9, 0, -0.4]}>
+        <cylinderGeometry args={[0.025, 0.03, 0.28, 8]} />
+        <meshStandardMaterial color={SKIN} roughness={0.55} />
       </mesh>
-      <mesh position={[0.2, 0.28, -0.3]}>
-        <sphereGeometry args={[0.04, 10, 8]} />
-        <meshStandardMaterial color={SKIN} roughness={0.5} />
+      <mesh position={[-0.2, 0.16, -0.22]}>
+        <sphereGeometry args={[0.035, 8, 8]} />
+        <meshStandardMaterial color={SKIN} roughness={0.55} />
+      </mesh>
+      <mesh position={[0.2, 0.16, -0.22]}>
+        <sphereGeometry args={[0.035, 8, 8]} />
+        <meshStandardMaterial color={SKIN} roughness={0.55} />
       </mesh>
     </group>
   );

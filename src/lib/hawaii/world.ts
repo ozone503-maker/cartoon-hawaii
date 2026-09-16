@@ -69,11 +69,17 @@ export async function loadHeightmap() {
     hw = h.w;
     hh = h.h;
   }
-  if (!colorPx) {
+}
+
+export async function loadAlbedo() {
+  if (colorPx) return;
+  try {
     const c = await decodePixels("/maps/hawaii-usgs.jpg");
     colorPx = c.data;
     cw = c.w;
     ch = c.h;
+  } catch {
+    /* forest uses a height-only fallback */
   }
 }
 
@@ -113,7 +119,8 @@ export function sampleAlbedo(x: number, z: number): { r: number; g: number; b: n
 /** True where the Landsat pixel is vegetation on land — no invented forests. */
 export function isCanopy(x: number, z: number): boolean {
   const h = terrainY(x, z);
-  if (h < 0.22) return false;
+  if (h < 0.22 || h > 9) return false;
+  if (!colorPx) return h < 6.5;
   const { r, g, b } = sampleAlbedo(x, z);
   if (g < 48 || r > 210) return false;
   return g > r + 6 && g >= b - 4 && 2 * g - r - b > 10;

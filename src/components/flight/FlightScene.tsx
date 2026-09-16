@@ -17,7 +17,7 @@ import { KauCoast } from "./KauCoast";
 import { Rivers } from "./Rivers";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
-import { latLonToWorld, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE, UFO_LENGTH } from "@/lib/hawaii/world";
+import { latLonToWorld, loadAlbedo, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE, UFO_LENGTH, WORLD } from "@/lib/hawaii/world";
 import { HOME_ID, PLACES, placeById } from "@/lib/hawaii/places";
 import { useHawaii } from "@/lib/hawaii/store";
 
@@ -95,15 +95,27 @@ function Scene() {
 
   useEffect(() => {
     if (!ready) return;
-    const id = window.setTimeout(() => setRest(true), 450);
+    const id = window.setTimeout(() => setRest(true), 500);
     return () => window.clearTimeout(id);
   }, [ready]);
 
   return (
     <>
+      <color attach="background" args={["#7ec8ee"]} />
       <hemisphereLight args={["#fff8ee", "#7ec8a8", 1.05]} />
       <directionalLight position={[60, 80, 28]} intensity={1.85} color="#fff4d0" />
-      {ready ? <Island /> : null}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.35, 0]}>
+        <planeGeometry args={[WORLD.w * 4, WORLD.d * 4]} />
+        <meshBasicMaterial color="#1a8ab8" />
+      </mesh>
+      {ready ? (
+        <Island />
+      ) : (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+          <planeGeometry args={[WORLD.w, WORLD.d]} />
+          <meshBasicMaterial color="#3d8a4a" />
+        </mesh>
+      )}
       <FlashTown />
       <PunaGrove />
       <Craft craft={craft} />
@@ -127,6 +139,19 @@ function Scene() {
   );
 }
 
+async function waitSize(el: HTMLCanvasElement) {
+  for (let i = 0; i < 45; i++) {
+    const w = el.clientWidth;
+    const h = el.clientHeight;
+    if (w > 16 && h > 16) return { w, h };
+    await new Promise<void>((r) => requestAnimationFrame(() => r()));
+  }
+  return {
+    w: Math.max(320, window.innerWidth || 390),
+    h: Math.max(480, window.innerHeight || 844),
+  };
+}
+
 export function FlightCanvas() {
   const started = useHawaii((s) => s.started);
   const setHeightReady = useHawaii((s) => s.setHeightReady);
@@ -140,13 +165,14 @@ export function FlightCanvas() {
       done = true;
       setHeightReady(true);
     };
-    const t = window.setTimeout(ok, 1800);
+    const t = window.setTimeout(ok, 2500);
     loadHeightmap()
       .then(() => {
         const home = placeById(HOME_ID)!;
         const w = latLonToWorld(home.lat, home.lon);
         terrainY(w.x, w.z);
         ok();
+        void loadAlbedo();
       })
       .catch(ok)
       .finally(() => window.clearTimeout(t));
@@ -157,17 +183,14 @@ export function FlightCanvas() {
     const canvas = canvasRef.current;
     if (!canvas || !started) return;
     let dead = false;
+    let root: ReturnType<typeof createRoot> | null = null;
 
     const boot = async () => {
       extend(THREE as never);
-      const w = Math.max(320, window.innerWidth || 390);
-      const h = Math.max(480, window.innerHeight || 844);
-      canvas.width = w;
-      canvas.height = h;
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
+      const { w, h } = await waitSize(canvas);
+      if (dead) return;
       const look = chaseStart(spawnCraft());
-      const root = createRoot(canvas);
+      root = createRoot(canvas);
       await root.configure({
         events,
         dpr: 1,
@@ -176,7 +199,7 @@ export function FlightCanvas() {
         camera: { fov: 48, near: 0.12, far: 520, position: look.cam },
         gl: {
           antialias: false,
-          alpha: true,
+          alpha: false,
           powerPreference: "default",
           failIfMajorPerformanceCaveat: false,
         },
@@ -197,7 +220,7 @@ export function FlightCanvas() {
     void boot();
     return () => {
       dead = true;
-      unmountComponentAtNode(canvas);
+      if (root) unmountComponentAtNode(canvas);
     };
   }, [started]);
 
@@ -206,8 +229,8 @@ export function FlightCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 z-0 block"
-      style={{ width: "100%", height: "100%", background: "#7ec8ee", touchAction: "none" }}
+      className="absolute inset-0 z-0 block h-full w-full"
+      style={{ background: "#3d8a4a", touchAction: "none" }}
     />
   );
 }

@@ -4,8 +4,6 @@ import { RIVERS } from "@/lib/hawaii/rivers";
 import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
 import { Waterfall } from "./Waterfalls";
 
-const WATER = "#2f9fc4";
-
 function drape(pts: [number, number][]) {
   const out: Vector3[] = [];
   for (let i = 0; i < pts.length - 1; i++) {
@@ -42,9 +40,9 @@ export function Rivers() {
     <group>
       {paths.map((p) => (
         <group key={p.id}>
-          <Ribbon points={p.points} width={p.w} />
+          <Ribbon points={p.points} width={p.w} riverId={p.id} />
           {p.falls.map((f, i) => (
-            <Waterfall key={i} fall={f} points={p.points} />
+            <Waterfall key={i} fall={f} points={p.points} riverId={p.id} />
           ))}
         </group>
       ))}
@@ -52,14 +50,15 @@ export function Rivers() {
   );
 }
 
-function Ribbon({ points, width }: { points: Vector3[]; width: number }) {
+function Ribbon({ points, width, riverId }: { points: Vector3[]; width: number; riverId: string }) {
   const geometry = useMemo(() => {
     const g = new BufferGeometry();
     if (points.length < 2) return g;
 
     const verts: number[] = [];
     const indices: number[] = [];
-    const half = Math.max(0.09, width * 0.5);
+    const channelScale = riverId === "wailuku" ? 0.82 : riverId === "hookelekele" ? 0.72 : 1;
+    const half = Math.max(0.075, width * channelScale * 0.5);
 
     for (let i = 0; i < points.length; i++) {
       const p = points[i]!;
@@ -87,16 +86,21 @@ function Ribbon({ points, width }: { points: Vector3[]; width: number }) {
     g.setIndex(indices);
     g.computeVertexNormals();
     return g;
-  }, [points, width]);
+  }, [points, riverId, width]);
+
+  const youngBasalt = riverId === "wailuku" || riverId === "hookelekele";
 
   return (
     <mesh geometry={geometry}>
       <meshStandardMaterial
-        color={WATER}
-        roughness={0.24}
-        metalness={0.02}
-        emissive="#13586f"
-        emissiveIntensity={0.28}
+        color={youngBasalt ? "#70c9df" : "#399fc0"}
+        roughness={youngBasalt ? 0.16 : 0.24}
+        metalness={0.01}
+        emissive={youngBasalt ? "#1a5869" : "#13586f"}
+        emissiveIntensity={youngBasalt ? 0.18 : 0.26}
+        transparent
+        opacity={youngBasalt ? 0.88 : 0.94}
+        depthWrite={false}
         side={DoubleSide}
       />
     </mesh>

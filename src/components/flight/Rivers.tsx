@@ -41,8 +41,8 @@ export function Rivers() {
       {paths.map((p) => (
         <group key={p.id}>
           <Ribbon points={p.points} width={p.w} riverId={p.id} />
-          {p.falls.map((f, i) => (
-            <Waterfall key={i} fall={f} points={p.points} riverId={p.id} />
+          {p.falls.map((f) => (
+            <Waterfall key={f.id} fall={f} points={p.points} riverId={p.id} />
           ))}
         </group>
       ))}

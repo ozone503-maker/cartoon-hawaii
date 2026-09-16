@@ -24,8 +24,8 @@ import { useHawaii } from "@/lib/hawaii/store";
 function chaseStart(c: CraftState) {
   const fx = -Math.sin(c.yaw);
   const fz = -Math.cos(c.yaw);
-  const dist = UFO_LENGTH * 2.1;
-  const height = dist * Math.tan((23 * Math.PI) / 180);
+  const dist = UFO_LENGTH * 2.55;
+  const height = dist * Math.tan((22 * Math.PI) / 180);
   return {
     cam: [c.x - fx * dist, c.y + height, c.z - fz * dist] as [number, number, number],
     look: [c.x + fx * UFO_LENGTH * 0.85, c.y + 0.22, c.z + fz * UFO_LENGTH * 0.85] as [number, number, number],

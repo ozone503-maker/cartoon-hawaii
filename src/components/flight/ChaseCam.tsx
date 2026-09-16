@@ -8,9 +8,9 @@ import { UFO_LENGTH } from "@/lib/hawaii/world";
 const _desired = new Vector3();
 const _look = new Vector3();
 
-/** Locked chase — 1½ lengths back, 23° down, always behind MDP. */
-const LEN = 2.1;
-const DEG = 23;
+/** Locked chase — behind and above, UFO in the lower third, forest ahead. */
+const LEN = 2.55;
+const DEG = 22;
 
 export function ChaseCam({ craft }: { craft: CraftState }) {
   const { camera, scene } = useThree();

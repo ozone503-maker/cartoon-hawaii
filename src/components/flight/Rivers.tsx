@@ -68,7 +68,7 @@ function Ribbon({ points, width }: { points: Vector3[]; width: number }) {
       const len = Math.hypot(dx, dy, dz) || 0.01;
       dummy.position.set((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2);
       dummy.rotation.set(-Math.atan2(dy, xz), Math.atan2(dx, dz), 0);
-      dummy.scale.set(1, 1, len);
+      dummy.scale.set(1, 1.2, len);
       dummy.updateMatrix();
       m.setMatrixAt(i, dummy.matrix);
     }
@@ -77,7 +77,7 @@ function Ribbon({ points, width }: { points: Vector3[]; width: number }) {
 
   return (
     <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
-      <boxGeometry args={[width, 0.07, 1]} />
+      <boxGeometry args={[Math.max(width, 0.2), 0.1, 1]} />
       <meshStandardMaterial color={WATER} roughness={0.2} metalness={0.1} emissive="#1a6a88" emissiveIntensity={0.45} />
     </instancedMesh>
   );

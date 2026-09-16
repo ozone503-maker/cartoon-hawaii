@@ -8,11 +8,13 @@ Repo: [ozone503-maker/cartoon-hawaii](https://github.com/ozone503-maker/cartoon-
 
 Home base is **FlashTown** (Mountain View). You fly MDP’s bubble UFO in a locked third-person chase camera. Climb and the camera pulls back toward the overhead atlas. Open the map anytime for the lat/lon grid, and toggle Landsat if you want to inspect the source photograph.
 
+**Bots / next editor:** read [`HANDOFF.md`](HANDOFF.md) before touching anything. Flight, camera, geography, and MDP are frozen. Waterfalls and Ka Lae are the open problems.
+
 ## Play
 
-W/S thrust · A/D turn left/right · Space lift · F drop · Shift boost.
+W/S thrust · A/D turn · Space lift · F drop · Shift **boost**.
 
-On a phone: four-arrow pad, lift / drop / boost on the opposite corner.
+On a phone: one circular stick (diagonals work). Right side is lift / **lightning = boost** / drop. The bolt is not eject.
 
 ## Run
 
@@ -72,3 +74,12 @@ window.__hawaiiMap.waypoints
 Static copy: [`public/hawaii-nav.json`](public/hawaii-nav.json)
 
 Airports: `ito` PHTO, `koa` PHKO, `mue` PHMU.
+
+## Open problems
+
+Full notes in [`HANDOFF.md`](HANDOFF.md). Short version:
+
+1. Waterfalls still don’t look like water (ice cubes / chimneys / laser rivers).
+2. Ka Lae must read as a huge ocean cliff, not a raft.
+3. Close terrain, trees, and towns still too blocky / blob / generic.
+4. Phone WebGL is fragile — do not reintroduce `<Canvas>` measure, toon materials, or throwing texture loads.

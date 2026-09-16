@@ -7,11 +7,18 @@ import { latLonToWorld, terrainY, WORLD } from "@/lib/hawaii/world";
 const dummy = new Object3D();
 const PX = WORLD.w / MAP_SIZE.w;
 
-const PALETTE: Record<string, string[]> = {
-  wet: ["#e8d6b0", "#c45c4a", "#5a7a68", "#d8c49a"],
-  dry: ["#ecc896", "#d67a46", "#a85440", "#c9a06a"],
-  lava: ["#d2ba96", "#785850", "#464648"],
-  home: ["#f4ecd6", "#d76a4d", "#288c78"],
+const WALLS: Record<string, string[]> = {
+  wet: ["#efe6d0", "#e4d4b4", "#d9c8a4", "#f2ead8"],
+  dry: ["#ead9b4", "#dcc49a", "#c9b086"],
+  lava: ["#d8c4a8", "#c4b49a", "#b8a090"],
+  home: ["#f4ecd6"],
+};
+
+const ROOFS: Record<string, string[]> = {
+  wet: ["#7a8a6a", "#c45c4a", "#8a8e92", "#6a7a58"],
+  dry: ["#c45c4a", "#a85440", "#8a8e92"],
+  lava: ["#785850", "#8a8e92", "#5a5048"],
+  home: ["#d76a4d"],
 };
 
 function hash(i: number) {
@@ -28,7 +35,8 @@ type Building = {
   sy: number;
   sz: number;
   ry: number;
-  color: string;
+  wall: string;
+  roof: string;
 };
 
 function layout(): Building[] {
@@ -36,25 +44,27 @@ function layout(): Building[] {
   let n = 0;
   for (const t of TOWNS) {
     const { x, z } = latLonToWorld(t.lat, t.lon);
-    const rad = Math.max(0.35, t.r * PX * 0.9);
-    const buildings = t.kind === "home" ? 0 : Math.max(6, Math.round(t.r * t.r * 0.22));
-    const pal = PALETTE[t.kind]!;
-    for (let i = 0; i < buildings; i++) {
+    const rad = Math.max(0.4, t.r * PX * 0.95);
+    const count = t.kind === "home" ? 0 : Math.max(4, Math.round(t.r * 0.55));
+    const walls = WALLS[t.kind]!;
+    const roofs = ROOFS[t.kind]!;
+    for (let i = 0; i < count; i++) {
       const h = hash(n + 17);
       const a = h * Math.PI * 2;
-      const r = Math.pow(hash(n + 3), 0.55) * rad;
+      const r = Math.pow(hash(n + 3), 0.62) * rad;
       const bx = x + Math.cos(a) * r;
-      const bz = z + Math.sin(a) * r * 0.85;
-      const bh = 0.14 + hash(n + 9) * (t.kind === "home" ? 0.26 : 0.38);
+      const bz = z + Math.sin(a) * r * 0.9;
+      const bh = 0.1 + hash(n + 9) * 0.1;
       list.push({
         px: bx,
         py: terrainY(bx, bz) + bh / 2,
         pz: bz,
-        sx: 0.12 + h * 0.22,
+        sx: 0.22 + h * 0.2,
         sy: bh,
-        sz: 0.1 + hash(n + 5) * 0.18,
-        ry: h * 6.2,
-        color: pal[i % pal.length]!,
+        sz: 0.16 + hash(n + 5) * 0.14,
+        ry: (hash(n + 11) * 4 | 0) * (Math.PI / 2),
+        wall: walls[i % walls.length]!,
+        roof: roofs[i % roofs.length]!,
       });
       n++;
     }
@@ -66,7 +76,8 @@ export function Settlements() {
   const mesh = useRef<InstancedMesh>(null);
   const roofs = useRef<InstancedMesh>(null);
   const buildings = useMemo(() => layout(), []);
-  const colors = useMemo(() => buildings.map((b) => new Color(b.color)), [buildings]);
+  const wallColors = useMemo(() => buildings.map((b) => new Color(b.wall)), [buildings]);
+  const roofColors = useMemo(() => buildings.map((b) => new Color(b.roof)), [buildings]);
 
   useLayoutEffect(() => {
     const inst = mesh.current;
@@ -78,15 +89,18 @@ export function Settlements() {
       dummy.rotation.set(0, b.ry, 0);
       dummy.updateMatrix();
       inst.setMatrixAt(i, dummy.matrix);
-      inst.setColorAt(i, colors[i]!);
-      dummy.position.set(b.px, b.py + b.sy / 2 + 0.05, b.pz);
-      dummy.scale.set(Math.max(b.sx, b.sz) * 0.72, 0.11, Math.max(b.sx, b.sz) * 0.72);
+      inst.setColorAt(i, wallColors[i]!);
+      dummy.position.set(b.px, b.py + b.sy / 2 + 0.02, b.pz);
+      dummy.scale.set(b.sx * 1.12, 0.045, b.sz * 1.12);
+      dummy.rotation.set(0.18, b.ry, 0);
       dummy.updateMatrix();
       roof.setMatrixAt(i, dummy.matrix);
+      roof.setColorAt(i, roofColors[i]!);
     });
     inst.instanceMatrix.needsUpdate = true;
     roof.instanceMatrix.needsUpdate = true;
     if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
+    if (roof.instanceColor) roof.instanceColor.needsUpdate = true;
     return () => {
       inst.geometry.dispose();
       roof.geometry.dispose();
@@ -95,17 +109,17 @@ export function Settlements() {
       if (mat && !Array.isArray(mat)) mat.dispose();
       if (rm && !Array.isArray(rm)) rm.dispose();
     };
-  }, [buildings, colors]);
+  }, [buildings, wallColors, roofColors]);
 
   return (
     <group>
       <instancedMesh ref={mesh} args={[undefined, undefined, buildings.length]}>
-        <cylinderGeometry args={[0.55, 0.62, 1, 8]} />
-        <meshStandardMaterial vertexColors roughness={0.8} />
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial vertexColors roughness={0.86} />
       </instancedMesh>
       <instancedMesh ref={roofs} args={[undefined, undefined, buildings.length]}>
-        <coneGeometry args={[1, 1, 8]} />
-        <meshStandardMaterial color="#c45c4a" roughness={0.7} />
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial vertexColors roughness={0.72} />
       </instancedMesh>
     </group>
   );

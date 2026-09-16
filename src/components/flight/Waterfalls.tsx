@@ -1,16 +1,16 @@
 import { useMemo } from "react";
 import { DoubleSide } from "three";
+import type { Vector3 } from "three";
 import type { Fall } from "@/lib/hawaii/rivers";
 import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
-import type { Vector3 } from "three";
 
 const WATER = {
-  color: "#d7f4ff",
-  emissive: "#9ee7ff",
-  emissiveIntensity: 1.05,
+  color: "#c8eefc",
+  emissive: "#8ad6ee",
+  emissiveIntensity: 0.7,
   transparent: true,
-  opacity: 0.78,
-  roughness: 0.16,
+  opacity: 0.72,
+  roughness: 0.2,
   metalness: 0.04,
   side: DoubleSide,
   depthWrite: false,
@@ -34,8 +34,8 @@ export function Waterfall({ fall, points }: { fall: Fall; points: Vector3[] }) {
     return Math.atan2(nxt.x - prv.x, nxt.z - prv.z);
   }, [points, x, z]);
 
-  const h = Math.max(fall.h, 1.05);
-  const w = Math.max(fall.w, 0.42);
+  const h = Math.max(0.45, fall.h);
+  const w = Math.max(0.22, fall.w);
 
   return (
     <group position={[x, y, z]} rotation={[0, yaw, 0]}>
@@ -48,66 +48,50 @@ export function Waterfall({ fall, points }: { fall: Fall; points: Vector3[] }) {
   );
 }
 
-/** Falling water as a volume so it reads from the chase cam and from above. */
-function Column({ w, h }: { w: number; h: number }) {
-  const thick = Math.max(0.42, w * 0.85);
+/** Rock palis with water sheeting down the downstream face — not a white cube. */
+function Palis({ w, h }: { w: number; h: number }) {
   return (
     <group>
-      <mesh position={[0, h + 0.08, -thick * 0.25]}>
-        <boxGeometry args={[w * 1.7, 0.16, thick * 0.7]} />
-        <meshStandardMaterial color="#5c564c" roughness={0.96} />
+      <mesh position={[0, h / 2, -0.18]}>
+        <boxGeometry args={[w * 2.6, h, 0.55]} />
+        <meshStandardMaterial color="#6a5e50" roughness={0.96} />
       </mesh>
-      <mesh position={[0, h / 2, 0.06]}>
-        <boxGeometry args={[w, h, thick]} />
+      <mesh position={[0, h + 0.03, -0.02]}>
+        <boxGeometry args={[w * 2.2, 0.1, 0.7]} />
+        <meshStandardMaterial color="#5a5248" roughness={0.95} />
+      </mesh>
+      <mesh position={[0, h * 0.48, 0.16]}>
+        <boxGeometry args={[w * 1.05, h * 0.92, 0.07]} />
         <meshStandardMaterial {...WATER} />
       </mesh>
-      <mesh position={[0, h / 2, 0.06]}>
-        <boxGeometry args={[w * 0.4, h, thick * 0.4]} />
-        <meshStandardMaterial
-          color="#ffffff"
-          emissive="#ffffff"
-          emissiveIntensity={0.85}
-          transparent
-          opacity={0.45}
-          depthWrite={false}
-        />
+      <mesh position={[0, h * 0.45, 0.24]}>
+        <boxGeometry args={[w * 0.55, h * 0.85, 0.05]} />
+        <meshStandardMaterial {...WATER} opacity={0.55} />
       </mesh>
-      <mesh position={[0, 0.22, 0.12]}>
-        <sphereGeometry args={[Math.max(0.38, w * 1.15), 10, 8]} />
-        <meshStandardMaterial color="#f4fbff" transparent opacity={0.42} depthWrite={false} />
+      <mesh position={[0, 0.08, 0.42]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[w * 1.35, 14]} />
+        <meshStandardMaterial color="#1a6a88" roughness={0.22} metalness={0.1} emissive="#0d4a62" emissiveIntensity={0.35} />
+      </mesh>
+      <mesh position={[0, 0.18, 0.4]}>
+        <sphereGeometry args={[w * 0.7, 8, 6]} />
+        <meshStandardMaterial color="#eef8ff" transparent opacity={0.28} depthWrite={false} />
       </mesh>
     </group>
-  );
-}
-
-function Pool({ r, z, dark }: { r: number; z: number; dark?: boolean }) {
-  return (
-    <mesh position={[0, 0.05, z]} rotation={[-Math.PI / 2, 0, 0]}>
-      <circleGeometry args={[r, 16]} />
-      <meshStandardMaterial
-        color={dark ? "#163a4a" : "#1f7a9a"}
-        roughness={0.2}
-        metalness={0.12}
-        emissive={dark ? "#0a2836" : "#0d4a62"}
-        emissiveIntensity={0.4}
-      />
-    </mesh>
   );
 }
 
 function RainbowFall({ h, w }: { h: number; w: number }) {
   return (
     <group>
-      <Column w={w} h={h} />
-      <mesh position={[-0.28, h * 0.22, -0.12]}>
-        <sphereGeometry args={[0.22, 10, 8]} />
+      <Palis w={w} h={h} />
+      <mesh position={[0, h * 0.28, -0.02]}>
+        <sphereGeometry args={[0.2, 10, 8]} />
         <meshStandardMaterial color="#12100e" roughness={1} />
       </mesh>
-      <Pool r={0.72} z={0.32} />
       {["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#9b59b6"].map((c, i) => (
-        <mesh key={c} position={[0, 0.32, 0.4]} rotation={[0.3, 0, 0]}>
-          <torusGeometry args={[0.42 + i * 0.028, 0.012, 6, 16, Math.PI]} />
-          <meshBasicMaterial color={c} transparent opacity={0.42} />
+        <mesh key={c} position={[0, 0.28, 0.55]} rotation={[0.35, 0, 0]}>
+          <torusGeometry args={[0.38 + i * 0.024, 0.01, 5, 14, Math.PI]} />
+          <meshBasicMaterial color={c} transparent opacity={0.35} />
         </mesh>
       ))}
     </group>
@@ -115,46 +99,46 @@ function RainbowFall({ h, w }: { h: number; w: number }) {
 }
 
 function PlungeFall({ h, w }: { h: number; w: number }) {
-  return (
-    <group>
-      <Column w={w} h={h} />
-      <Pool r={w * 1.6} z={0.22} dark />
-    </group>
-  );
+  return <Palis w={w} h={h} />;
 }
 
-function CascadeFall({ h, w }: { h: number; w: number }) {
-  const top = h * 0.55;
+function CascadeFall({ h, w }: { w: number; h: number }) {
+  const a = h * 0.55;
+  const b = h * 0.4;
   return (
     <group>
-      <Column w={w} h={top} />
-      <mesh position={[0, top * 0.15, 0.28]}>
-        <boxGeometry args={[w * 0.9, top * 0.5, Math.max(0.35, w * 0.7)]} />
-        <meshStandardMaterial {...WATER} />
-      </mesh>
-      <Pool r={w * 0.7} z={0.22} />
+      <Palis w={w} h={a} />
+      <group position={[0, 0, 0.55]}>
+        <mesh position={[0, b / 2, -0.1]}>
+          <boxGeometry args={[w * 1.8, b, 0.35]} />
+          <meshStandardMaterial color="#6a5e50" roughness={0.96} />
+        </mesh>
+        <mesh position={[0, b * 0.48, 0.12]}>
+          <boxGeometry args={[w * 0.85, b * 0.9, 0.06]} />
+          <meshStandardMaterial {...WATER} />
+        </mesh>
+        <mesh position={[0, 0.06, 0.28]} rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[w * 0.7, 12]} />
+          <meshStandardMaterial color="#1a6a88" roughness={0.22} />
+        </mesh>
+      </group>
     </group>
   );
 }
 
 function PotsFall({ w }: { w: number }) {
-  const pots = [-0.42, 0, 0.42];
+  const pots = [-0.38, 0, 0.38];
   return (
     <group>
       {pots.map((z, i) => (
         <group key={i}>
-          <mesh position={[0, 0.04, z]} rotation={[-Math.PI / 2, 0, 0]}>
-            <circleGeometry args={[w * 0.38, 14]} />
-            <meshStandardMaterial
-              color="#1a4a5c"
-              roughness={0.22}
-              emissive="#0a3040"
-              emissiveIntensity={0.45}
-            />
+          <mesh position={[0, 0.03, z]} rotation={[-Math.PI / 2, 0, 0]}>
+            <circleGeometry args={[w * 0.42, 14]} />
+            <meshStandardMaterial color="#1a4a5c" roughness={0.22} emissive="#0a3040" emissiveIntensity={0.4} />
           </mesh>
           {i < pots.length - 1 ? (
-            <mesh position={[0, 0.1, (z + pots[i + 1]!) / 2]}>
-              <boxGeometry args={[w * 0.28, 0.16, 0.38]} />
+            <mesh position={[0, 0.07, (z + pots[i + 1]!) / 2]}>
+              <boxGeometry args={[w * 0.18, 0.08, 0.32]} />
               <meshStandardMaterial {...WATER} />
             </mesh>
           ) : null}
@@ -165,10 +149,21 @@ function PotsFall({ w }: { w: number }) {
 }
 
 function ThreadFall({ h, w }: { h: number; w: number }) {
+  const ww = Math.max(0.12, w * 0.55);
   return (
     <group>
-      <Column w={Math.max(0.28, w)} h={h} />
-      <Pool r={Math.max(0.32, w)} z={0.16} />
+      <mesh position={[0, h / 2, -0.1]}>
+        <boxGeometry args={[ww * 3.2, h, 0.32]} />
+        <meshStandardMaterial color="#5e564c" roughness={0.96} />
+      </mesh>
+      <mesh position={[0, h * 0.48, 0.1]}>
+        <boxGeometry args={[ww, h * 0.9, 0.05]} />
+        <meshStandardMaterial {...WATER} />
+      </mesh>
+      <mesh position={[0, 0.05, 0.22]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[ww * 1.6, 10]} />
+        <meshStandardMaterial color="#1a6a88" roughness={0.22} />
+      </mesh>
     </group>
   );
 }

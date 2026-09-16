@@ -4,8 +4,7 @@ import { CLEARING_R, flashtownWorld, mountainViewWorld } from "@/lib/hawaii/puna
 import { isCanopy, terrainY } from "@/lib/hawaii/world";
 
 const dummy = new Object3D();
-const MAX = 520;
-const CELL = 0.62;
+const MAX = { albizia: 160, ohia: 200, lehua: 50 } as const;
 
 function hash(ix: number, iz: number) {
   let n = (ix * 374761393 + iz * 668265263) | 0;
@@ -13,19 +12,20 @@ function hash(ix: number, iz: number) {
   return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
 }
 
-type Tree = { x: number; y: number; z: number; s: number; fern: boolean };
+type Tree = { x: number; y: number; z: number; s: number; h: number; albizia: boolean };
 
 function layout(): Tree[] {
   const ft = flashtownWorld();
   const po = mountainViewWorld();
   const trees: Tree[] = [];
   const span = 18;
-  for (let iz = -span; iz <= span && trees.length < MAX; iz++) {
-    for (let ix = -span; ix <= span && trees.length < MAX; ix++) {
-      const x = ft.x + ix * CELL;
-      const z = ft.z + iz * CELL;
+  const cell = 0.62;
+  for (let iz = -span; iz <= span && trees.length < 360; iz++) {
+    for (let ix = -span; ix <= span && trees.length < 360; ix++) {
+      const x = ft.x + ix * cell;
+      const z = ft.z + iz * cell;
       const h = hash(ix + 40, iz + 7);
-      if (h < 0.18) continue;
+      if (h < 0.16) continue;
       const jx = x + (h - 0.5) * 0.45;
       const jz = z + (hash(ix + 3, iz + 11) - 0.5) * 0.45;
       const dx = jx - ft.x;
@@ -36,13 +36,13 @@ function layout(): Tree[] {
       if (px * px + pz * pz < 1.35 * 1.35) continue;
       if (dx * dx + dz * dz > 17 * 17) continue;
       if (!isCanopy(jx, jz)) continue;
-      const y = terrainY(jx, jz);
       trees.push({
         x: jx,
-        y,
+        y: terrainY(jx, jz),
         z: jz,
-        s: 0.22 + h * 0.38,
-        fern: h > 0.72,
+        s: 0.24 + h * 0.4,
+        h,
+        albizia: h < 0.48,
       });
     }
   }
@@ -50,60 +50,106 @@ function layout(): Tree[] {
 }
 
 export function PunaGrove() {
-  const canopy = useRef<InstancedMesh>(null);
+  const albizia = useRef<InstancedMesh>(null);
+  const ohia = useRef<InstancedMesh>(null);
   const trunk = useRef<InstancedMesh>(null);
+  const lehua = useRef<InstancedMesh>(null);
   const trees = useMemo(() => layout(), []);
-  const colors = useMemo(
-    () => [new Color("#1a8a38"), new Color("#2dad48"), new Color("#3fbf55"), new Color("#58c96a")],
-    [],
-  );
+  const albiziaGreen = useMemo(() => [new Color("#9ee08a"), new Color("#b4eb9c")], []);
+  const ohiaGreen = useMemo(() => [new Color("#2f9a3e"), new Color("#3cb14a")], []);
 
   useLayoutEffect(() => {
-    const c = canopy.current;
+    const a = albizia.current;
+    const o = ohia.current;
     const t = trunk.current;
-    if (!c || !t) return;
-    trees.forEach((tree, i) => {
-      dummy.position.set(tree.x, tree.y + tree.s * (tree.fern ? 0.7 : 0.85), tree.z);
-      dummy.scale.set(tree.s * (tree.fern ? 1.35 : 0.95), tree.s * (tree.fern ? 0.55 : 1), tree.s);
-      dummy.rotation.set(0, i * 0.7, 0);
-      dummy.updateMatrix();
-      c.setMatrixAt(i, dummy.matrix);
-      c.setColorAt(i, colors[i % colors.length]!);
-      dummy.position.set(tree.x, tree.y + tree.s * 0.35, tree.z);
-      dummy.scale.set(tree.fern ? 0.045 : 0.07, tree.s * 0.7, tree.fern ? 0.045 : 0.07);
-      dummy.rotation.set(0, 0, 0);
-      dummy.updateMatrix();
-      t.setMatrixAt(i, dummy.matrix);
-    });
-    for (let i = trees.length; i < MAX; i++) {
-      dummy.position.set(0, -40, 0);
-      dummy.scale.set(0, 0, 0);
-      dummy.updateMatrix();
-      c.setMatrixAt(i, dummy.matrix);
-      t.setMatrixAt(i, dummy.matrix);
+    const l = lehua.current;
+    if (!a || !o || !t || !l) return;
+    let ia = 0;
+    let io = 0;
+    let it = 0;
+    let il = 0;
+    for (const tree of trees) {
+      if (tree.albizia && ia < MAX.albizia) {
+        dummy.position.set(tree.x, tree.y + tree.s * 1.4, tree.z);
+        dummy.scale.set(tree.s * 2.4, tree.s * 0.34, tree.s * 2.4);
+        dummy.rotation.set(0.03, tree.h * 5, 0.02);
+        dummy.updateMatrix();
+        a.setMatrixAt(ia, dummy.matrix);
+        a.setColorAt(ia, albiziaGreen[ia % albiziaGreen.length]!);
+        dummy.position.set(tree.x, tree.y + tree.s * 0.72, tree.z);
+        dummy.scale.set(0.05, tree.s * 1.4, 0.05);
+        dummy.rotation.set(0, 0, 0);
+        dummy.updateMatrix();
+        t.setMatrixAt(it, dummy.matrix);
+        t.setColorAt(it, new Color("#c4b89a"));
+        ia++;
+        it++;
+      } else if (io < MAX.ohia) {
+        dummy.position.set(tree.x, tree.y + tree.s * 1.05, tree.z);
+        dummy.scale.set(tree.s * 1.05, tree.s * 0.92, tree.s * 1.1);
+        dummy.rotation.set(0, tree.h * 4, 0);
+        dummy.updateMatrix();
+        o.setMatrixAt(io, dummy.matrix);
+        o.setColorAt(io, ohiaGreen[io % ohiaGreen.length]!);
+        dummy.position.set(tree.x, tree.y + tree.s * 0.48, tree.z);
+        dummy.scale.set(0.065, tree.s * 0.9, 0.065);
+        dummy.rotation.set(0, 0, 0);
+        dummy.updateMatrix();
+        t.setMatrixAt(it, dummy.matrix);
+        t.setColorAt(it, new Color("#5a3820"));
+        if (tree.h > 0.6 && il < MAX.lehua) {
+          dummy.position.set(tree.x + (tree.h - 0.5) * 0.2, tree.y + tree.s * 1.32, tree.z);
+          dummy.scale.set(tree.s * 0.17, tree.s * 0.15, tree.s * 0.17);
+          dummy.updateMatrix();
+          l.setMatrixAt(il, dummy.matrix);
+          il++;
+        }
+        io++;
+        it++;
+      }
     }
-    c.instanceMatrix.needsUpdate = true;
-    t.instanceMatrix.needsUpdate = true;
-    if (c.instanceColor) c.instanceColor.needsUpdate = true;
-    return () => {
-      c.geometry.dispose();
-      t.geometry.dispose();
-      const cm = c.material;
-      const tm = t.material;
-      if (cm && !Array.isArray(cm)) cm.dispose();
-      if (tm && !Array.isArray(tm)) tm.dispose();
+    const hideFrom = (mesh: InstancedMesh, from: number, cap: number) => {
+      for (let i = from; i < cap; i++) {
+        dummy.position.set(0, -50, 0);
+        dummy.scale.set(0, 0, 0);
+        dummy.rotation.set(0, 0, 0);
+        dummy.updateMatrix();
+        mesh.setMatrixAt(i, dummy.matrix);
+      }
+      mesh.instanceMatrix.needsUpdate = true;
     };
-  }, [trees, colors]);
+    hideFrom(a, ia, MAX.albizia);
+    hideFrom(o, io, MAX.ohia);
+    hideFrom(t, it, MAX.albizia + MAX.ohia);
+    hideFrom(l, il, MAX.lehua);
+    if (a.instanceColor) a.instanceColor.needsUpdate = true;
+    if (o.instanceColor) o.instanceColor.needsUpdate = true;
+    if (t.instanceColor) t.instanceColor.needsUpdate = true;
+    return () => {
+      a.geometry.dispose();
+      o.geometry.dispose();
+      t.geometry.dispose();
+      l.geometry.dispose();
+    };
+  }, [trees, albiziaGreen, ohiaGreen]);
 
   return (
     <group>
-      <instancedMesh ref={canopy} args={[undefined, undefined, MAX]} frustumCulled={false}>
-        <sphereGeometry args={[0.55, 10, 8]} />
-        <meshStandardMaterial vertexColors roughness={0.72} />
+      <instancedMesh ref={albizia} args={[undefined, undefined, MAX.albizia]} frustumCulled={false}>
+        <sphereGeometry args={[0.55, 10, 6]} />
+        <meshStandardMaterial vertexColors roughness={0.62} />
       </instancedMesh>
-      <instancedMesh ref={trunk} args={[undefined, undefined, MAX]} frustumCulled={false}>
-        <cylinderGeometry args={[1, 1.15, 1, 6]} />
-        <meshStandardMaterial color="#6a3e24" roughness={0.85} />
+      <instancedMesh ref={ohia} args={[undefined, undefined, MAX.ohia]} frustumCulled={false}>
+        <sphereGeometry args={[0.52, 8, 7]} />
+        <meshStandardMaterial vertexColors roughness={0.7} />
+      </instancedMesh>
+      <instancedMesh ref={trunk} args={[undefined, undefined, MAX.albizia + MAX.ohia]} frustumCulled={false}>
+        <cylinderGeometry args={[1, 1.2, 1, 6]} />
+        <meshStandardMaterial vertexColors roughness={0.88} />
+      </instancedMesh>
+      <instancedMesh ref={lehua} args={[undefined, undefined, MAX.lehua]} frustumCulled={false}>
+        <sphereGeometry args={[0.22, 6, 5]} />
+        <meshStandardMaterial color="#e23b4a" roughness={0.55} emissive="#a01828" emissiveIntensity={0.25} />
       </instancedMesh>
     </group>
   );

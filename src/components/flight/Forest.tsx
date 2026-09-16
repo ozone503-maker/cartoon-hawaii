@@ -8,9 +8,9 @@ import { inMaunaKeaSummit } from "@/lib/hawaii/maunakea";
 import { inOpenCoast } from "@/lib/hawaii/coast";
 import { inRiver } from "@/lib/hawaii/rivers";
 
-const CELL = 1.2;
-const RADIUS = 22;
-const MAX = 520;
+const CELL = 1.25;
+const RADIUS = 24;
+const MAX = { albizia: 120, ohia: 240, koa: 110, lehua: 70 } as const;
 const dummy = new Object3D();
 
 function hash(ix: number, iz: number) {
@@ -19,35 +19,57 @@ function hash(ix: number, iz: number) {
   return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
 }
 
-type Spot = { x: number; y: number; z: number; s: number; h: number };
+/** 0 albizia (lowland umbrella) · 1 ʻōhiʻa · 2 koa (higher slopes) */
+function pickKind(elev: number, h: number): 0 | 1 | 2 {
+  if (elev >= 5.5) return h < 0.45 ? 2 : 1;
+  if (elev <= 3.55) return h < 0.42 ? 0 : 1;
+  if (h < 0.16) return 2;
+  if (h > 0.84 && elev < 4.3) return 0;
+  return 1;
+}
 
-/**
- * Cartoon ʻōhiʻa mass — round canopies + trunks, only on Landsat-green land.
- */
+type Spot = { x: number; y: number; z: number; s: number; h: number; kind: 0 | 1 | 2 };
+
+function hide(mesh: InstancedMesh, from: number, cap: number) {
+  for (let i = from; i < cap; i++) {
+    dummy.position.set(0, -50, 0);
+    dummy.scale.set(0, 0, 0);
+    dummy.rotation.set(0, 0, 0);
+    dummy.updateMatrix();
+    mesh.setMatrixAt(i, dummy.matrix);
+  }
+  mesh.instanceMatrix.needsUpdate = true;
+}
+
 export function Forest({ craft }: { craft: CraftState }) {
-  const canopy = useRef<InstancedMesh>(null);
+  const albizia = useRef<InstancedMesh>(null);
+  const ohia = useRef<InstancedMesh>(null);
+  const koa = useRef<InstancedMesh>(null);
   const trunk = useRef<InstancedMesh>(null);
+  const lehua = useRef<InstancedMesh>(null);
   const last = useRef("");
-  const palette = useMemo(
-    () => [new Color("#1a8a38"), new Color("#2dad48"), new Color("#3fbf55"), new Color("#58c96a")],
-    [],
-  );
+  const albiziaGreen = useMemo(() => [new Color("#9ee08a"), new Color("#b4eb9c"), new Color("#86d478")], []);
+  const ohiaGreen = useMemo(() => [new Color("#2f9a3e"), new Color("#3cb14a"), new Color("#4cbf5c")], []);
+  const koaGreen = useMemo(() => [new Color("#8aaa4a"), new Color("#9bb85c"), new Color("#7a9a40")], []);
+  const wood = useMemo(() => [new Color("#c4b89a"), new Color("#5a3820"), new Color("#6a4a28")], []);
 
   useLayoutEffect(() => {
     return () => {
-      canopy.current?.geometry.dispose();
-      trunk.current?.geometry.dispose();
-      const cm = canopy.current?.material;
-      const tm = trunk.current?.material;
-      if (cm && !Array.isArray(cm)) cm.dispose();
-      if (tm && !Array.isArray(tm)) tm.dispose();
+      for (const r of [albizia, ohia, koa, trunk, lehua]) {
+        r.current?.geometry.dispose();
+        const m = r.current?.material;
+        if (m && !Array.isArray(m)) m.dispose();
+      }
     };
   }, []);
 
   useFrame(() => {
-    const leaves = canopy.current;
-    const wood = trunk.current;
-    if (!leaves || !wood) return;
+    const a = albizia.current;
+    const o = ohia.current;
+    const k = koa.current;
+    const w = trunk.current;
+    const l = lehua.current;
+    if (!a || !o || !k || !w || !l) return;
     const gx = Math.round(craft.x / CELL);
     const gz = Math.round(craft.z / CELL);
     const key = `${gx},${gz}`;
@@ -56,58 +78,120 @@ export function Forest({ craft }: { craft: CraftState }) {
 
     const spots: Spot[] = [];
     const span = Math.ceil(RADIUS / CELL);
-    for (let iz = -span; iz <= span && spots.length < MAX; iz++) {
-      for (let ix = -span; ix <= span && spots.length < MAX; ix++) {
+    for (let iz = -span; iz <= span && spots.length < 420; iz++) {
+      for (let ix = -span; ix <= span && spots.length < 420; ix++) {
         const cx = (gx + ix) * CELL;
         const cz = (gz + iz) * CELL;
         const dx = cx - craft.x;
         const dz = cz - craft.z;
         const d2 = dx * dx + dz * dz;
         if (d2 > RADIUS * RADIUS || d2 < 6.5) continue;
-        const h = hash(gx + ix, gz + iz);
-        if (h < 0.22) continue;
-        const jx = cx + (h - 0.5) * 0.7;
+        const hv = hash(gx + ix, gz + iz);
+        if (hv < 0.2) continue;
+        const jx = cx + (hv - 0.5) * 0.7;
         const jz = cz + (hash(gx + ix + 19, gz + iz + 7) - 0.5) * 0.7;
         if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz) || inMaunaKeaSummit(jx, jz) || inOpenCoast(jx, jz) || inRiver(jx, jz)) continue;
         const y = terrainY(jx, jz);
-        spots.push({ x: jx, y, z: jz, s: 0.32 + h * 0.38, h });
+        spots.push({ x: jx, y, z: jz, s: 0.3 + hv * 0.4, h: hv, kind: pickKind(y, hv) });
       }
     }
 
-    spots.forEach((t, i) => {
-      dummy.position.set(t.x, t.y + t.s * 0.95, t.z);
-      dummy.scale.set(t.s * 1.15, t.s * 0.95, t.s * 1.15);
-      dummy.rotation.set(0, t.h * 4, 0);
-      dummy.updateMatrix();
-      leaves.setMatrixAt(i, dummy.matrix);
-      leaves.setColorAt(i, palette[Math.floor(t.h * palette.length)]!);
-      dummy.position.set(t.x, t.y + t.s * 0.38, t.z);
-      dummy.scale.set(0.07, t.s * 0.7, 0.07);
-      dummy.rotation.set(0, 0, 0);
-      dummy.updateMatrix();
-      wood.setMatrixAt(i, dummy.matrix);
-    });
-    for (let i = spots.length; i < MAX; i++) {
-      dummy.position.set(0, -40, 0);
-      dummy.scale.set(0, 0, 0);
-      dummy.updateMatrix();
-      leaves.setMatrixAt(i, dummy.matrix);
-      wood.setMatrixAt(i, dummy.matrix);
+    let ia = 0;
+    let io = 0;
+    let ik = 0;
+    let it = 0;
+    let il = 0;
+
+    for (const t of spots) {
+      if (t.kind === 0 && ia < MAX.albizia) {
+        dummy.position.set(t.x, t.y + t.s * 1.35, t.z);
+        dummy.scale.set(t.s * 2.35, t.s * 0.34, t.s * 2.35);
+        dummy.rotation.set(0.04, t.h * 5, 0.03);
+        dummy.updateMatrix();
+        a.setMatrixAt(ia, dummy.matrix);
+        a.setColorAt(ia, albiziaGreen[Math.floor(t.h * albiziaGreen.length)]!);
+        dummy.position.set(t.x, t.y + t.s * 0.7, t.z);
+        dummy.scale.set(0.055, t.s * 1.35, 0.055);
+        dummy.rotation.set(0, 0, 0);
+        dummy.updateMatrix();
+        w.setMatrixAt(it, dummy.matrix);
+        w.setColorAt(it, wood[0]!);
+        ia++;
+        it++;
+      } else if (t.kind === 2 && ik < MAX.koa) {
+        dummy.position.set(t.x, t.y + t.s * 1.45, t.z);
+        dummy.scale.set(t.s * 0.78, t.s * 1.35, t.s * 0.62);
+        dummy.rotation.set(0, t.h * 3, 0.05);
+        dummy.updateMatrix();
+        k.setMatrixAt(ik, dummy.matrix);
+        k.setColorAt(ik, koaGreen[Math.floor(t.h * koaGreen.length)]!);
+        dummy.position.set(t.x, t.y + t.s * 0.72, t.z);
+        dummy.scale.set(0.065, t.s * 1.4, 0.065);
+        dummy.rotation.set(0, 0, 0);
+        dummy.updateMatrix();
+        w.setMatrixAt(it, dummy.matrix);
+        w.setColorAt(it, wood[2]!);
+        ik++;
+        it++;
+      } else if (io < MAX.ohia) {
+        dummy.position.set(t.x, t.y + t.s * 1.05, t.z);
+        dummy.scale.set(t.s * 1.05, t.s * 0.92, t.s * 1.12);
+        dummy.rotation.set(0, t.h * 4.2, 0);
+        dummy.updateMatrix();
+        o.setMatrixAt(io, dummy.matrix);
+        o.setColorAt(io, ohiaGreen[Math.floor(t.h * ohiaGreen.length)]!);
+        dummy.position.set(t.x, t.y + t.s * 0.48, t.z);
+        dummy.scale.set(0.07, t.s * 0.9, 0.07);
+        dummy.rotation.set(0, 0, 0);
+        dummy.updateMatrix();
+        w.setMatrixAt(it, dummy.matrix);
+        w.setColorAt(it, wood[1]!);
+        if (t.h > 0.62 && il < MAX.lehua) {
+          dummy.position.set(t.x + (t.h - 0.5) * 0.22, t.y + t.s * 1.35, t.z + (t.h - 0.4) * 0.18);
+          dummy.scale.set(t.s * 0.18, t.s * 0.16, t.s * 0.18);
+          dummy.updateMatrix();
+          l.setMatrixAt(il, dummy.matrix);
+          il++;
+        }
+        io++;
+        it++;
+      }
     }
-    leaves.instanceMatrix.needsUpdate = true;
-    wood.instanceMatrix.needsUpdate = true;
-    if (leaves.instanceColor) leaves.instanceColor.needsUpdate = true;
+
+    hide(a, ia, MAX.albizia);
+    hide(o, io, MAX.ohia);
+    hide(k, ik, MAX.koa);
+    hide(w, it, MAX.albizia + MAX.ohia + MAX.koa);
+    hide(l, il, MAX.lehua);
+    if (a.instanceColor) a.instanceColor.needsUpdate = true;
+    if (o.instanceColor) o.instanceColor.needsUpdate = true;
+    if (k.instanceColor) k.instanceColor.needsUpdate = true;
+    if (w.instanceColor) w.instanceColor.needsUpdate = true;
   });
+
+  const trunkMax = MAX.albizia + MAX.ohia + MAX.koa;
 
   return (
     <group>
-      <instancedMesh ref={canopy} args={[undefined, undefined, MAX]} frustumCulled={false}>
-        <sphereGeometry args={[0.55, 10, 8]} />
-        <meshStandardMaterial vertexColors roughness={0.72} />
+      <instancedMesh ref={albizia} args={[undefined, undefined, MAX.albizia]} frustumCulled={false}>
+        <sphereGeometry args={[0.55, 10, 6]} />
+        <meshStandardMaterial vertexColors roughness={0.62} />
       </instancedMesh>
-      <instancedMesh ref={trunk} args={[undefined, undefined, MAX]} frustumCulled={false}>
-        <cylinderGeometry args={[1, 1.15, 1, 6]} />
-        <meshStandardMaterial color="#6a3e24" roughness={0.85} />
+      <instancedMesh ref={ohia} args={[undefined, undefined, MAX.ohia]} frustumCulled={false}>
+        <sphereGeometry args={[0.52, 8, 7]} />
+        <meshStandardMaterial vertexColors roughness={0.7} />
+      </instancedMesh>
+      <instancedMesh ref={koa} args={[undefined, undefined, MAX.koa]} frustumCulled={false}>
+        <sphereGeometry args={[0.48, 8, 8]} />
+        <meshStandardMaterial vertexColors roughness={0.66} />
+      </instancedMesh>
+      <instancedMesh ref={trunk} args={[undefined, undefined, trunkMax]} frustumCulled={false}>
+        <cylinderGeometry args={[1, 1.2, 1, 6]} />
+        <meshStandardMaterial vertexColors roughness={0.88} />
+      </instancedMesh>
+      <instancedMesh ref={lehua} args={[undefined, undefined, MAX.lehua]} frustumCulled={false}>
+        <sphereGeometry args={[0.22, 6, 5]} />
+        <meshStandardMaterial color="#e23b4a" roughness={0.55} emissive="#a01828" emissiveIntensity={0.25} />
       </instancedMesh>
     </group>
   );

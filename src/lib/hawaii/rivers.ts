@@ -2,12 +2,31 @@ import { latLonToWorld } from "./world";
 
 /** Real windward streams. Falls sit inland. Mouths meet the bay — they are not waterfalls. */
 export type FallKind = "rainbow" | "plunge" | "cascade" | "pots" | "thread";
+export type FallProfile =
+  | "wailuku-upper-cascade"
+  | "peepee"
+  | "wailuku-mid-cascade"
+  | "rainbow"
+  | "sacred-thread-1"
+  | "sacred-thread-2"
+  | "sacred-thread-3"
+  | "sacred-thread-4"
+  | "sacred-thread-5"
+  | "sacred-thread-6"
+  | "sacred-thread-7"
+  | "akaka"
+  | "umauma"
+  | "waipio-horsetail";
+
 export type Fall = {
+  id: string;
+  name: string;
   lat: number;
   lon: number;
   h: number;
   w: number;
   kind: FallKind;
+  profile: FallProfile;
 };
 export type River = {
   id: string;
@@ -23,9 +42,9 @@ export const RIVERS: River[] = [
     pts: [
       [19.80722, -155.42028],
       [19.77029, -155.36417],
-      [19.755, -155.30],
+      [19.755, -155.3],
       [19.745, -155.24],
-      [19.735, -155.20],
+      [19.735, -155.2],
       [19.728, -155.175],
       [19.722, -155.155],
       [19.7154, -155.1404],
@@ -36,10 +55,46 @@ export const RIVERS: River[] = [
       [19.72778, -155.0875],
     ],
     falls: [
-      { lat: 19.7154, lon: -155.1404, h: 0.95, w: 0.32, kind: "cascade" },
-      { lat: 19.7153, lon: -155.1306, h: 0.45, w: 0.36, kind: "pots" },
-      { lat: 19.7215, lon: -155.1165, h: 0.75, w: 0.26, kind: "cascade" },
-      { lat: 19.7194, lon: -155.1094, h: 1.35, w: 0.32, kind: "rainbow" },
+      {
+        id: "wailuku-upper-cascade",
+        name: "Upper Wailuku Cascade",
+        lat: 19.7154,
+        lon: -155.1404,
+        h: 0.95,
+        w: 0.32,
+        kind: "cascade",
+        profile: "wailuku-upper-cascade",
+      },
+      {
+        id: "peepee-boiling-pots",
+        name: "Peʻepeʻe Falls / Boiling Pots",
+        lat: 19.7153,
+        lon: -155.1306,
+        h: 0.45,
+        w: 0.36,
+        kind: "pots",
+        profile: "peepee",
+      },
+      {
+        id: "wailuku-mid-cascade",
+        name: "Wailuku Mid Cascade",
+        lat: 19.7215,
+        lon: -155.1165,
+        h: 0.75,
+        w: 0.26,
+        kind: "cascade",
+        profile: "wailuku-mid-cascade",
+      },
+      {
+        id: "rainbow-falls",
+        name: "Waiānuenue / Rainbow Falls",
+        lat: 19.7194,
+        lon: -155.1094,
+        h: 1.35,
+        w: 0.32,
+        kind: "rainbow",
+        profile: "rainbow",
+      },
     ],
   },
   {
@@ -55,13 +110,13 @@ export const RIVERS: River[] = [
       [19.7154, -155.1404],
     ],
     falls: [
-      { lat: 19.70813, lon: -155.16649, h: 1.15, w: 0.2, kind: "thread" },
-      { lat: 19.70857, lon: -155.1645, h: 1.05, w: 0.18, kind: "thread" },
-      { lat: 19.70981, lon: -155.15731, h: 1.4, w: 0.22, kind: "thread" },
-      { lat: 19.71125, lon: -155.15735, h: 1.3, w: 0.2, kind: "thread" },
-      { lat: 19.71171, lon: -155.15625, h: 1.2, w: 0.2, kind: "thread" },
-      { lat: 19.7102, lon: -155.15309, h: 1.0, w: 0.18, kind: "thread" },
-      { lat: 19.71084, lon: -155.1532, h: 0.95, w: 0.18, kind: "thread" },
+      { id: "sacred-thread-1", name: "Sacred Stream I", lat: 19.70813, lon: -155.16649, h: 1.15, w: 0.2, kind: "thread", profile: "sacred-thread-1" },
+      { id: "sacred-thread-2", name: "Sacred Stream II", lat: 19.70857, lon: -155.1645, h: 1.05, w: 0.18, kind: "thread", profile: "sacred-thread-2" },
+      { id: "sacred-thread-3", name: "Sacred Stream III", lat: 19.70981, lon: -155.15731, h: 1.4, w: 0.22, kind: "thread", profile: "sacred-thread-3" },
+      { id: "sacred-thread-4", name: "Sacred Stream IV", lat: 19.71125, lon: -155.15735, h: 1.3, w: 0.2, kind: "thread", profile: "sacred-thread-4" },
+      { id: "sacred-thread-5", name: "Sacred Stream V", lat: 19.71171, lon: -155.15625, h: 1.2, w: 0.2, kind: "thread", profile: "sacred-thread-5" },
+      { id: "sacred-thread-6", name: "Sacred Stream VI", lat: 19.7102, lon: -155.15309, h: 1.0, w: 0.18, kind: "thread", profile: "sacred-thread-6" },
+      { id: "sacred-thread-7", name: "Sacred Stream VII", lat: 19.71084, lon: -155.1532, h: 0.95, w: 0.18, kind: "thread", profile: "sacred-thread-7" },
     ],
   },
   {
@@ -74,7 +129,18 @@ export const RIVERS: River[] = [
       [19.868, -155.13],
       [19.8783, -155.1225],
     ],
-    falls: [{ lat: 19.8539, lon: -155.1522, h: 2.15, w: 0.16, kind: "plunge" }],
+    falls: [
+      {
+        id: "akaka-falls",
+        name: "ʻAkaka Falls",
+        lat: 19.8539,
+        lon: -155.1522,
+        h: 2.15,
+        w: 0.16,
+        kind: "plunge",
+        profile: "akaka",
+      },
+    ],
   },
   {
     id: "umauma",
@@ -85,7 +151,18 @@ export const RIVERS: River[] = [
       [19.9, -155.128],
       [19.908, -155.118],
     ],
-    falls: [{ lat: 19.8917, lon: -155.1408, h: 2.2, w: 0.28, kind: "cascade" }],
+    falls: [
+      {
+        id: "umauma-falls",
+        name: "Umauma Falls",
+        lat: 19.8917,
+        lon: -155.1408,
+        h: 2.2,
+        w: 0.28,
+        kind: "cascade",
+        profile: "umauma",
+      },
+    ],
   },
   {
     id: "waipio-wailoa",
@@ -96,7 +173,18 @@ export const RIVERS: River[] = [
       [20.116, -155.6],
       [20.1185, -155.5908],
     ],
-    falls: [{ lat: 20.114, lon: -155.611, h: 2.45, w: 0.14, kind: "plunge" }],
+    falls: [
+      {
+        id: "waipio-horsetail",
+        name: "Waipiʻo Valley Horsetail",
+        lat: 20.114,
+        lon: -155.611,
+        h: 2.45,
+        w: 0.14,
+        kind: "plunge",
+        profile: "waipio-horsetail",
+      },
+    ],
   },
   {
     id: "pololu",

@@ -1,5 +1,6 @@
 import { DoubleSide } from "three";
 import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
+import { kaLaeCape } from "@/lib/hawaii/coast";
 import { Puuhonua } from "./Puuhonua";
 
 /**
@@ -53,91 +54,79 @@ function Punaluu() {
   );
 }
 
-/** South-facing palis — this IS the coast, not a shed on the beach. */
+/** Rounded cape palis — follows the whole South Point shoreline. */
 function KaLae() {
-  const { x, z } = latLonToWorld(18.9118, -155.6838);
-  const H = 2.45;
-  const W = 16.5;
+  const H = 2.35;
   const LAVA = "#5a4a40";
   const LAVA_DARK = "#322822";
   const LAVA_GREY = "#5c564e";
-  const columns: { x: number; h: number; d: number; w: number }[] = [];
-  for (let i = -9; i <= 9; i++) {
-    if (i === -1 || i === 0) continue;
-    columns.push({
-      x: i * 0.82,
-      h: H * (0.72 + ((i * i) % 5) * 0.05),
-      d: 0.42 + (i % 3) * 0.08,
-      w: 0.7,
+  const cape = kaLaeCape();
+  const segs = [];
+  for (let i = 0; i < cape.length - 1; i++) {
+    const a = latLonToWorld(cape[i]![0], cape[i]![1]);
+    const b = latLonToWorld(cape[i + 1]![0], cape[i + 1]![1]);
+    const dx = b.x - a.x;
+    const dz = b.z - a.z;
+    const len = Math.hypot(dx, dz) || 1;
+    const yaw = Math.atan2(-dz, dx);
+    const h = H * (0.82 + (i % 4) * 0.07);
+    segs.push({
+      x: (a.x + b.x) / 2,
+      z: (a.z + b.z) / 2,
+      len,
+      yaw,
+      h,
     });
   }
+  const dive = latLonToWorld(18.9119, -155.6864);
   return (
-    <group position={[x, 0, z]}>
-      <mesh position={[0.2, H, -3.1]} rotation={[-Math.PI / 2, 0, 0.04]}>
-        <planeGeometry args={[W + 1.5, 7.2]} />
-        <meshStandardMaterial color="#7a8a42" roughness={0.97} />
-      </mesh>
-      <mesh position={[-0.4, H + 0.03, -2.4]} rotation={[-Math.PI / 2, 0, 0.35]}>
-        <planeGeometry args={[0.7, 5.4]} />
-        <meshStandardMaterial color="#c4a06a" roughness={0.92} />
-      </mesh>
-      <mesh position={[1.1, H + 0.03, -2.6]} rotation={[-Math.PI / 2, 0, -0.28]}>
-        <planeGeometry args={[0.55, 5.0]} />
-        <meshStandardMaterial color="#c4a06a" roughness={0.92} />
-      </mesh>
-      <mesh position={[2.4, H + 0.03, -2.2]} rotation={[-Math.PI / 2, 0, -0.55]}>
-        <planeGeometry args={[0.48, 4.2]} />
-        <meshStandardMaterial color="#b89058" roughness={0.92} />
-      </mesh>
-      <mesh position={[-1.6, H + 0.02, -1.1]} rotation={[-Math.PI / 2, 0, 0.1]}>
-        <planeGeometry args={[3.4, 2.2]} />
-        <meshStandardMaterial color="#a07048" roughness={0.96} />
-      </mesh>
-      <mesh position={[0, H / 2, 0.28]}>
-        <boxGeometry args={[W, H, 0.7]} />
-        <meshStandardMaterial color={LAVA_DARK} roughness={0.96} />
-      </mesh>
-      {columns.map((c, i) => (
-        <mesh key={i} position={[c.x, c.h / 2, 0.72]}>
-          <boxGeometry args={[c.w, c.h, c.d]} />
-          <meshStandardMaterial color={i % 2 ? LAVA : i % 3 ? LAVA_DARK : LAVA_GREY} roughness={0.95} />
-        </mesh>
+    <group>
+      {segs.map((s, i) => (
+        <group key={i} position={[s.x, 0, s.z]} rotation={[0, s.yaw, 0]}>
+          <mesh position={[0, s.h / 2, 0.28]}>
+            <boxGeometry args={[s.len + 0.08, s.h, 0.7]} />
+            <meshStandardMaterial color={i % 2 ? LAVA_DARK : LAVA} roughness={0.96} />
+          </mesh>
+          <mesh position={[0, s.h * 0.42, 0.62]}>
+            <boxGeometry args={[s.len * 0.72, s.h * 0.78, 0.38]} />
+            <meshStandardMaterial color={i % 3 ? LAVA_GREY : LAVA_DARK} roughness={0.95} />
+          </mesh>
+          <mesh position={[0, s.h, 0.05]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[s.len + 0.2, 2.4]} />
+            <meshStandardMaterial color="#7a8a42" roughness={0.97} />
+          </mesh>
+          {i % 3 === 0 ? (
+            <mesh position={[0, s.h + 0.03, -0.7]} rotation={[-Math.PI / 2, 0, 0.4]}>
+              <planeGeometry args={[0.45, 2.1]} />
+              <meshStandardMaterial color="#c4a06a" roughness={0.92} />
+            </mesh>
+          ) : null}
+        </group>
       ))}
-      <mesh position={[0, H - 0.04, 0.45]}>
-        <boxGeometry args={[W, 0.14, 0.95]} />
-        <meshStandardMaterial color="#7a6e5c" roughness={0.93} />
-      </mesh>
-      <mesh position={[-0.35, 0.45, 1.15]} scale={[2.1, 1.15, 1.4]}>
-        <sphereGeometry args={[0.42, 10, 7]} />
-        <meshStandardMaterial color="#08080a" roughness={1} />
-      </mesh>
-      <mesh position={[-0.35, 0.22, 1.35]}>
-        <boxGeometry args={[1.7, 0.55, 0.9]} />
-        <meshStandardMaterial color="#101014" roughness={1} />
-      </mesh>
-      <mesh position={[-0.35, 0.03, 1.5]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[1.5, 14]} />
-        <meshStandardMaterial color="#0e2a44" roughness={0.2} metalness={0.1} />
-      </mesh>
-      <mesh position={[-0.35, 0.05, 1.5]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.9, 1.7, 16]} />
-        <meshStandardMaterial color="#d8eef8" transparent opacity={0.3} depthWrite={false} />
-      </mesh>
-      <GreenHoist y={H} />
-      <mesh position={[0.45, H + 0.12, 0.35]}>
-        <boxGeometry args={[0.2, 0.18, 0.14]} />
-        <meshStandardMaterial color="#e25a28" roughness={0.55} />
-      </mesh>
-      <Ladder x={-0.55} top={H} z={0.95} len={H * 0.55} />
-      <Ladder x={0.15} top={H} z={1.0} len={H * 0.95} />
-      <Truck x={-1.1} z={-0.55} y={H} />
-      <Truck x={-2.4} z={-1.4} y={H} />
-      <Truck x={1.6} z={-1.8} y={H} />
-      <Person x={-0.6} z={-0.15} y={H} />
-      <Person x={-0.2} z={0.05} y={H} />
-      <Person x={0.35} z={-0.2} y={H} />
-      <Person x={0.9} z={-0.7} y={H} />
-      <Person x={-1.5} z={-0.45} y={H} />
+      <group position={[dive.x, H, dive.z]}>
+        <mesh position={[0, 0.02, 0.15]} rotation={[-Math.PI / 2, 0, 0.12]}>
+          <planeGeometry args={[2.6, 1.8]} />
+          <meshStandardMaterial color="#a07048" roughness={0.96} />
+        </mesh>
+        <mesh position={[0, -H + 0.42, 1.05]} scale={[1.8, 1.1, 1.35]}>
+          <sphereGeometry args={[0.42, 10, 7]} />
+          <meshStandardMaterial color="#08080a" roughness={1} />
+        </mesh>
+        <GreenHoist y={0} />
+        <mesh position={[0.4, 0.12, 0.2]}>
+          <boxGeometry args={[0.2, 0.18, 0.14]} />
+          <meshStandardMaterial color="#e25a28" roughness={0.55} />
+        </mesh>
+        <Ladder x={-0.45} top={0} z={0.9} len={H * 0.52} />
+        <Ladder x={0.2} top={0} z={0.95} len={H * 0.92} />
+        <Truck x={-0.9} z={-0.45} y={0} />
+        <Truck x={-1.8} z={-1.1} y={0} />
+        <Truck x={1.2} z={-0.9} y={0} />
+        <Person x={-0.5} z={-0.1} y={0} />
+        <Person x={-0.1} z={0.05} y={0} />
+        <Person x={0.4} z={-0.15} y={0} />
+        <Person x={0.85} z={-0.55} y={0} />
+      </group>
     </group>
   );
 }

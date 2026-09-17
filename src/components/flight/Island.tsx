@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { BufferAttribute, Color, PlaneGeometry, SRGBColorSpace, Texture, TextureLoader } from "three";
 import { terrainY, WORLD, worldToLatLon } from "@/lib/hawaii/world";
+import { southOfKaLae } from "@/lib/hawaii/coast";
 
 export function Island() {
   const [map, setMap] = useState<Texture | null>(null);
@@ -31,13 +32,10 @@ export function Island() {
     for (let i = 0; i < pos.count; i++) {
       const y0 = terrainY(pos.getX(i), pos.getZ(i));
       const ll = worldToLatLon(pos.getX(i), pos.getZ(i));
-      let y = y0;
-      if (ll.lat < 18.9138 && ll.lon > -155.708 && ll.lon < -155.662) {
-        const t = Math.min(1, Math.max(0, (18.9138 - ll.lat) / 0.003));
-        y = y0 * (1 - t) - 0.4 * t;
-      }
+      const ocean = southOfKaLae(ll.lat, ll.lon);
+      const y = ocean ? -0.65 : y0;
       pos.setY(i, y);
-      if (y < 0.06) c.set("#c9b07a");
+      if (ocean || y < 0.02) c.set("#1a8ab8");
       else if (y < 1.6) c.set("#3cb14a");
       else if (y < 4.0) c.set("#6a9a3c");
       else if (y < 7.2) c.set("#8a5340");

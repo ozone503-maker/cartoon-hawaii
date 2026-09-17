@@ -54,34 +54,72 @@ function Punaluu() {
 }
 
 function KaLae() {
-  const { x, z } = latLonToWorld(18.9148, -155.6815);
-  const yLand = Math.max(1.85, terrainY(x, z));
-  const W = 5.2;
+  const { x, z } = latLonToWorld(18.9152, -155.6824);
+  const H = 2.2;
+  const GRASS = "#8a9a48";
+  const GRASS_DRY = "#c4b06a";
+  const LAVA = "#5c4838";
+  const LAVA_DARK = "#3a2c24";
+  const LIP = "#8a7a58";
   return (
     <group position={[x, 0, z]}>
-      <mesh position={[0, yLand, -0.9]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[W, 3.6]} />
-        <meshStandardMaterial color="#6a8a42" roughness={0.95} />
+      <mesh position={[0.1, H, -1.5]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[4.4, 2.8]} />
+        <meshStandardMaterial color={GRASS} roughness={0.96} />
       </mesh>
-      <mesh position={[0, yLand / 2, 0.95]}>
-        <boxGeometry args={[W, yLand + 0.25, 0.7]} />
-        <meshStandardMaterial color="#6b5340" roughness={0.93} />
+      <mesh position={[0.05, H, 0.7]} rotation={[-Math.PI / 2, 0, 0.08]}>
+        <planeGeometry args={[3.2, 2.2]} />
+        <meshStandardMaterial color={GRASS_DRY} roughness={0.96} />
       </mesh>
-      <mesh position={[0, yLand * 0.28, 1.35]} rotation={[0.28, 0, 0]}>
-        <boxGeometry args={[W * 0.96, yLand * 0.6, 0.45]} />
-        <meshStandardMaterial color="#4a382c" roughness={0.94} />
+      <mesh position={[0, H, 2.35]} rotation={[-Math.PI / 2, 0, 0.12]}>
+        <planeGeometry args={[1.7, 1.9]} />
+        <meshStandardMaterial color={GRASS} roughness={0.97} />
       </mesh>
-      <mesh position={[-2.2, yLand / 2, 0.2]} rotation={[0, 0.2, 0]}>
-        <boxGeometry args={[0.55, yLand + 0.2, 2.8]} />
-        <meshStandardMaterial color="#5c4838" roughness={0.93} />
+      <mesh position={[0.05, H + 0.03, -0.4]} rotation={[-Math.PI / 2, 0, 0.02]}>
+        <planeGeometry args={[0.28, 5.4]} />
+        <meshStandardMaterial color="#c9b48a" roughness={0.9} />
       </mesh>
-      <mesh position={[0, 0.04, 1.7]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[1.4, 14]} />
-        <meshStandardMaterial color="#d8eef8" transparent opacity={0.35} depthWrite={false} />
+      <mesh position={[0, H / 2, 3.15]}>
+        <boxGeometry args={[1.85, H, 0.42]} />
+        <meshStandardMaterial color={LAVA} roughness={0.94} />
       </mesh>
-      <mesh position={[-1.4, yLand + 0.04, 0.55]}>
-        <boxGeometry args={[0.7, 0.05, 0.7]} />
-        <meshStandardMaterial color="#9aa0a6" roughness={0.6} />
+      <mesh position={[0, H * 0.22, 3.38]} rotation={[0.22, 0, 0]}>
+        <boxGeometry args={[1.7, H * 0.48, 0.32]} />
+        <meshStandardMaterial color={LAVA_DARK} roughness={0.95} />
+      </mesh>
+      <mesh position={[0, H - 0.08, 3.02]}>
+        <boxGeometry args={[1.9, 0.16, 0.5]} />
+        <meshStandardMaterial color={LIP} roughness={0.92} />
+      </mesh>
+      <mesh position={[-1.85, H / 2, 0.35]} rotation={[0, 0.18, 0]}>
+        <boxGeometry args={[0.4, H, 5.6]} />
+        <meshStandardMaterial color={LAVA} roughness={0.94} />
+      </mesh>
+      <mesh position={[-2.08, H * 0.28, 0.55]} rotation={[0, 0.18, 0.08]}>
+        <boxGeometry args={[0.28, H * 0.55, 5.2]} />
+        <meshStandardMaterial color={LAVA_DARK} roughness={0.95} />
+      </mesh>
+      <mesh position={[-1.72, H - 0.07, 0.4]} rotation={[0, 0.18, 0]}>
+        <boxGeometry args={[0.55, 0.14, 5.4]} />
+        <meshStandardMaterial color={LIP} roughness={0.92} />
+      </mesh>
+      <mesh position={[-1.95, H + 0.02, 1.35]}>
+        <boxGeometry args={[0.85, 0.08, 0.9]} />
+        <meshStandardMaterial color="#9aa0a6" roughness={0.62} />
+      </mesh>
+      {[0.15, -0.35, -0.85, -1.35].map((ly) => (
+        <mesh key={ly} position={[-2.12, H * 0.55 + ly, 1.4]} rotation={[0, 0.18, 0]}>
+          <boxGeometry args={[0.04, 0.07, 0.32]} />
+          <meshStandardMaterial color="#8a8e92" metalness={0.35} roughness={0.45} />
+        </mesh>
+      ))}
+      <mesh position={[-2.05, 0.05, 1.5]} rotation={[-Math.PI / 2, 0, 0.2]}>
+        <circleGeometry args={[1.1, 12]} />
+        <meshStandardMaterial color="#d8eef8" transparent opacity={0.38} depthWrite={false} />
+      </mesh>
+      <mesh position={[0, 0.04, 3.45]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.85, 12]} />
+        <meshStandardMaterial color="#e8f4fa" transparent opacity={0.32} depthWrite={false} />
       </mesh>
     </group>
   );

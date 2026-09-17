@@ -1,6 +1,6 @@
 import { DoubleSide } from "three";
 import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
-import { kaLaeCape } from "@/lib/hawaii/coast";
+import { kaLaeCape, kaLaeShoreLat, KA_LAE_CLIFF_H } from "@/lib/hawaii/coast";
 import { Puuhonua } from "./Puuhonua";
 
 /**
@@ -54,9 +54,9 @@ function Punaluu() {
   );
 }
 
-/** Rounded cape palis — follows the whole South Point shoreline. */
+/** Cliff glued to the green cape — same height as the plateau, not a raft in the sea. */
 function KaLae() {
-  const H = 2.35;
+  const H = KA_LAE_CLIFF_H;
   const LAVA = "#5a4a40";
   const LAVA_DARK = "#322822";
   const LAVA_GREY = "#5c564e";
@@ -68,64 +68,53 @@ function KaLae() {
     const dx = b.x - a.x;
     const dz = b.z - a.z;
     const len = Math.hypot(dx, dz) || 1;
-    const yaw = Math.atan2(-dz, dx);
-    const h = H * (0.82 + (i % 4) * 0.07);
     segs.push({
       x: (a.x + b.x) / 2,
       z: (a.z + b.z) / 2,
       len,
-      yaw,
-      h,
+      yaw: Math.atan2(-dz, dx),
+      h: H * (0.92 + (i % 5) * 0.03),
     });
   }
-  const dive = latLonToWorld(18.9119, -155.6864);
+  const diveLon = -155.6864;
+  const dive = latLonToWorld(kaLaeShoreLat(diveLon) + 0.0002, diveLon);
   return (
     <group>
       {segs.map((s, i) => (
         <group key={i} position={[s.x, 0, s.z]} rotation={[0, s.yaw, 0]}>
-          <mesh position={[0, s.h / 2, 0.28]}>
-            <boxGeometry args={[s.len + 0.08, s.h, 0.7]} />
+          <mesh position={[0, s.h / 2, 0.18]}>
+            <boxGeometry args={[s.len + 0.12, s.h, 0.55]} />
             <meshStandardMaterial color={i % 2 ? LAVA_DARK : LAVA} roughness={0.96} />
           </mesh>
-          <mesh position={[0, s.h * 0.42, 0.62]}>
-            <boxGeometry args={[s.len * 0.72, s.h * 0.78, 0.38]} />
+          <mesh position={[0, s.h * 0.4, 0.42]}>
+            <boxGeometry args={[s.len * 0.8, s.h * 0.72, 0.28]} />
             <meshStandardMaterial color={i % 3 ? LAVA_GREY : LAVA_DARK} roughness={0.95} />
           </mesh>
-          <mesh position={[0, s.h, 0.05]} rotation={[-Math.PI / 2, 0, 0]}>
-            <planeGeometry args={[s.len + 0.2, 2.4]} />
-            <meshStandardMaterial color="#7a8a42" roughness={0.97} />
-          </mesh>
-          {i % 3 === 0 ? (
-            <mesh position={[0, s.h + 0.03, -0.7]} rotation={[-Math.PI / 2, 0, 0.4]}>
-              <planeGeometry args={[0.45, 2.1]} />
-              <meshStandardMaterial color="#c4a06a" roughness={0.92} />
-            </mesh>
-          ) : null}
         </group>
       ))}
       <group position={[dive.x, H, dive.z]}>
-        <mesh position={[0, 0.02, 0.15]} rotation={[-Math.PI / 2, 0, 0.12]}>
-          <planeGeometry args={[2.6, 1.8]} />
+        <mesh position={[0, 0.02, 0.1]} rotation={[-Math.PI / 2, 0, 0.12]}>
+          <planeGeometry args={[2.4, 1.6]} />
           <meshStandardMaterial color="#a07048" roughness={0.96} />
         </mesh>
-        <mesh position={[0, -H + 0.42, 1.05]} scale={[1.8, 1.1, 1.35]}>
-          <sphereGeometry args={[0.42, 10, 7]} />
+        <mesh position={[0, -H + 0.38, 0.85]} scale={[1.6, 1.05, 1.2]}>
+          <sphereGeometry args={[0.38, 10, 7]} />
           <meshStandardMaterial color="#08080a" roughness={1} />
         </mesh>
         <GreenHoist y={0} />
-        <mesh position={[0.4, 0.12, 0.2]}>
+        <mesh position={[0.4, 0.12, 0.15]}>
           <boxGeometry args={[0.2, 0.18, 0.14]} />
           <meshStandardMaterial color="#e25a28" roughness={0.55} />
         </mesh>
-        <Ladder x={-0.45} top={0} z={0.9} len={H * 0.52} />
-        <Ladder x={0.2} top={0} z={0.95} len={H * 0.92} />
-        <Truck x={-0.9} z={-0.45} y={0} />
-        <Truck x={-1.8} z={-1.1} y={0} />
-        <Truck x={1.2} z={-0.9} y={0} />
-        <Person x={-0.5} z={-0.1} y={0} />
-        <Person x={-0.1} z={0.05} y={0} />
-        <Person x={0.4} z={-0.15} y={0} />
-        <Person x={0.85} z={-0.55} y={0} />
+        <Ladder x={-0.4} top={0} z={0.7} len={H * 0.55} />
+        <Ladder x={0.18} top={0} z={0.75} len={H * 0.92} />
+        <Truck x={-0.85} z={-0.4} y={0} />
+        <Truck x={-1.6} z={-0.95} y={0} />
+        <Truck x={1.1} z={-0.8} y={0} />
+        <Person x={-0.45} z={-0.08} y={0} />
+        <Person x={-0.05} z={0.04} y={0} />
+        <Person x={0.38} z={-0.12} y={0} />
+        <Person x={0.8} z={-0.5} y={0} />
       </group>
     </group>
   );
@@ -202,8 +191,10 @@ function Person({ x, z, y }: { x: number; z: number; y: number }) {
 }
 
 function Papakolea() {
-  const { x, z } = latLonToWorld(18.9364, -155.6464);
-  const y = terrainY(x, z);
+  const lon = -155.6464;
+  const lat = kaLaeShoreLat(lon) + 0.0035;
+  const { x, z } = latLonToWorld(lat, lon);
+  const y = Math.max(KA_LAE_CLIFF_H * 0.35, terrainY(x, z));
   return (
     <group position={[x, y, z]}>
       <mesh rotation={[-Math.PI / 2, 0, 0.4]} position={[0, 0.05, 0.1]} scale={[0.7, 0.42, 1]}>

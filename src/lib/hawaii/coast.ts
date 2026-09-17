@@ -1,4 +1,4 @@
-import { latLonToWorld } from "./world";
+import { latLonToWorld, terrainY } from "./world";
 
 /** Open coast — no rainforest canopy. Pins stay on the real shoreline. */
 const ZONES: { lat: number; lon: number; r: number }[] = [
@@ -20,23 +20,46 @@ export function inOpenCoast(x: number, z: number) {
   return false;
 }
 
-/** Rounded southern land edge at Ka Lae (parabola opening north from the point). */
-export function kaLaeCapeLat(lon: number) {
-  const dlon = lon + 155.6813;
-  return 18.9108 + 16 * dlon * dlon;
+const shoreCache = new Map<number, number>();
+
+/** Walk north from the map edge until the heightmap is land. */
+export function kaLaeShoreLat(lon: number) {
+  const key = Math.round(lon * 2500);
+  const hit = shoreCache.get(key);
+  if (hit !== undefined) return hit;
+  let lat = 18.905;
+  for (let n = 0; n < 80; n++) {
+    const { x, z } = latLonToWorld(lat, lon);
+    if (terrainY(x, z) > 0.1) {
+      shoreCache.set(key, lat);
+      return lat;
+    }
+    lat += 0.0006;
+  }
+  shoreCache.set(key, 18.92);
+  return 18.92;
 }
 
 export function southOfKaLae(lat: number, lon: number) {
-  if (lon < -155.718 || lon > -155.645) return false;
-  return lat < kaLaeCapeLat(lon);
+  if (lon < -155.72 || lon > -155.642) return false;
+  return lat < kaLaeShoreLat(lon) - 0.00025;
 }
 
-/** Lip of the cape, west → east, for the cliff ribbon. */
+/** On-land cape behind the lip — raised so the cliff is the island, not a raft. */
+export function onKaLaePlateau(lat: number, lon: number) {
+  if (lon < -155.72 || lon > -155.642) return false;
+  const shore = kaLaeShoreLat(lon);
+  return lat >= shore - 0.00025 && lat < shore + 0.014;
+}
+
+export const KA_LAE_CLIFF_H = 1.62;
+
+/** Lip of the cape snapped to the 3D shoreline, west → east. */
 export function kaLaeCape(): [number, number][] {
-  const pts: [number, number][] = [];
-  for (let i = 0; i <= 18; i++) {
-    const lon = -155.714 + (i / 18) * 0.066;
-    pts.push([kaLaeCapeLat(lon) + 0.00035, lon]);
+  const out: [number, number][] = [];
+  for (let i = 0; i <= 20; i++) {
+    const lon = -155.716 + (i / 20) * 0.072;
+    out.push([kaLaeShoreLat(lon) + 0.00015, lon]);
   }
-  return pts;
+  return out;
 }

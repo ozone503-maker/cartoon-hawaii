@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { BufferAttribute, Color, PlaneGeometry, SRGBColorSpace, Texture, TextureLoader } from "three";
-import { terrainY, WORLD } from "@/lib/hawaii/world";
+import { terrainY, WORLD, worldToLatLon } from "@/lib/hawaii/world";
 
 export function Island() {
   const [map, setMap] = useState<Texture | null>(null);
@@ -29,7 +29,13 @@ export function Island() {
     const col = new Float32Array(pos.count * 3);
     const c = new Color();
     for (let i = 0; i < pos.count; i++) {
-      const y = terrainY(pos.getX(i), pos.getZ(i));
+      const y0 = terrainY(pos.getX(i), pos.getZ(i));
+      const ll = worldToLatLon(pos.getX(i), pos.getZ(i));
+      let y = y0;
+      if (ll.lat < 18.9138 && ll.lon > -155.708 && ll.lon < -155.662) {
+        const t = Math.min(1, Math.max(0, (18.9138 - ll.lat) / 0.003));
+        y = y0 * (1 - t) - 0.4 * t;
+      }
       pos.setY(i, y);
       if (y < 0.06) c.set("#c9b07a");
       else if (y < 1.6) c.set("#3cb14a");

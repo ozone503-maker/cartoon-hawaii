@@ -53,73 +53,128 @@ function Punaluu() {
   );
 }
 
+/** West-lip jump cliff: rusty lava deck, sheer basalt, green hoist, ladders. */
 function KaLae() {
-  const { x, z } = latLonToWorld(18.9152, -155.6824);
-  const H = 2.2;
-  const GRASS = "#8a9a48";
-  const GRASS_DRY = "#c4b06a";
-  const LAVA = "#5c4838";
+  const { x, z } = latLonToWorld(18.9134, -155.6832);
+  const H = 1.7;
+  const LAVA = "#5a4638";
   const LAVA_DARK = "#3a2c24";
-  const LIP = "#8a7a58";
+  const RUST = "#8a5a40";
+  const DECK = "#a87850";
   return (
     <group position={[x, 0, z]}>
-      <mesh position={[0.1, H, -1.5]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[4.4, 2.8]} />
-        <meshStandardMaterial color={GRASS} roughness={0.96} />
+      <mesh position={[0.55, H / 2, 0.2]}>
+        <boxGeometry args={[3.6, H, 7.2]} />
+        <meshStandardMaterial color={LAVA} roughness={0.96} />
       </mesh>
-      <mesh position={[0.05, H, 0.7]} rotation={[-Math.PI / 2, 0, 0.08]}>
-        <planeGeometry args={[3.2, 2.2]} />
-        <meshStandardMaterial color={GRASS_DRY} roughness={0.96} />
+      <mesh position={[0.55, H + 0.03, 0.2]} rotation={[-Math.PI / 2, 0, 0.04]}>
+        <planeGeometry args={[3.55, 7.1]} />
+        <meshStandardMaterial color={DECK} roughness={0.98} />
       </mesh>
-      <mesh position={[0, H, 2.35]} rotation={[-Math.PI / 2, 0, 0.12]}>
-        <planeGeometry args={[1.7, 1.9]} />
-        <meshStandardMaterial color={GRASS} roughness={0.97} />
+      <mesh position={[0.9, H + 0.04, -1.6]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[2.2, 2.4]} />
+        <meshStandardMaterial color={RUST} roughness={0.97} />
       </mesh>
-      <mesh position={[0.05, H + 0.03, -0.4]} rotation={[-Math.PI / 2, 0, 0.02]}>
-        <planeGeometry args={[0.28, 5.4]} />
-        <meshStandardMaterial color="#c9b48a" roughness={0.9} />
+      <mesh position={[1.8, H + 0.02, -3.4]} rotation={[-Math.PI / 2, 0, 0.1]}>
+        <planeGeometry args={[4.2, 3.2]} />
+        <meshStandardMaterial color="#8a9a48" roughness={0.96} />
       </mesh>
-      <mesh position={[0, H / 2, 3.15]}>
-        <boxGeometry args={[1.85, H, 0.42]} />
-        <meshStandardMaterial color={LAVA} roughness={0.94} />
-      </mesh>
-      <mesh position={[0, H * 0.22, 3.38]} rotation={[0.22, 0, 0]}>
-        <boxGeometry args={[1.7, H * 0.48, 0.32]} />
+      <mesh position={[-1.28, H / 2, 0.15]}>
+        <boxGeometry args={[0.28, H, 7.0]} />
         <meshStandardMaterial color={LAVA_DARK} roughness={0.95} />
       </mesh>
-      <mesh position={[0, H - 0.08, 3.02]}>
-        <boxGeometry args={[1.9, 0.16, 0.5]} />
-        <meshStandardMaterial color={LIP} roughness={0.92} />
-      </mesh>
-      <mesh position={[-1.85, H / 2, 0.35]} rotation={[0, 0.18, 0]}>
-        <boxGeometry args={[0.4, H, 5.6]} />
-        <meshStandardMaterial color={LAVA} roughness={0.94} />
-      </mesh>
-      <mesh position={[-2.08, H * 0.28, 0.55]} rotation={[0, 0.18, 0.08]}>
-        <boxGeometry args={[0.28, H * 0.55, 5.2]} />
-        <meshStandardMaterial color={LAVA_DARK} roughness={0.95} />
-      </mesh>
-      <mesh position={[-1.72, H - 0.07, 0.4]} rotation={[0, 0.18, 0]}>
-        <boxGeometry args={[0.55, 0.14, 5.4]} />
-        <meshStandardMaterial color={LIP} roughness={0.92} />
-      </mesh>
-      <mesh position={[-1.95, H + 0.02, 1.35]}>
-        <boxGeometry args={[0.85, 0.08, 0.9]} />
-        <meshStandardMaterial color="#9aa0a6" roughness={0.62} />
-      </mesh>
-      {[0.15, -0.35, -0.85, -1.35].map((ly) => (
-        <mesh key={ly} position={[-2.12, H * 0.55 + ly, 1.4]} rotation={[0, 0.18, 0]}>
-          <boxGeometry args={[0.04, 0.07, 0.32]} />
-          <meshStandardMaterial color="#8a8e92" metalness={0.35} roughness={0.45} />
+      {[
+        [0.9, 0.85],
+        [-0.4, 1.1],
+        [-1.5, 0.7],
+        [1.8, 0.95],
+        [2.6, 0.55],
+      ].map(([zz, hh], i) => (
+        <mesh key={i} position={[-1.42, hh / 2, zz]}>
+          <boxGeometry args={[0.38 + (i % 2) * 0.12, hh, 1.15]} />
+          <meshStandardMaterial color={i % 2 ? LAVA : LAVA_DARK} roughness={0.94} />
         </mesh>
       ))}
-      <mesh position={[-2.05, 0.05, 1.5]} rotation={[-Math.PI / 2, 0, 0.2]}>
-        <circleGeometry args={[1.1, 12]} />
-        <meshStandardMaterial color="#d8eef8" transparent opacity={0.38} depthWrite={false} />
+      <mesh position={[-1.55, 0.28, 0.2]} rotation={[0, 0, -0.12]}>
+        <boxGeometry args={[0.7, 0.55, 2.4]} />
+        <meshStandardMaterial color="#1a1614" roughness={1} />
       </mesh>
-      <mesh position={[0, 0.04, 3.45]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.85, 12]} />
-        <meshStandardMaterial color="#e8f4fa" transparent opacity={0.32} depthWrite={false} />
+      <mesh position={[-1.7, 0.22, 0.15]} scale={[1.1, 0.7, 1.4]}>
+        <sphereGeometry args={[0.38, 8, 6]} />
+        <meshStandardMaterial color="#0c0c0e" roughness={1} />
+      </mesh>
+      <mesh position={[0.2, H / 2, 3.7]}>
+        <boxGeometry args={[2.6, H, 0.35]} />
+        <meshStandardMaterial color={LAVA_DARK} roughness={0.95} />
+      </mesh>
+      <GreenHoist y={H} />
+      <Ladder x={-1.38} y={H} z={-0.15} />
+      <Ladder x={-1.38} y={H} z={0.55} />
+      <Truck x={0.15} z={-0.35} y={H} />
+      <Truck x={1.1} z={-1.8} y={H} />
+      <Person x={-0.85} z={0.2} y={H} />
+      <Person x={-0.55} z={0.55} y={H} />
+      <Person x={-0.2} z={-0.05} y={H} />
+      <Person x={0.45} z={0.7} y={H} />
+      <mesh position={[-1.9, 0.04, 0.3]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.3, 12]} />
+        <meshStandardMaterial color="#d8eef8" transparent opacity={0.35} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function GreenHoist({ y }: { y: number }) {
+  return (
+    <group position={[-1.05, y, 0.15]}>
+      <mesh position={[0, 0.28, 0]} rotation={[0, 0, 0.35]}>
+        <boxGeometry args={[0.06, 0.7, 0.06]} />
+        <meshStandardMaterial color="#3aaa3a" roughness={0.45} metalness={0.25} />
+      </mesh>
+      <mesh position={[0.22, 0.28, 0]} rotation={[0, 0, -0.55]}>
+        <boxGeometry args={[0.05, 0.62, 0.05]} />
+        <meshStandardMaterial color="#2e8a2e" roughness={0.45} metalness={0.25} />
+      </mesh>
+      <mesh position={[-0.22, 0.12, 0]}>
+        <boxGeometry args={[0.22, 0.16, 0.16]} />
+        <meshStandardMaterial color="#d45a28" roughness={0.6} />
+      </mesh>
+    </group>
+  );
+}
+
+function Ladder({ x, y, z }: { x: number; y: number; z: number }) {
+  return (
+    <group position={[x, y / 2, z]}>
+      <mesh>
+        <boxGeometry args={[0.03, y * 0.92, 0.12]} />
+        <meshStandardMaterial color="#c4b08a" roughness={0.7} />
+      </mesh>
+    </group>
+  );
+}
+
+function Truck({ x, z, y }: { x: number; z: number; y: number }) {
+  return (
+    <group position={[x, y, z]}>
+      <mesh position={[0, 0.07, 0]}>
+        <boxGeometry args={[0.28, 0.1, 0.16]} />
+        <meshStandardMaterial color="#5a5e62" roughness={0.55} />
+      </mesh>
+      <mesh position={[0.06, 0.14, 0]}>
+        <boxGeometry args={[0.12, 0.1, 0.15]} />
+        <meshStandardMaterial color="#4a4e52" roughness={0.55} />
+      </mesh>
+    </group>
+  );
+}
+
+function Person({ x, z, y }: { x: number; z: number; y: number }) {
+  return (
+    <group position={[x, y, z]}>
+      <mesh position={[0, 0.09, 0]}>
+        <capsuleGeometry args={[0.035, 0.08, 3, 6]} />
+        <meshStandardMaterial color="#d8c4a8" roughness={0.8} />
       </mesh>
     </group>
   );

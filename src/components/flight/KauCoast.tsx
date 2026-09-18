@@ -20,8 +20,9 @@ export function KauCoast() {
 }
 
 function Punaluu() {
-  const { x, z } = latLonToWorld(19.1358, -155.5044);
-  const y = terrainY(x, z);
+  // Beach at water — snap keeps palms/honu on dry sand, not Nāʻālehu upslope.
+  const p = snapToLand(19.1358, -155.5044);
+  const { x, z, y } = p;
   const palms = [
     [-0.85, -0.55],
     [-0.4, -0.7],
@@ -152,20 +153,26 @@ function Person({ x, z, y }: { x: number; z: number; y: number }) {
 }
 
 function Papakolea() {
+  // Green-sand cove in a *broken* cone on the east cape — not a donut in the ocean.
   const p = snapToLand(18.9364, -155.6464);
   return (
     <group position={[p.x, p.y, p.z]}>
-      <mesh rotation={[-Math.PI / 2, 0, 0.35]} position={[0.15, 0.04, 0.35]} scale={[1.1, 0.7, 1]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0.4]} position={[0.1, 0.03, 0.2]} scale={[0.95, 0.55, 1]}>
         <circleGeometry args={[1, 16]} />
         <meshStandardMaterial color="#6a7a38" roughness={0.95} />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0.2]} position={[0.2, 0.06, 0.45]} scale={[0.7, 0.42, 1]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0.25]} position={[0.15, 0.05, 0.28]} scale={[0.55, 0.32, 1]}>
         <circleGeometry args={[1, 14]} />
         <meshStandardMaterial color="#8a9a3c" roughness={0.92} />
       </mesh>
-      <mesh position={[0.05, 0.16, -0.15]}>
-        <cylinderGeometry args={[0.42, 0.55, 0.28, 10, 1, true]} />
+      {/* Landward arc only (thetaLength < 2π) — open to the sea */}
+      <mesh position={[0.0, 0.2, -0.2]} rotation={[0, 0.55, 0]}>
+        <cylinderGeometry args={[0.48, 0.62, 0.36, 12, 1, true, 0.35, Math.PI * 1.35]} />
         <meshStandardMaterial color="#8a5a38" roughness={0.92} side={DoubleSide} />
+      </mesh>
+      <mesh position={[-0.35, 0.14, -0.05]} rotation={[0.15, 0.2, 0.1]}>
+        <boxGeometry args={[0.55, 0.22, 0.28]} />
+        <meshStandardMaterial color="#7a4a30" roughness={0.95} />
       </mesh>
     </group>
   );

@@ -32,13 +32,13 @@ export function kilaueaBowlY(x: number, z: number, y0: number) {
   const dx = (x - CAL.x) / KILAUEA_RX;
   const dz = (z - CAL.z) / KILAUEA_RZ;
   const e = dx * dx + dz * dz;
-  if (e >= 1.12) return y0;
-  const inner = Math.max(0, 1 - e);
-  let drop = inner * inner * 1.15;
+  if (e >= 1.06) return y0;
+  const t = Math.min(1, (1.06 - e) / 0.18);
+  let drop = t * 1.55;
   const px = (x - PIT.x) / PR;
   const pz = (z - PIT.z) / PR;
   const pe = px * px + pz * pz;
-  if (pe < 1) drop += (1 - pe) * (1 - pe) * 0.55;
+  if (pe < 1) drop += (1 - pe) * 0.4;
   return y0 - drop;
 }
 

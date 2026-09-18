@@ -311,15 +311,17 @@ def foam(img: Image.Image, ocean: np.ndarray) -> None:
 
 
 def kilauea(img: Image.Image) -> None:
-    """Nested caldera from the map: grey floor, black Halemaʻumaʻu, brown rim."""
+    """Irregular nested caldera like the map: grey floor, black pit west, sulfur."""
     x, y = project(19.4069, -155.2834)
     d = ImageDraw.Draw(img)
-    d.ellipse((x - 18, y - 13, x + 16, y + 14), fill=(92, 78, 64))
-    d.ellipse((x - 15, y - 10, x + 13, y + 11), fill=(72, 64, 56))
+    d.ellipse((x - 17, y - 12, x + 15, y + 14), fill=(108, 92, 74))
+    d.ellipse((x - 14, y - 9, x + 12, y + 11), fill=(82, 72, 62))
+    d.ellipse((x - 8, y - 4, x + 10, y + 8), fill=(70, 62, 54))
     px, py = project(19.405, -155.291)
-    d.ellipse((px - 8, py - 6, px + 7, py + 6), fill=(28, 24, 22))
-    d.ellipse((px - 3, py - 2.2, px + 3, py + 2.2), fill=(196, 88, 36))
-    d.ellipse((px + 2, py - 4, px + 6, py - 1), fill=(210, 200, 170))
+    d.ellipse((px - 9, py - 7, px + 6, py + 6), fill=(32, 26, 22))
+    d.ellipse((px - 5, py - 4, px + 3, py + 3), fill=(22, 18, 16))
+    d.ellipse((px - 2, py - 1.5, px + 2, py + 1.5), fill=(196, 88, 36))
+    d.ellipse((px + 1, py - 5, px + 5, py - 2), fill=(210, 198, 168))
 
 
 def main() -> None:

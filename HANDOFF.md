@@ -59,23 +59,40 @@ These have burned hours and still fail the “they will eat us alive” accuracy
 Code: `src/components/flight/Waterfalls.tsx`, `src/components/flight/Rivers.tsx`.  
 Last attempt: slope-draped sheets + river Y dip at falls (`5dab030`). **User has not signed off.**
 
-### 2. Ka Lae (South Point)
+### 2. Ka Lae (South Point) — **Grok failed this. Do not repeat the raft.**
 
-**Problem:** Looked like a tan raft floating in the ocean. User: huge cliff people jump and fish off. They almost drowned there.
+**User sign-off: none.** After many passes it is still wrong. Latest phone shots (Sep 17):
 
-**Need:** Grass on top, sheer rock face down to deep water, west lip for jumping/fishing. Not a pancake. Not a dock.
+- High altitude: a **brown Minecraft palisade floating in the ocean**, disconnected from the green island by a moat. User circled the **real Landsat cape** (west-edge drop + South Point Road) and drew arrows: *that* cliff look must wrap the whole cape; the box wall must go.
+- Low altitude (`18.875°N 155.677°W`, 172 m AGL): jump kit (green hoist, trucks, orange pad) sitting on a **cyan sandbar**, not on the tan/green lip.
 
-Code: `src/components/flight/KauCoast.tsx` → `KaLae()`. Coords: `18.9108°N, 155.6813°W` (point); mesh currently stood slightly inland at `18.9148, -155.6815`. **User has not signed off.**
+**What “done” looks like (user photos + Google Maps):**
 
-Punaluʻu = black sand **at beach level**. Nāʻālehu too. Do not put them on a bluff.
+- The **island mesh itself** is the cliff. One continuous cape from the west lip around to Papakōlea (green sand). No second island, no dock, no raft.
+- West lip jump: rusty lava deck, green hoist, two ladders into an undercut cave, trucks on dirt, deep water. People jump and fish here. User almost drowned in that current.
+- Papakōlea is on the east-side green coast, not a brown donut in the water.
+- Punaluʻu / Nāʻālehu stay at **beach level**.
+
+**Failed approaches — do not do these again:**
+
+1. Extra `boxGeometry` palisade in `KauCoast.tsx` `KaLae()` placed at geographic `18.91, -155.68` → sits in the ocean because the visible Landsat land edge is further north.
+2. `southOfKaLae` / `kauCliffY` dumping a lat band to `y = -0.55` → moat between pancake and fake wall.
+3. Orange deck plane + `snapToLand` on `terrainY > 0.12` → sandbar in the shallows (cyan shelf counts as “land”).
+4. Raising a plateau so the prop wall looks tall → mesa in the sea next to a gentle green slope.
+
+**What actually looks right:** the **west-edge heightmap drop** already in the Landsat plane (user circled it). Next editor should **steepen that same terrain** around the cape, then put **only** hoist/ladders/trucks on the dry lip. Skip cyan albedo (`b > r`). No volume mesh in the water.
+
+Code: `src/components/flight/KauCoast.tsx`, `src/lib/hawaii/coast.ts` (`snapToLand`, `kauCliffY`), `src/components/flight/Island.tsx` (plane now 128×148). Jump target: `18.9119, -155.6864` then snap to **dry** land. Point: `18.9108°N, 155.6813°W`. Papakōlea: `18.9364, -155.6464`.
+
+Grok should **stop iterating Ka Lae props**. This needs a terrain-edge solution, not another dock.
 
 ### 3. Close-up terrain still Minecraft
 
 Cartoon Landsat texture is back on the island (`Island.tsx`). From the chase camera at ~100–300 m AGL it still reads blocky. Need more mesh density and/or better drape without killing Samsung WebGL (keep segments modest; last stable plane was 96×110).
 
-### 4. Trees are blobs
+### 4. Trees
 
-`Forest.tsx` / `PunaGrove.tsx` — dark spheres on sticks. Need cartoon canopy that still reads as ʻōhiʻa / jungle from the chase cam. **No `MeshToonMaterial` / `gradientMap`** — that crashed Samsung.
+First pass in: albizia umbrellas (Puna), ʻōhiʻa + lehua, koa on higher slopes (`Forest.tsx`, `PunaGrove.tsx`). User said “looking better.” Still not final. **No `MeshToonMaterial`.**
 
 ### 5. Towns
 
@@ -133,7 +150,8 @@ python3 scripts/paint-cartoon-atlas.py
 ## How to help without wrecking it
 
 1. Keep `craft.ts`, `ChaseCam.tsx`, `FlightScene.tsx` boot, `world.ts` / `geo.ts` / `places.ts` coordinates.
-2. Work the waterfall look and Ka Lae cliff first — those are the user-facing failures.
-3. Then trees, towns, close terrain.
+2. **Ka Lae is blocked.** Do not add another box wall in the ocean. Sculpt the Landsat mesh edge; props only on dry ground.
+3. Waterfalls still need a look the user accepts (`Waterfalls.tsx` / `Rivers.tsx`).
+4. Then towns, close terrain, tree polish.
 4. Test on a phone if you can. Desktop-only “it works” already burned us.
 5. If you add geometry, budget Samsung: no toon ramps, no giant textures in `useTexture`, no 0×0 canvas.

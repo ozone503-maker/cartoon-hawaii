@@ -40,9 +40,9 @@ The west-edge drop on the Landsat cape already looks like a cliff from the air. 
 
 | Place | Lat / lon | Status | What “done” is |
 |---|---|---|---|
-| **Ka Lae / South Point** | 18.9108, -155.6813 | **BLOCKED** | Island edge is the cliff around the whole cape. Jump is gear on the **dry west lip** (hoist, two ladders, cave, trucks). Deep water. No raft, dock, mesa, sandbar. See `HANDOFF.md` §2. |
+| **Ka Lae / South Point** | 18.9108, -155.6813 | **NEEDS PHONE** | Terrain sculpt landed (`sculpt_ka_lae_cape` in `scripts/fix-kau-height.py` + regenerated `hawaii-height.png`): Landsat cape land raised, ocean stays 0. Jump gear via `snapToLand` on dry lip. Still needs Jessie phone sign-off at 100–400 m AGL. No raft/dock/mesa/sandbar/moat. See `HANDOFF.md` §2. |
 | South Point Road + dirt tracks | Hwy 11 → Ka Lae | THIN | White road already exists; fan of dirt to the jump like Google Maps. |
-| **Papakōlea approach cliffs** | 18.936, -155.646 | WRONG | Green-sand cove in a broken cone **on the east cape**, not a donut in the ocean. |
+| **Papakōlea approach cliffs** | 18.936, -155.646 | **NEEDS PHONE** | Heightmap sculpt raises east-cape rim + keeps cove floor low (on land). Props via `snapToLand`. Still needs Jessie phone fly-by; not DONE. |
 | **Waipiʻo palis** | 20.12, -155.59 | THIN | Huge valley walls, road down a dare, black-sand mouth. Falls on the **walls**, not the ocean horizon. |
 | **Pololū → Honokane → Waimanu** | 20.20, -155.73 west | THIN | Stack of Kohala valleys, black-sand coves, knife ridges. Oldest volcano. |
 | **Hāmākua palis** | Honokaʻa → Hilo coast | MISSING | Thousand-foot green cliffs for miles. Towns sit **above**, ocean far below. |
@@ -56,8 +56,8 @@ The west-edge drop on the Landsat cape already looks like a cliff from the air. 
 
 | Beach | Kind | Lat / lon | Status | Notes |
 |---|---|---|---|---|
-| **Punaluʻu** | Black | 19.1358, -155.5044 | WRONG / THIN | Jet black sand **at water**, palms, honu. Nāʻālehu is **upslope**, not on the sand. |
-| **Papakōlea** | Green (olivine) | 18.9364, -155.6464 | WRONG | One of the few green-sand beaches on Earth. Hike across Kaʻū, broken cinder cone, olivine cove. |
+| **Punaluʻu** | Black | 19.1358, -155.5044 | **NEEDS PHONE** | Height pass pins beach ~water + Nāʻālehu upslope. Black sand props remain thin. Terrain sculpt landed; Jessie phone sign-off still required — not DONE. |
+| **Papakōlea** | Green (olivine) | 18.9364, -155.6464 | **NEEDS PHONE** | Cape sculpt + green-sand props on dry land via `snapToLand`. Still needs Jessie phone verify — not DONE. |
 | **Hāpuna** | White | 19.9919, -155.8244 | THIN | Wide white crescent, kiawe, gold hills. The Big Island’s famous white sand. |
 | **Waipiʻo mouth** | Black | 20.12, -155.59 | THIN | Black sand between the palis. |
 | **Pololū cove** | Black | 20.204, -155.733 | THIN | Black sand, ironwoods. |
@@ -199,7 +199,7 @@ No `MeshToonMaterial`. Instanced, modest counts, Samsung-safe.
 
 Do **one landscape system** at a time, verify on phone, then move. Don’t open five cliffs at once.
 
-1. **Terrain edge** — Ka Lae cape + Papakōlea + Punaluʻu at water, using Landsat shore (no prop raft).
+1. **Terrain edge** — Ka Lae cape + Papakōlea + Punaluʻu: heightmap sculpt landed (ocean=0); **await Jessie phone sign-off** (FlashTown spawn + fly 100–400 m AGL). Not DONE.
 2. **Kīlauea** — real caldera, rift black, 2018 coast, Volcano Village in the trees.
 3. **Towns** — Hilo bay, Kona waterfront, then Pāhoa / Waimea / Honokaʻa as distinct plantation towns.
 4. **Windward palis** — Waipiʻo + Pololū + Hāmākua cliff line (this is the “entire coastline” look the user wants, on the **north**, not faked at Ka Lae).

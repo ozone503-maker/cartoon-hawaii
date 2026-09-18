@@ -47,16 +47,10 @@ export function kaLaeShoreLat(lon: number) {
 }
 
 /**
- * Keep the heightmap cape. Only drop thin beaches so the existing land
- * becomes a cliff all the way around to Papakōlea — no raft in the sea.
+ * Heightmap sculpt owns the Ka Lae cape cliff (scripts/fix-kau-height.py).
+ * Pass y0 through — do not dig a -0.4 moat or invent ocean rafts.
  */
-export function kauCliffY(lat: number, lon: number, y0: number) {
-  if (lon < -155.75 || lon > -155.61 || lat > 19.03 || lat < 18.88) return y0;
-  const { x, z } = latLonToWorld(lat, lon);
-  const south = terrainY(x, z + 2.2);
-  const north = terrainY(x, z - 2.2);
-  if (y0 < 0.045 && north < 0.1) return y0;
-  if (y0 < 0.18 && south < 0.1 && north > 0.16) return -0.4;
+export function kauCliffY(_lat: number, _lon: number, y0: number) {
   return y0;
 }
 

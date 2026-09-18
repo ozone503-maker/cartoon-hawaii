@@ -175,6 +175,7 @@ def classify(
 
     yy, xx = np.mgrid[0:h, 0:w]
     lon = GEO["lonMin"] + ((xx - ISLAND_PX["x"]) / ISLAND_PX["w"]) * (GEO["lonMax"] - GEO["lonMin"])
+    lat = GEO["latMax"] - ((yy - ISLAND_PX["y"]) / ISLAND_PX["h"]) * (GEO["latMax"] - GEO["latMin"])
     west = lon < -155.72
     kona_lava = (lon < -155.88) & (meters < 500)
 
@@ -194,6 +195,13 @@ def classify(
     biome[grass] = GRASS
     biome[land & ~west & (meters < 2200)] = RAINFOREST
     biome[lava] = LAVA
+    # Kīlauea summit + Kaʻū desert + east rift are black cinder, not rainforest.
+    dark = land & (luma < 88) & (sat < 42) & (g < 92) & (meters > 180)
+    hvnp = land & (lat > 19.26) & (lat < 19.45) & (lon > -155.42) & (lon < -155.14) & (meters > 650)
+    rift = land & (lat > 19.34) & (lat < 19.52) & (lon > -155.26) & (lon < -154.82) & (luma < 108) & (g < 95)
+    village = land & (lat > 19.418) & (lat < 19.458) & (lon > -155.265) & (lon < -155.198)
+    biome[hvnp | rift | dark] = LAVA
+    biome[village] = RAINFOREST
     biome[alpine] = ALPINE
     biome[snow] = SNOW
     biome[beach] = BEACH
@@ -302,11 +310,15 @@ def foam(img: Image.Image, ocean: np.ndarray) -> None:
 
 
 def kilauea(img: Image.Image) -> None:
+    """Black cinder caldera + Halemaʻumaʻu. Volcano Village stays rainforest."""
     x, y = project(19.4069, -155.2834)
     d = ImageDraw.Draw(img)
-    d.ellipse((x - 11, y - 8, x + 11, y + 8), fill=(42, 28, 24))
-    d.ellipse((x - 5, y - 3.5, x + 5, y + 3.5), fill=(210, 92, 36))
-    d.ellipse((x - 2.2, y - 1.5, x + 2.2, y + 1.5), fill=(255, 196, 80))
+    d.ellipse((x - 52, y - 40, x + 48, y + 44), fill=(28, 24, 22))
+    d.ellipse((x - 20, y - 14, x + 20, y + 14), fill=(18, 14, 12))
+    px, py = project(19.4035, -155.291)
+    d.ellipse((px - 7, py - 5, px + 7, py + 5), fill=(48, 28, 20))
+    d.ellipse((px - 3.5, py - 2.4, px + 3.5, py + 2.4), fill=(210, 92, 36))
+    d.ellipse((px - 1.6, py - 1.1, px + 1.6, py + 1.1), fill=(255, 196, 80))
 
 
 def main() -> None:

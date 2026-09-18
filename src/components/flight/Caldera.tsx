@@ -1,64 +1,72 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { BufferAttribute, PlaneGeometry, SRGBColorSpace, Texture, TextureLoader } from "three";
-import { WORLD } from "@/lib/hawaii/world";
-import { HALEMAUMAU_WORLD, KILAUEA_WORLD, kilaueaSurfaceY } from "@/lib/hawaii/kilauea";
+import { useLayoutEffect, useMemo } from "react";
+import { CircleGeometry, DoubleSide } from "three";
+import {
+  HALEMAUMAU_WORLD,
+  KILAUEA_RX,
+  KILAUEA_RZ,
+  KILAUEA_WORLD,
+  inVolcanoVillage,
+  kilaueaSurfaceY,
+} from "@/lib/hawaii/kilauea";
+import { terrainY } from "@/lib/hawaii/world";
 
-/** Dense crater mesh so the bowl reads; the island plane is also depressed. */
+/** Oval black-cinder bowl. No rectangular atlas stamp. */
 export function Caldera() {
-  const [map, setMap] = useState<Texture | null>(null);
-  useEffect(() => {
-    const loader = new TextureLoader();
-    const t = loader.load("/maps/hawaii-cartoon.jpg?v=atlas3", (tex) => {
-      tex.colorSpace = SRGBColorSpace;
-      tex.anisotropy = 1;
-      setMap(tex);
-    });
-    return () => t.dispose();
-  }, []);
-
-  const geometry = useMemo(() => {
-    const g = new PlaneGeometry(7.6, 5.6, 40, 30);
+  const bowl = useMemo(() => {
+    const g = new CircleGeometry(1, 48);
     g.rotateX(-Math.PI / 2);
     const pos = g.attributes.position!;
-    const uv = g.attributes.uv!;
     for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i) + KILAUEA_WORLD.x;
-      const z = pos.getZ(i) + KILAUEA_WORLD.z;
-      pos.setXYZ(i, x, kilaueaSurfaceY(x, z), z);
-      uv.setXY(i, (x + WORLD.w / 2) / WORLD.w, 1 - (z + WORLD.d / 2) / WORLD.d);
+      const x = KILAUEA_WORLD.x + pos.getX(i) * KILAUEA_RX;
+      const z = KILAUEA_WORLD.z + pos.getZ(i) * KILAUEA_RZ;
+      pos.setXYZ(i, x, kilaueaSurfaceY(x, z) + 0.03, z);
     }
     pos.needsUpdate = true;
-    uv.needsUpdate = true;
     g.computeVertexNormals();
     return g;
   }, []);
 
-  useLayoutEffect(() => () => geometry.dispose(), [geometry]);
+  const apron = useMemo(() => {
+    const g = new CircleGeometry(2.35, 48);
+    g.rotateX(-Math.PI / 2);
+    const pos = g.attributes.position!;
+    for (let i = 0; i < pos.count; i++) {
+      const x = KILAUEA_WORLD.x + pos.getX(i) * KILAUEA_RX;
+      const z = KILAUEA_WORLD.z + pos.getZ(i) * KILAUEA_RZ;
+      if (inVolcanoVillage(x, z)) pos.setXYZ(i, x, -40, z);
+      else pos.setXYZ(i, x, terrainY(x, z) + 0.04, z);
+    }
+    pos.needsUpdate = true;
+    g.computeVertexNormals();
+    return g;
+  }, []);
+
+  useLayoutEffect(() => {
+    return () => {
+      bowl.dispose();
+      apron.dispose();
+    };
+  }, [bowl, apron]);
 
   const pit = HALEMAUMAU_WORLD;
   const py = kilaueaSurfaceY(pit.x, pit.z);
 
   return (
     <group>
-      <mesh geometry={geometry}>
-        <meshStandardMaterial
-          map={map ?? undefined}
-          color={map ? "#ffffff" : "#3a2a22"}
-          roughness={0.94}
-        />
+      <mesh geometry={apron}>
+        <meshStandardMaterial color="#1c1814" roughness={0.98} />
       </mesh>
-      <mesh position={[pit.x, py + 0.04, pit.z]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.62, 16]} />
-        <meshStandardMaterial color="#c45a22" emissive="#ff6a20" emissiveIntensity={0.7} roughness={0.5} />
+      <mesh geometry={bowl}>
+        <meshStandardMaterial color="#14110f" roughness={0.97} />
       </mesh>
-      <pointLight position={[pit.x, py + 0.3, pit.z]} color="#ff7a28" intensity={1.4} distance={7} />
-      <mesh position={[pit.x + 0.15, py + 0.7, pit.z]}>
-        <coneGeometry args={[0.22, 1.2, 6]} />
-        <meshStandardMaterial color="#e8eef2" transparent opacity={0.22} depthWrite={false} />
+      <mesh position={[pit.x, py + 0.05, pit.z]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.58, 16]} />
+        <meshStandardMaterial color="#c45a22" emissive="#ff6a20" emissiveIntensity={0.75} roughness={0.5} />
       </mesh>
-      <mesh position={[pit.x - 0.2, py + 0.55, pit.z + 0.15]}>
-        <coneGeometry args={[0.16, 0.9, 6]} />
-        <meshStandardMaterial color="#e8eef2" transparent opacity={0.18} depthWrite={false} />
+      <pointLight position={[pit.x, py + 0.25, pit.z]} color="#ff7a28" intensity={1.35} distance={7} />
+      <mesh position={[pit.x, py + 0.65, pit.z]}>
+        <coneGeometry args={[0.2, 1.05, 6]} />
+        <meshStandardMaterial color="#e8eef2" transparent opacity={0.2} depthWrite={false} side={DoubleSide} />
       </mesh>
     </group>
   );

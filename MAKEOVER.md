@@ -88,7 +88,7 @@ The west-edge drop on the Landsat cape already looks like a cliff from the air. 
 | **Pāhoa** | 19.494, -154.951 | THIN | Wooden false-front, jungle, east-rift town. |
 | **Mountain View village** | 19.549, -155.109 | THIN | Hwy 11 strip, post office. **Not** FlashTown. |
 | **FlashTown** | 19.540, -155.142 | OK-ISH | Home lot in the ʻōhiʻa. Keep. |
-| **Volcano Village** | 19.43, -155.238 | THIN | Cool rainforest at the park gate. |
+| **Volcano Village** | 19.43, -155.238 | **NEEDS PHONE** | Cheap canopy grove at park gate coords. |
 | **Keaʻau** | 19.621, -155.037 | THIN | Junction, papaya. |
 | **Kurtistown / Glenwood** | Hwy 11 | MISSING | Between Keaʻau and Mountain View. |
 | **Hawaiian Paradise Park / Orchidland / Ainaloa** | Puna grid | MISSING | Huge lot subdivisions in the canopy. |
@@ -110,25 +110,25 @@ Airports (pins exist, fields don’t): **ITO** Hilo, **KOA** on the 1801 flow, *
 
 ---
 
-## 4. Waterfalls and rivers — still the other bot’s job, still unsigned
+## 4. Waterfalls and rivers — broboss/waterfalls-kilauea pass
 
 Do not pour them off the ocean except valley walls.
 
 | Fall | Kind | Lat / lon | Status |
 |---|---|---|---|
-| **Rainbow Falls / Waiānuenue** | Cave + curtain + pool | 19.7194, -155.1094 | **WRONG** — inland Hilo, Wailuku. |
-| **Boiling Pots / Peʻepeʻe** | Potholes | 19.7153, -155.1306 | WRONG |
-| **Waiʻale** | Cascade | upstream Rainbow | THIN |
-| **Narnia / 7 streams / Hoʻokelekele** | Threads | ~19.711, -155.155 | WRONG — above the pots, in the forest. |
-| **ʻAkaka** | 442 ft plunge | 19.8539, -155.1522 | **WRONG** — jungle amphitheater, not a chimney. |
+| **Rainbow Falls / Waiānuenue** | Cave + curtain + pool | 19.7194, -155.1094 | **NEEDS PHONE** — hillside curtain + cave + pool; inland Wailuku. |
+| **Boiling Pots / Peʻepeʻe** | Potholes | 19.7153, -155.1306 | **NEEDS PHONE** — stepped pots + short sheets, not chimney. |
+| **Waiʻale** | Cascade | upstream Rainbow | **NEEDS PHONE** — mid/upper Wailuku cascade profiles. |
+| **Narnia / 7 streams / Hoʻokelekele** | Threads | ~19.711, -155.155 | **NEEDS PHONE** — unique thread profiles above the pots. |
+| **ʻAkaka** | 442 ft plunge | 19.8539, -155.1522 | **NEEDS PHONE** — narrow gorge plunge (no brown tower). |
 | **Kahuna Falls** | Twin near ʻAkaka | ~19.85, -155.15 | MISSING |
-| **Umauma** | Cascades | 19.892, -155.141 | THIN |
+| **Umauma** | Cascades | 19.892, -155.141 | **NEEDS PHONE** — three-tier cascade. |
 | **Kolekole (hwy)** | Stream at the beach park | 19.88, -155.12 | MISSING — mouth is not the fall. |
-| **Hiʻilawe (Waipiʻo)** | Huge valley wall | 20.11, -155.60 | MISSING / THIN |
+| **Hiʻilawe (Waipiʻo)** | Huge valley wall | 20.11, -155.60 | **NEEDS PHONE** — thin horsetail on valley wall. |
 | **Onomea / HSBG gulches** | Many small | 19.81, -155.10 | MISSING |
 | **Nanue / Hakalau** | Hāmākua gulches | belt road | MISSING |
 
-Rivers: Wailuku must run **past** Rainbow and the pots up toward Narnia. Mouths meet the **bay**. Code: `Waterfalls.tsx`, `Rivers.tsx`, `rivers.ts`. Last look: ice cubes / chimneys / laser rivers. User has not signed off.
+Rivers: continuous terrain-hugging ribbon; **Y drops at falls** (no laser flat). Identities from ChatGPT PR #1 kept; ice-cube boxes / heavy dash animation rewritten. Code: `Waterfalls.tsx`, `Rivers.tsx`, `rivers.ts`. **Await Jessie phone sign-off.**
 
 ---
 
@@ -139,10 +139,10 @@ Rivers: Wailuku must run **past** Rainbow and the pots up toward Narnia. Mouths 
 | **Mauna Kea summit** | 19.8207, -155.4681 | OK-ISH | Puʻu Wēkiu = cinder, **no dome**. Telescopes on the **north ridge** (Keck, Subaru, Gemini, CFHT, IFA pins in `maunakea.ts`). Access road. Lake Waiau. Visitor center ~9k ft. Sacred — don’t cartoon-trash the peak. |
 | MK cinder cones | summit plateau | THIN | Real puʻu field, not one fake disc. |
 | **Mauna Loa** | 19.4756, -155.6081 | THIN | Broad shield, Mokuʻāweoweo caldera, 2022 flow toward Saddle. Barely looks like a peak until you’re on it. |
-| **Kīlauea caldera / Halemaʻumaʻu** | 19.4069, -155.2834 | WRONG | `Caldera.tsx` is a glowing pancake. Need steam, crater-in-crater, black floor, park roads, Jaggar/Overlook, rainforest on the rim. |
-| **Kīlauea Iki** | 19.41, -155.25 | MISSING | Crater hike, 1959, pali + floor. |
+| **Kīlauea caldera / Halemaʻumaʻu** | 19.4069, -155.2834 | **NEEDS PHONE** | Terrain nested bowl (`kilauea.ts`) + steam + small pit glow (no glowing pancake). Black floor wash; NE rim ʻōhiʻa. Park roads / Jaggar still thin. |
+| **Kīlauea Iki** | 19.41, -155.25 | **NEEDS PHONE** | Bowl + black floor + thin pali lip. |
 | **Chain of Craters** | park → ocean | MISSING | Pit craters, Hōlei, sea lava. |
-| **East rift / 2018** | Leilani → Kapoho | MISSING | Fissures, buried Vacationland, new Ahalanui coast, Pohoiki. Landsat should already show the black; 3D doesn’t. |
+| **East rift / 2018** | Leilani → Kapoho | **NEEDS PHONE** | Dark fissure ribbons + Kapoho shelf; no rebuilt Puʻu ʻŌʻō. |
 | **Puʻu ʻŌʻō** | collapsed | MISSING | Don’t rebuild the old cone as if 2018 never happened. |
 | **Hualālai** | 19.687, -155.859 | THIN | Rounded Kona mountain, 1801 flow = KOA flats. |
 | **Kohala** | north | THIN | Oldest, dissected valleys. Pololū is the east end of this. |
@@ -200,10 +200,10 @@ No `MeshToonMaterial`. Instanced, modest counts, Samsung-safe.
 Do **one landscape system** at a time, verify on phone, then move. Don’t open five cliffs at once.
 
 1. **Terrain edge** — Ka Lae cape + Papakōlea + Punaluʻu: heightmap sculpt landed (ocean=0); **await Jessie phone sign-off** (FlashTown spawn + fly 100–400 m AGL). Not DONE.
-2. **Kīlauea** — real caldera, rift black, 2018 coast, Volcano Village in the trees.
+2. **Kīlauea** — bowl + steam + Iki + 2018 rift + Volcano Village grove landed on `broboss/waterfalls-kilauea` — **await phone**.
 3. **Towns** — Hilo bay, Kona waterfront, then Pāhoa / Waimea / Honokaʻa as distinct plantation towns.
 4. **Windward palis** — Waipiʻo + Pololū + Hāmākua cliff line (this is the “entire coastline” look the user wants, on the **north**, not faked at Ka Lae).
-5. **Waterfalls** — only after rivers drape the hills (or leave to the waterfall owner; don’t fight them).
+5. **Waterfalls** — hillside sheets + river Y-drop on `broboss/waterfalls-kilauea` — **await phone**.
 6. **Beaches** — black / green / white as three different materials on the real coves.
 7. **Mauna Loa + Hualālai + saddle** polish.
 8. **Tree and ranch** pass.

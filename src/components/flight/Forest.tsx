@@ -7,6 +7,7 @@ import { inFlashTownClearing } from "@/lib/hawaii/puna";
 import { inMaunaKeaSummit } from "@/lib/hawaii/maunakea";
 import { inOpenCoast } from "@/lib/hawaii/coast";
 import { inRiver } from "@/lib/hawaii/rivers";
+import { inKilaueaCinder } from "@/lib/hawaii/kilauea";
 
 const CELL = 1.25;
 const RADIUS = 24;
@@ -90,7 +91,7 @@ export function Forest({ craft }: { craft: CraftState }) {
         if (hv < 0.2) continue;
         const jx = cx + (hv - 0.5) * 0.7;
         const jz = cz + (hash(gx + ix + 19, gz + iz + 7) - 0.5) * 0.7;
-        if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz) || inMaunaKeaSummit(jx, jz) || inOpenCoast(jx, jz) || inRiver(jx, jz)) continue;
+        if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz) || inMaunaKeaSummit(jx, jz) || inOpenCoast(jx, jz) || inRiver(jx, jz) || inKilaueaCinder(jx, jz)) continue;
         const y = terrainY(jx, jz);
         spots.push({ x: jx, y, z: jz, s: 0.3 + hv * 0.4, h: hv, kind: pickKind(y, hv) });
       }

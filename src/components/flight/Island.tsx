@@ -10,7 +10,7 @@ export function Island() {
   useEffect(() => {
     const loader = new TextureLoader();
     const t = loader.load(
-      "/maps/hawaii-cartoon.jpg?v=atlas4",
+      "/maps/hawaii-cartoon.jpg?v=atlas5",
       (tex) => {
         tex.colorSpace = SRGBColorSpace;
         tex.anisotropy = 1;

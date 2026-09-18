@@ -195,13 +195,14 @@ def classify(
     biome[grass] = GRASS
     biome[land & ~west & (meters < 2200)] = RAINFOREST
     biome[lava] = LAVA
-    # Kīlauea summit + Kaʻū desert + east rift are black cinder, not rainforest.
-    dark = land & (luma < 88) & (sat < 42) & (g < 92) & (meters > 180)
-    hvnp = land & (lat > 19.26) & (lat < 19.45) & (lon > -155.42) & (lon < -155.14) & (meters > 650)
-    rift = land & (lat > 19.34) & (lat < 19.52) & (lon > -155.26) & (lon < -154.82) & (luma < 108) & (g < 95)
-    village = land & (lat > 19.418) & (lat < 19.458) & (lon > -155.265) & (lon < -155.198)
-    biome[hvnp | rift | dark] = LAVA
-    biome[village] = RAINFOREST
+    # Kaʻū desert is brown. Caldera floor is painted in kilauea(). Forest N/E of the rim.
+    kau = land & (lat > 19.20) & (lat < 19.43) & (lon > -155.50) & (lon < -155.20) & (meters > 500)
+    rift = land & (lat > 19.34) & (lat < 19.52) & (lon > -155.22) & (lon < -154.82) & (luma < 100) & (g < 90)
+    biome[kau] = SCRUB
+    biome[rift] = LAVA
+    np_forest = land & (lat > 19.40) & (lat < 19.52) & (lon > -155.27) & (lon < -155.16)
+    np_north = land & (lat > 19.428) & (lat < 19.50) & (lon > -155.34) & (lon < -155.18)
+    biome[np_forest | np_north] = RAINFOREST
     biome[alpine] = ALPINE
     biome[snow] = SNOW
     biome[beach] = BEACH
@@ -310,15 +311,15 @@ def foam(img: Image.Image, ocean: np.ndarray) -> None:
 
 
 def kilauea(img: Image.Image) -> None:
-    """Black cinder caldera + Halemaʻumaʻu. Volcano Village stays rainforest."""
+    """Nested caldera from the map: grey floor, black Halemaʻumaʻu, brown rim."""
     x, y = project(19.4069, -155.2834)
     d = ImageDraw.Draw(img)
-    d.ellipse((x - 52, y - 40, x + 48, y + 44), fill=(28, 24, 22))
-    d.ellipse((x - 20, y - 14, x + 20, y + 14), fill=(18, 14, 12))
-    px, py = project(19.4035, -155.291)
-    d.ellipse((px - 7, py - 5, px + 7, py + 5), fill=(48, 28, 20))
-    d.ellipse((px - 3.5, py - 2.4, px + 3.5, py + 2.4), fill=(210, 92, 36))
-    d.ellipse((px - 1.6, py - 1.1, px + 1.6, py + 1.1), fill=(255, 196, 80))
+    d.ellipse((x - 18, y - 13, x + 16, y + 14), fill=(92, 78, 64))
+    d.ellipse((x - 15, y - 10, x + 13, y + 11), fill=(72, 64, 56))
+    px, py = project(19.405, -155.291)
+    d.ellipse((px - 8, py - 6, px + 7, py + 6), fill=(28, 24, 22))
+    d.ellipse((px - 3, py - 2.2, px + 3, py + 2.2), fill=(196, 88, 36))
+    d.ellipse((px + 2, py - 4, px + 6, py - 1), fill=(210, 200, 170))
 
 
 def main() -> None:

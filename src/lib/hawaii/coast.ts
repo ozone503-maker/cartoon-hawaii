@@ -22,44 +22,37 @@ export function inOpenCoast(x: number, z: number) {
 
 const shoreCache = new Map<number, number>();
 
-/** Walk north from the map edge until the heightmap is land. */
+/** Kaʻu south shore from west of the point through Papakōlea. */
+export function onKauSouthCoast(lat: number, lon: number) {
+  return lon > -155.745 && lon < -155.618 && lat < 19.02;
+}
+
+/** Walk north until the heightmap is real land — not the ocean shelf. */
 export function kaLaeShoreLat(lon: number) {
   const key = Math.round(lon * 2500);
   const hit = shoreCache.get(key);
   if (hit !== undefined) return hit;
   let lat = 18.905;
-  for (let n = 0; n < 80; n++) {
+  for (let n = 0; n < 90; n++) {
     const { x, z } = latLonToWorld(lat, lon);
-    if (terrainY(x, z) > 0.1) {
+    if (terrainY(x, z) > 0.22) {
       shoreCache.set(key, lat);
       return lat;
     }
-    lat += 0.0006;
+    lat += 0.00055;
   }
-  shoreCache.set(key, 18.92);
-  return 18.92;
+  shoreCache.set(key, 18.922);
+  return 18.922;
 }
 
-export function southOfKaLae(lat: number, lon: number) {
-  if (lon < -155.72 || lon > -155.642) return false;
-  return lat < kaLaeShoreLat(lon) - 0.00025;
-}
-
-/** On-land cape behind the lip — raised so the cliff is the island, not a raft. */
-export function onKaLaePlateau(lat: number, lon: number) {
-  if (lon < -155.72 || lon > -155.642) return false;
+/** Hold the lip high, then drop to the sea — the island edge IS the cliff. */
+export function kauCliffY(lat: number, lon: number, y0: number) {
+  if (!onKauSouthCoast(lat, lon)) return y0;
   const shore = kaLaeShoreLat(lon);
-  return lat >= shore - 0.00025 && lat < shore + 0.014;
-}
-
-export const KA_LAE_CLIFF_H = 1.62;
-
-/** Lip of the cape snapped to the 3D shoreline, west → east. */
-export function kaLaeCape(): [number, number][] {
-  const out: [number, number][] = [];
-  for (let i = 0; i <= 20; i++) {
-    const lon = -155.716 + (i / 20) * 0.072;
-    out.push([kaLaeShoreLat(lon) + 0.00015, lon]);
-  }
-  return out;
+  if (lat < shore) return -0.55;
+  const inland = latLonToWorld(shore + 0.0035, lon);
+  const lip = Math.max(0.55, terrainY(inland.x, inland.z));
+  const t = Math.min(1, Math.max(0, (lat - shore) / 0.01));
+  if (t < 0.14) return lip;
+  return lip * (1 - t) + y0 * t;
 }

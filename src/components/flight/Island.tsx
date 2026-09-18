@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { BufferAttribute, Color, PlaneGeometry, SRGBColorSpace, Texture, TextureLoader } from "three";
 import { terrainY, WORLD, worldToLatLon } from "@/lib/hawaii/world";
-import { southOfKaLae, onKaLaePlateau, KA_LAE_CLIFF_H } from "@/lib/hawaii/coast";
+import { kauCliffY } from "@/lib/hawaii/coast";
 
 export function Island() {
   const [map, setMap] = useState<Texture | null>(null);
@@ -32,9 +32,7 @@ export function Island() {
     for (let i = 0; i < pos.count; i++) {
       const y0 = terrainY(pos.getX(i), pos.getZ(i));
       const ll = worldToLatLon(pos.getX(i), pos.getZ(i));
-      let y = y0;
-      if (southOfKaLae(ll.lat, ll.lon)) y = -0.65;
-      else if (onKaLaePlateau(ll.lat, ll.lon)) y = Math.max(y0, KA_LAE_CLIFF_H);
+      const y = kauCliffY(ll.lat, ll.lon, y0);
       pos.setY(i, y);
       if (y < 0.02) c.set("#1a8ab8");
       else if (y < 1.6) c.set("#3cb14a");

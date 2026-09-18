@@ -20,8 +20,13 @@ export function KauCoast() {
 }
 
 function Punaluu() {
-  const { x, z } = latLonToWorld(19.1358, -155.5044);
-  const y = terrainY(x, z);
+  let { x, z } = latLonToWorld(19.1358, -155.5044);
+  let y = terrainY(x, z);
+  for (let i = 0; i < 36 && y > 0.16; i++) {
+    z += 0.12;
+    y = terrainY(x, z);
+  }
+  y = Math.max(0.03, y);
   const palms = [
     [-0.85, -0.55],
     [-0.4, -0.7],
@@ -36,11 +41,11 @@ function Punaluu() {
   ] as const;
   return (
     <group position={[x, y, z]}>
-      <mesh rotation={[-Math.PI / 2, 0, 0.35]} position={[0.1, 0.04, 0.15]} scale={[1.7, 0.85, 1]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0.35]} position={[0.15, 0.03, 0.35]} scale={[2.4, 1.15, 1]}>
         <circleGeometry args={[1, 20]} />
         <meshStandardMaterial color="#1a1818" roughness={0.98} />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0.35]} position={[0.15, 0.05, 0.22]} scale={[1.15, 0.5, 1]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0.35]} position={[0.2, 0.04, 0.5]} scale={[1.6, 0.7, 1]}>
         <circleGeometry args={[1, 16]} />
         <meshStandardMaterial color="#0e0e10" roughness={1} />
       </mesh>

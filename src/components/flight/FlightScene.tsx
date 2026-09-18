@@ -17,6 +17,8 @@ import { KauCoast } from "./KauCoast";
 import { Rivers } from "./Rivers";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
+import { AIRPORTS } from "@/lib/hawaii/highways";
+import { MAP_SIZE } from "@/lib/hawaii/geo";
 import { latLonToWorld, loadAlbedo, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE, UFO_LENGTH, WORLD } from "@/lib/hawaii/world";
 import { HOME_ID, PLACES, placeById } from "@/lib/hawaii/places";
 import { useHawaii } from "@/lib/hawaii/store";
@@ -58,19 +60,34 @@ function Sim({ craft }: { craft: CraftState }) {
 }
 
 function Pads() {
-  const pads = useMemo(() => {
-    return PLACES.filter((p) => p.kind === "airport").map((p) => {
-      const { x, z } = latLonToWorld(p.lat, p.lon);
-      return { ...p, x, z, y: terrainY(x, z) + 0.08 };
+  const strips = useMemo(() => {
+    const px = WORLD.w / MAP_SIZE.w;
+    return AIRPORTS.map((a) => {
+      const { x, z } = latLonToWorld(a.lat, a.lon);
+      const rad = (a.heading * Math.PI) / 180;
+      return {
+        id: a.id,
+        x,
+        z,
+        y: terrainY(x, z) + 0.04,
+        len: a.len * px * 1.4,
+        yaw: rad + Math.PI / 2,
+      };
     });
   }, []);
   return (
     <group>
-      {pads.map((p) => (
-        <mesh key={p.id} position={[p.x, p.y, p.z]} rotation={[-Math.PI / 2, 0, 0]}>
-          <circleGeometry args={[0.7, 20]} />
-          <meshStandardMaterial color="#f4ecd6" emissive="#f4ecd6" emissiveIntensity={0.35} />
-        </mesh>
+      {strips.map((s) => (
+        <group key={s.id} position={[s.x, s.y, s.z]} rotation={[0, s.yaw, 0]}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[s.len, 0.28]} />
+            <meshStandardMaterial color="#c8c2b4" roughness={0.88} />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
+            <planeGeometry args={[s.len * 0.92, 0.03]} />
+            <meshStandardMaterial color="#ece6d4" roughness={0.7} />
+          </mesh>
+        </group>
       ))}
     </group>
   );

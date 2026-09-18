@@ -6,6 +6,8 @@
 
 Crew so far: Claude built the original flight; Grok owns the Landsat island, chase camera, MDP, FlashTown, and phone boot; ChatGPT is building another chunk; Bro Boss is the next pair of eyes.
 
+**Full scenery makeover list (towns, beaches, cliffs, falls, volcanoes):** [`MAKEOVER.md`](MAKEOVER.md). Next Grok bot should work from maps/Landsat against that list, then the user comes back.
+
 ---
 
 ## What this is

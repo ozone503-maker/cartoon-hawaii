@@ -8,7 +8,7 @@ Repo: [ozone503-maker/cartoon-hawaii](https://github.com/ozone503-maker/cartoon-
 
 Home base is **FlashTown** (Mountain View). You fly MDP’s bubble UFO in a locked third-person chase camera. Climb and the camera pulls back toward the overhead atlas. Open the map anytime for the lat/lon grid, and toggle Landsat if you want to inspect the source photograph.
 
-**Bots / next editor:** read [`HANDOFF.md`](HANDOFF.md) before touching anything. Flight, camera, geography, and MDP are frozen. Waterfalls and Ka Lae are the open problems.
+**Bots / next editor:** read [`HANDOFF.md`](HANDOFF.md) before touching anything. Flight, camera, geography, and MDP are frozen. Scenery makeover list (cliffs, beaches, towns, volcanoes, falls): [`MAKEOVER.md`](MAKEOVER.md).
 
 ## Play
 

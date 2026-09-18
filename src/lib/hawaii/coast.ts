@@ -1,4 +1,4 @@
-import { latLonToWorld, terrainY } from "./world";
+import { hasAlbedo, latLonToWorld, sampleAlbedo, terrainY } from "./world";
 
 /** Open coast — no rainforest canopy. Pins stay on the real shoreline. */
 const ZONES: { lat: number; lon: number; r: number }[] = [
@@ -56,18 +56,46 @@ export function kauCliffY(lat: number, lon: number, y0: number) {
   const south = terrainY(x, z + 2.2);
   const north = terrainY(x, z - 2.2);
   if (y0 < 0.045 && north < 0.1) return y0;
-  if (y0 < 0.32 && south < 0.07 && north > 0.16) return -0.12;
+  if (y0 < 0.18 && south < 0.1 && north > 0.16) return -0.4;
   return y0;
 }
 
+function isDryLand(x: number, z: number) {
+  const y = terrainY(x, z);
+  if (y < 0.2) return false;
+  if (!hasAlbedo()) return y > 0.22;
+  const { r, g, b } = sampleAlbedo(x, z);
+  if (b > r + 8 && g >= r - 10) return false;
+  return true;
+}
+
+/**
+ * Walk north onto real land, then back south to the last dry pixel — the lip.
+ * Skips the cyan shelf so the jump is not a sandbar in the water.
+ */
 export function snapToLand(lat: number, lon: number) {
   let la = lat;
-  for (let i = 0; i < 60; i++) {
+  let found = false;
+  for (let i = 0; i < 90; i++) {
     const { x, z } = latLonToWorld(la, lon);
-    const y = terrainY(x, z);
-    if (y > 0.12) return { lat: la, lon, x, z, y };
-    la += 0.0006;
+    if (isDryLand(x, z)) {
+      found = true;
+      break;
+    }
+    la += 0.00055;
   }
-  const { x, z } = latLonToWorld(lat, lon);
-  return { lat, lon, x, z, y: terrainY(x, z) };
+  if (!found) {
+    const { x, z } = latLonToWorld(lat, lon);
+    return { lat, lon, x, z, y: terrainY(x, z) };
+  }
+  let lip = la;
+  for (let i = 0; i < 80; i++) {
+    const next = lip - 0.0004;
+    const { x, z } = latLonToWorld(next, lon);
+    if (!isDryLand(x, z)) break;
+    lip = next;
+  }
+  const { x, z } = latLonToWorld(lip, lon);
+  const y0 = terrainY(x, z);
+  return { lat: lip, lon, x, z, y: y0 };
 }

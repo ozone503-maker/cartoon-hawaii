@@ -60,12 +60,8 @@ function KaLae() {
   const drop = Math.max(0.55, p.y);
   return (
     <group position={[p.x, p.y, p.z]}>
-      <mesh position={[0, 0.02, 0.06]} rotation={[-Math.PI / 2, 0, 0.12]}>
-        <planeGeometry args={[1.4, 0.9]} />
-        <meshStandardMaterial color="#a07048" roughness={0.96} />
-      </mesh>
-      <mesh position={[0, -drop * 0.45, 0.42]} scale={[1.15, 0.85, 1]}>
-        <sphereGeometry args={[0.22, 10, 7]} />
+      <mesh position={[0, -Math.min(p.y, 0.55) * 0.7, 0.5]} scale={[1.1, 0.8, 1]}>
+        <sphereGeometry args={[0.2, 10, 7]} />
         <meshStandardMaterial color="#08080a" roughness={1} />
       </mesh>
       <GreenHoist y={0} />

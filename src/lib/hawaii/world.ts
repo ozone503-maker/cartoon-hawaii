@@ -105,6 +105,10 @@ export function terrainY(x: number, z: number): number {
   return meters * HEIGHT_SCALE;
 }
 
+export function hasAlbedo() {
+  return !!colorPx;
+}
+
 /** Landsat RGB 0–255 at a world point. Ocean / missing → dark blue. */
 export function sampleAlbedo(x: number, z: number): { r: number; g: number; b: number } {
   if (!colorPx || !cw) return { r: 14, g: 40, b: 62 };

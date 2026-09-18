@@ -47,49 +47,76 @@ export function kaLaeShoreLat(lon: number) {
 }
 
 /**
- * Heightmap sculpt owns the Ka Lae cape cliff (scripts/fix-kau-height.py).
- * Pass y0 through — do not dig a -0.4 moat or invent ocean rafts.
+ * Heightmap owns the Ka Lae cape cliff (see scripts/fix-kau-height.py).
+ * Do NOT dig a lat-band moat (failed approach). Optional mild exaggerate
+ * of an existing drop so the lip reads from chase-cam — ocean stays ≥ 0.
  */
-export function kauCliffY(_lat: number, _lon: number, y0: number) {
+export function kauCliffY(lat: number, lon: number, y0: number) {
+  if (lon < -155.75 || lon > -155.61 || lat > 19.03 || lat < 18.88) return y0;
+  if (y0 <= 0.02) return y0;
+  if (y0 > 0.12 && y0 < 0.7) {
+    const { x, z } = latLonToWorld(lat, lon);
+    const south = terrainY(x, z + 1.6);
+    const west = terrainY(x - 1.6, z);
+    if (south < y0 * 0.4 || west < y0 * 0.4) return y0 * 1.12;
+  }
   return y0;
 }
 
 function isDryLand(x: number, z: number) {
   const y = terrainY(x, z);
-  if (y < 0.2) return false;
-  if (!hasAlbedo()) return y > 0.22;
+  if (y < 0.15) return false;
+  if (!hasAlbedo()) return y > 0.18;
   const { r, g, b } = sampleAlbedo(x, z);
+  // Cyan / blue water albedo — not the jump lip (b > r).
   if (b > r + 8 && g >= r - 10) return false;
   return true;
 }
 
 /**
- * Walk north onto real land, then back south to the last dry pixel — the lip.
- * Skips the cyan shelf so the jump is not a sandbar in the water.
+ * Snap jump / beach props onto dry cape land.
+ * Jump target sits in ocean west of the Landsat tip — walk north AND east
+ * to the nearest dry lip, then ease seaward to the last dry pixel.
  */
 export function snapToLand(lat: number, lon: number) {
-  let la = lat;
-  let found = false;
-  for (let i = 0; i < 90; i++) {
-    const { x, z } = latLonToWorld(la, lon);
-    if (isDryLand(x, z)) {
-      found = true;
-      break;
+  let best: { lat: number; lon: number; x: number; z: number; y: number; d: number } | null =
+    null;
+  for (let i = 0; i < 70; i++) {
+    for (let j = 0; j < 45; j++) {
+      const la = lat + i * 0.00045;
+      const lo = lon + j * 0.00045;
+      const { x, z } = latLonToWorld(la, lo);
+      if (!isDryLand(x, z)) continue;
+      const d = (la - lat) * (la - lat) + (lo - lon) * (lo - lon);
+      if (!best || d < best.d) best = { lat: la, lon: lo, x, z, y: terrainY(x, z), d };
     }
-    la += 0.00055;
+    // Also pure-north in case east overshoots
+    const laN = lat + i * 0.00045;
+    const { x, z } = latLonToWorld(laN, lon);
+    if (isDryLand(x, z)) {
+      const d = (laN - lat) * (laN - lat);
+      if (!best || d < best.d) best = { lat: laN, lon, x, z, y: terrainY(x, z), d };
+    }
   }
-  if (!found) {
+  if (!best) {
     const { x, z } = latLonToWorld(lat, lon);
     return { lat, lon, x, z, y: terrainY(x, z) };
   }
-  let lip = la;
-  for (let i = 0; i < 80; i++) {
-    const next = lip - 0.0004;
-    const { x, z } = latLonToWorld(next, lon);
+  // Walk back toward the sea (south / west) to the last dry lip pixel.
+  let lipLat = best.lat;
+  let lipLon = best.lon;
+  for (let i = 0; i < 60; i++) {
+    const nextLat = lipLat - 0.00035;
+    const { x, z } = latLonToWorld(nextLat, lipLon);
     if (!isDryLand(x, z)) break;
-    lip = next;
+    lipLat = nextLat;
   }
-  const { x, z } = latLonToWorld(lip, lon);
-  const y0 = terrainY(x, z);
-  return { lat: lip, lon, x, z, y: y0 };
+  for (let i = 0; i < 40; i++) {
+    const nextLon = lipLon - 0.00035;
+    const { x, z } = latLonToWorld(lipLat, nextLon);
+    if (!isDryLand(x, z)) break;
+    lipLon = nextLon;
+  }
+  const { x, z } = latLonToWorld(lipLat, lipLon);
+  return { lat: lipLat, lon: lipLon, x, z, y: terrainY(x, z) };
 }

@@ -22,9 +22,9 @@ Home spawn: **FlashTown**, Mountain View, Puna — `19.5397°N, 155.1417°W`.
 
 | What | File | Lock |
 |---|---|---|
-| Flight physics | `src/lib/flight/craft.ts` | Thrust, yaw, lift/drop, boost ×2.15. Do not replace. |
+| Flight physics | `src/lib/flight/craft.ts` | Thrust, yaw, lift/drop, boost ×2.15. **Jessie scale override (Sep 18):** `maxSpeed` 28→**1.0**, accel 18→**0.65** (coast-to-coast ~2.5–4 min). Retune only — do not rewrite the stepper. |
 | Input | `src/lib/flight/input.ts` | Keyboard + analog stick axes. |
-| Chase camera | `src/components/flight/ChaseCam.tsx` | `LEN = 2.55`, `DEG = 22`. Behind and above, UFO in the lower third. No cockpit. No zoom into MDP’s head. |
+| Chase camera | `src/components/flight/ChaseCam.tsx` | `LEN = 3.5` (was 2.55), `DEG = 22`. Behind and above, UFO in the lower third. No cockpit. No zoom into MDP’s head. |
 | WebGL boot | `src/components/flight/FlightScene.tsx` | `createRoot` + `await configure` + explicit canvas size. Samsung died on R3F `<Canvas>` / 0×0 / context loss. |
 | World / height | `src/lib/hawaii/world.ts` | `WORLD.w = 240`, `HEIGHT_SCALE = 24/4205`. |
 | Grid | `src/lib/hawaii/geo.ts` | AABB: Upolu N, Ka Lae S, Keahole W, Kumukahi E. |
@@ -35,7 +35,15 @@ Home spawn: **FlashTown**, Mountain View, Puna — `19.5397°N, 155.1417°W`.
 | Analog stick | `src/components/flight/TouchPad.tsx` | One circle, 4 quarters, diagonals work. Lightning = **boost**, not eject. Up = lift, down = drop. |
 | Cartoon atlas | `public/maps/hawaii-cartoon.jpg` | Ground texture. Coastline from Landsat, not freehand. |
 
-Camera reference (user-locked): UFO in the lower third, ~1½–2.5 craft lengths back, ~20–25° down, landscape dominates, MDP visible through the dome.
+Camera reference (user-locked): UFO in the lower third, ~3–3.5 craft lengths back (`LEN=3.5`), ~20–25° down, landscape dominates, MDP visible through the dome. Do not cockpit-zoom MDP.
+
+---
+
+## Island scale feel (Jessie, Sep 18)
+
+Island felt tiny because craft `maxSpeed=28` crossed the ~240-unit GEO frame in ~8 s (~17 km/s effective). Geography (`WORLD.w`, Landsat, places) was fine — **speed was lying about scale**.
+
+Retune on `broboss/island-scale-feel`: cruise FlashTown↔Ka Lae / Hilo↔Kona ~2.5–4 min at full throttle (no boost); boost still ~2.15×. ChaseCam `LEN` 2.55→3.5 so more landscape fills the frame. **Phone verify required.**
 
 ---
 
@@ -151,7 +159,7 @@ python3 scripts/paint-cartoon-atlas.py
 
 ## How to help without wrecking it
 
-1. Keep `craft.ts`, `ChaseCam.tsx`, `FlightScene.tsx` boot, `world.ts` / `geo.ts` / `places.ts` coordinates.
+1. Keep `FlightScene.tsx` boot, `world.ts` / `geo.ts` / `places.ts` coordinates. Leave `craft.ts` / `ChaseCam` alone except Jessie’s documented island-scale retune.
 2. **Ka Lae is blocked.** Do not add another box wall in the ocean. Sculpt the Landsat mesh edge; props only on dry ground.
 3. Waterfalls still need a look the user accepts (`Waterfalls.tsx` / `Rivers.tsx`).
 4. Then towns, close terrain, tree polish.

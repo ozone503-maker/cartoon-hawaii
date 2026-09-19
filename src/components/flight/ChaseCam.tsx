@@ -9,7 +9,7 @@ const _desired = new Vector3();
 const _look = new Vector3();
 
 /** Locked chase — behind and above, UFO in the lower third, forest ahead. */
-const LEN = 2.55;
+const LEN = 3.5;
 const DEG = 22;
 
 export function ChaseCam({ craft }: { craft: CraftState }) {

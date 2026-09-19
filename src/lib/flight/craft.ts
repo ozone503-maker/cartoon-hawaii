@@ -44,19 +44,25 @@ export function setSteerOverride(v: number | null) {
   steerOverride = v;
 }
 
+/**
+ * Island feel: WORLD ~240 spans ~150 km, so old maxSpeed=28 was ~coast-to-coast in ~8s.
+ * Retuned so FlashTown↔Ka Lae / Hilo↔Kona take ~2.5–4 min at full throttle (no boost).
+ * Spawn, ground snap, and ceiling unchanged — speeds/accels/turn only.
+ */
 export function stepCraft(c: CraftState, dt: number) {
   const axes = readAxes();
   const steer = steerOverride ?? axes.steer;
   c.steer = steer;
   const boost = axes.boost ? 2.15 : 1;
-  const maxSpeed = 28 * boost;
-  const accel = 18 * boost;
+  const maxSpeed = 1.0 * boost;
+  const accel = 0.65 * boost;
 
   c.speed += axes.throttle * accel * dt;
   if (axes.throttle === 0) c.speed *= Math.exp(-2.4 * dt);
-  c.speed = Math.max(-12, Math.min(maxSpeed, c.speed));
+  c.speed = Math.max(-0.45, Math.min(maxSpeed, c.speed));
 
-  const turn = 1.55 * (0.35 + Math.min(1, Math.abs(c.speed) / 10));
+  // Turn authority ramps with speed; reference ~0.4 so cruise still steers snappy (not molasses).
+  const turn = 1.55 * (0.35 + Math.min(1, Math.abs(c.speed) / 0.4));
   c.yaw += steer * turn * dt;
 
   const fx = -Math.sin(c.yaw);
@@ -64,10 +70,10 @@ export function stepCraft(c: CraftState, dt: number) {
   c.x += fx * c.speed * dt;
   c.z += fz * c.speed * dt;
 
-  const liftAccel = 16;
+  const liftAccel = 0.6;
   c.vy += axes.lift * liftAccel * dt;
   if (axes.lift === 0) c.vy *= Math.exp(-3.2 * dt);
-  c.vy = Math.max(-14, Math.min(14, c.vy));
+  c.vy = Math.max(-0.5, Math.min(0.5, c.vy));
   c.y += c.vy * dt;
 
   const ground = terrainY(c.x, c.z);

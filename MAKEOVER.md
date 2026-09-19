@@ -16,7 +16,7 @@ When a row is actually done, the user has to see it from the chase camera (~100�
 2. Change **terrain** (island mesh / height) for cliffs and beaches. Props only sit **on dry land**.
 3. Do **not** add a second island, dock, raft, or orange pad in the ocean. That is the Ka Lae failure.
 4. Waterfalls ride the **green hillside**. They are inland unless the real fall is a valley wall (Waipiʻo, Pololū).
-5. Keep `craft.ts`, `ChaseCam.tsx`, `FlightScene.tsx` boot, `world.ts` scale, `geo.ts` AABB, `places.ts` coordinates.
+5. Keep `FlightScene.tsx` boot, `world.ts` scale, `geo.ts` AABB, `places.ts` coordinates. Leave `craft.ts` / `ChaseCam.tsx` alone except documented Jessie scale retunes (island feel).
 
 **Look target:** cartoon Brobots world on top of real geography — not Minecraft, not raw satellite, not a prop sitting in the water.
 
@@ -212,13 +212,19 @@ Do **one landscape system** at a time, verify on phone, then move. Don’t open 
 
 ## Frozen (do not “make over”)
 
-- `src/lib/flight/craft.ts` flight
-- `src/components/flight/ChaseCam.tsx` (`LEN 2.55`, `DEG 22`)
+- `src/lib/flight/craft.ts` flight stepper shape (spawn/snap/ceiling) — **Jessie scale override:** speeds retuned (`maxSpeed` 1.0, accel 0.65) so island feels big; do not bump speed back up for “fun”
+- `src/components/flight/ChaseCam.tsx` (`LEN 3.5`, `DEG 22`) — no cockpit zoom
 - `src/components/flight/FlightScene.tsx` Samsung boot
 - MDP alien + saucer in `Craft.tsx`
 - Analog stick + lightning = **boost**
 - `WORLD` / `HEIGHT_SCALE` / `geo.ts` AABB / `places.ts` coordinates
 - Landsat coastline in the atlas — color grade is fine, **moving the shore is not**
+
+---
+
+## Island scale (Jessie override)
+
+Island felt tiny because craft was ~8 s coast-to-coast at `maxSpeed=28`. Retuned for multi-minute crossings (`maxSpeed≈1.0`); `WORLD` / Landsat / places unchanged. ChaseCam pulled back slightly (`LEN` 3.5). **Phone verify required** before calling the island “big.”
 
 ---
 

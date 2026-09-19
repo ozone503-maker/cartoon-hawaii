@@ -30,7 +30,7 @@ export function FlightHud() {
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-3 p-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-5">
         <div className="pointer-events-auto rounded-xl bg-ink/70 px-4 py-3 text-cream shadow-lg backdrop-blur-md">
           <p className="font-display text-lg leading-tight tracking-tight">Hawaiʻi Island</p>
-          <p className="mt-0.5 text-xs text-cream/70">Chase cam · cartoon island</p>
+          <p className="mt-0.5 text-xs text-cream/70">Chase cam · 4× island</p>
         </div>
         <Button
           variant="cream"

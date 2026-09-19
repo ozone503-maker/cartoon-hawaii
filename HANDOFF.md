@@ -22,7 +22,7 @@ Home spawn: **FlashTown**, Mountain View, Puna — `19.5397°N, 155.1417°W`.
 
 | What | File | Lock |
 |---|---|---|
-| Flight physics | `src/lib/flight/craft.ts` | Thrust, yaw, lift/drop, boost ×2.15. **Jessie world enlarge (Sep 18):** `maxSpeed` **4.0**, accel **2.6** at `WORLD.w=960` (was 1.0 / 0.65 at 240) so coast-to-coast stays ~3–4 min. Retune only — do not rewrite the stepper. |
+| Flight physics | `src/lib/flight/craft.ts` | Thrust, yaw, lift/drop, boost ×2.15. **Jessie zippy cruise (Sep 18):** base coeffs ×3 → `maxSpeed` **12**, accel **7.8** at `WORLD.w=960` (bases 3.0 / 1.95 × WORLD_SCALE) so coast-to-coast ~**1 min** / ~45–60s. Retune only — do not rewrite the stepper. |
 | Input | `src/lib/flight/input.ts` | Keyboard + analog stick axes. |
 | Chase camera | `src/components/flight/ChaseCam.tsx` | `LEN = 3.5` (was 2.55), `DEG = 22`. Behind and above, UFO in the lower third. No cockpit. No zoom into MDP’s head. |
 | WebGL boot | `src/components/flight/FlightScene.tsx` | `createRoot` + `await configure` + explicit canvas size. Samsung died on R3F `<Canvas>` / 0×0 / context loss. |
@@ -47,7 +47,7 @@ Island felt tiny because volcanoes sat on top of each other in a 240-wide frame.
 - `WORLD.w` **240 → 960** (exactly 4×; aspect via `MAP_SIZE`)
 - `HEIGHT_SCALE` **24/4205 → (24×3.75)/4205** (slightly under linear ×4 so peaks don’t eat the sky)
 - `UFO_LENGTH` **2.2 → 8.8**; ChaseCam still `LEN=3.5` / `DEG=22` (pulls back with UFO)
-- Craft `maxSpeed` **1.0 → 4.0**, accel **0.65 → 2.6** so FlashTown↔Ka Lae / Hilo↔Kona stay **~3–4 min** cruise
+- Craft bases later ×3 for zippy sightseeing: `maxSpeed` **12**, accel **7.8** (bases 3.0 / 1.95 × WORLD_SCALE) so FlashTown↔Ka Lae / Hilo↔Kona ~**1 min** cruise
 - Absolute world-unit props (Kīlauea bowls, Kaʻū coast, falls, forest radii) scaled via `wu()` / `hu()` / `WORLD_SCALE`
 - Summit look: **dark alpine cinder / bare rock** — Jessie override **NO snow** on Mauna Kea / Mauna Loa
 - places lat/lon + Landsat shore unchanged. **Phone verify required.**

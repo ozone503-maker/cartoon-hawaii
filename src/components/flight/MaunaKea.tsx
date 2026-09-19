@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Line } from "@react-three/drei";
 import { Vector3 } from "three";
 import { ACCESS_ROAD, TELESCOPES, summitWorld } from "@/lib/hawaii/maunakea";
-import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
+import { hu, latLonToWorld, terrainY, WORLD_SCALE, wu } from "@/lib/hawaii/world";
 
 /**
  * Summit ridge of Mauna Kea. Telescopes sit on surveyed IFA pins.
@@ -16,7 +16,7 @@ export function MaunaKea() {
     () =>
       ACCESS_ROAD.map(([lat, lon]) => {
         const { x, z } = latLonToWorld(lat, lon);
-        return new Vector3(x, terrainY(x, z) + 0.09, z);
+        return new Vector3(x, terrainY(x, z) + hu(0.09), z);
       }),
     [],
   );
@@ -28,7 +28,7 @@ export function MaunaKea() {
         <Observatory key={t.id} {...t} />
       ))}
       <Line points={road} color="#c8b8a0" lineWidth={2.4} />
-      <pointLight position={[p.x, y + 3.2, p.z]} color="#e8f0ff" intensity={1.6} distance={14} />
+      <pointLight position={[p.x, y + hu(3.2), p.z]} color="#e8f0ff" intensity={1.6} distance={wu(14)} />
     </group>
   );
 }
@@ -36,15 +36,16 @@ export function MaunaKea() {
 function Peak() {
   const p = summitWorld();
   const y = terrainY(p.x, p.z);
+  // Dark alpine cinder / bare rock — NO snow (Jessie override).
   return (
-    <group position={[p.x, y, p.z]}>
+    <group position={[p.x, y, p.z]} scale={WORLD_SCALE}>
       <mesh position={[0, 0.12, 0]}>
         <coneGeometry args={[0.42, 0.28, 8]} />
-        <meshStandardMaterial color="#a87858" roughness={0.92} />
+        <meshStandardMaterial color="#6a5248" roughness={0.95} />
       </mesh>
       <mesh position={[0, 0.28, 0]}>
         <sphereGeometry args={[0.16, 10, 8]} />
-        <meshStandardMaterial color="#f4f6f8" roughness={0.7} />
+        <meshStandardMaterial color="#5a5048" roughness={0.92} />
       </mesh>
     </group>
   );
@@ -56,7 +57,7 @@ function Observatory(t: Scope) {
   const { x, z } = latLonToWorld(t.lat, t.lon);
   const y = terrainY(x, z);
   return (
-    <group position={[x, y, z]}>
+    <group position={[x, y, z]} scale={WORLD_SCALE}>
       {t.kind === "keck" && <Keck />}
       {t.kind === "subaru" && <Subaru />}
       {t.kind === "gemini" && <Gemini />}

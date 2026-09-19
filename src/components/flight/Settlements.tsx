@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 import { Color, InstancedMesh, Object3D } from "three";
 import { MAP_SIZE } from "@/lib/hawaii/geo";
 import { TOWNS } from "@/lib/hawaii/highways";
-import { latLonToWorld, terrainY, WORLD } from "@/lib/hawaii/world";
+import { hu, latLonToWorld, terrainY, WORLD, wu } from "@/lib/hawaii/world";
 
 const dummy = new Object3D();
 const PX = WORLD.w / MAP_SIZE.w;
@@ -54,14 +54,14 @@ function layout(): Building[] {
       const r = Math.pow(hash(n + 3), 0.62) * rad;
       const bx = x + Math.cos(a) * r;
       const bz = z + Math.sin(a) * r * 0.9;
-      const bh = 0.1 + hash(n + 9) * 0.1;
+      const bh = hu(0.1) + hash(n + 9) * hu(0.1);
       list.push({
         px: bx,
         py: terrainY(bx, bz) + bh / 2,
         pz: bz,
-        sx: 0.22 + h * 0.2,
+        sx: wu(0.22) + h * wu(0.2),
         sy: bh,
-        sz: 0.16 + hash(n + 5) * 0.14,
+        sz: wu(0.16) + hash(n + 5) * wu(0.14),
         ry: (hash(n + 11) * 4 | 0) * (Math.PI / 2),
         wall: walls[i % walls.length]!,
         roof: roofs[i % roofs.length]!,
@@ -90,8 +90,8 @@ export function Settlements() {
       dummy.updateMatrix();
       inst.setMatrixAt(i, dummy.matrix);
       inst.setColorAt(i, wallColors[i]!);
-      dummy.position.set(b.px, b.py + b.sy / 2 + 0.02, b.pz);
-      dummy.scale.set(b.sx * 1.12, 0.045, b.sz * 1.12);
+      dummy.position.set(b.px, b.py + b.sy / 2 + hu(0.02), b.pz);
+      dummy.scale.set(b.sx * 1.12, hu(0.045), b.sz * 1.12);
       dummy.rotation.set(0.18, b.ry, 0);
       dummy.updateMatrix();
       roof.setMatrixAt(i, dummy.matrix);

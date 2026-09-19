@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { Color, InstancedMesh, Object3D } from "three";
 import { CLEARING_R, flashtownWorld, mountainViewWorld } from "@/lib/hawaii/puna";
-import { isCanopy, terrainY } from "@/lib/hawaii/world";
+import { isCanopy, terrainY, wu } from "@/lib/hawaii/world";
 
 const dummy = new Object3D();
 const MAX = { albizia: 160, ohia: 200, lehua: 50 } as const;
@@ -19,28 +19,28 @@ function layout(): Tree[] {
   const po = mountainViewWorld();
   const trees: Tree[] = [];
   const span = 18;
-  const cell = 0.62;
+  const cell = wu(0.62);
   for (let iz = -span; iz <= span && trees.length < 360; iz++) {
     for (let ix = -span; ix <= span && trees.length < 360; ix++) {
       const x = ft.x + ix * cell;
       const z = ft.z + iz * cell;
       const h = hash(ix + 40, iz + 7);
       if (h < 0.16) continue;
-      const jx = x + (h - 0.5) * 0.45;
-      const jz = z + (hash(ix + 3, iz + 11) - 0.5) * 0.45;
+      const jx = x + (h - 0.5) * wu(0.45);
+      const jz = z + (hash(ix + 3, iz + 11) - 0.5) * wu(0.45);
       const dx = jx - ft.x;
       const dz = jz - ft.z;
-      if (dx * dx + dz * dz < (CLEARING_R + 0.15) ** 2) continue;
+      if (dx * dx + dz * dz < (CLEARING_R + wu(0.15)) ** 2) continue;
       const px = jx - po.x;
       const pz = jz - po.z;
-      if (px * px + pz * pz < 1.35 * 1.35) continue;
-      if (dx * dx + dz * dz > 17 * 17) continue;
+      if (px * px + pz * pz < wu(1.35) * wu(1.35)) continue;
+      if (dx * dx + dz * dz > wu(17) * wu(17)) continue;
       if (!isCanopy(jx, jz)) continue;
       trees.push({
         x: jx,
         y: terrainY(jx, jz),
         z: jz,
-        s: 0.24 + h * 0.4,
+        s: wu(0.24) + h * wu(0.4),
         h,
         albizia: h < 0.48,
       });
@@ -77,7 +77,7 @@ export function PunaGrove() {
         a.setMatrixAt(ia, dummy.matrix);
         a.setColorAt(ia, albiziaGreen[ia % albiziaGreen.length]!);
         dummy.position.set(tree.x, tree.y + tree.s * 0.72, tree.z);
-        dummy.scale.set(0.05, tree.s * 1.4, 0.05);
+        dummy.scale.set(wu(0.05), tree.s * 1.4, wu(0.05));
         dummy.rotation.set(0, 0, 0);
         dummy.updateMatrix();
         t.setMatrixAt(it, dummy.matrix);
@@ -92,7 +92,7 @@ export function PunaGrove() {
         o.setMatrixAt(io, dummy.matrix);
         o.setColorAt(io, ohiaGreen[io % ohiaGreen.length]!);
         dummy.position.set(tree.x, tree.y + tree.s * 0.48, tree.z);
-        dummy.scale.set(0.065, tree.s * 0.9, 0.065);
+        dummy.scale.set(wu(0.065), tree.s * 0.9, wu(0.065));
         dummy.rotation.set(0, 0, 0);
         dummy.updateMatrix();
         t.setMatrixAt(it, dummy.matrix);

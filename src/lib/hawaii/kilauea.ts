@@ -1,12 +1,12 @@
-import { latLonToWorld, terrainY, worldToLatLon } from "./world";
+import { hu, latLonToWorld, terrainY, worldToLatLon, wu } from "./world";
 
 const CAL = latLonToWorld(19.4069, -155.2834);
 const PIT = latLonToWorld(19.405, -155.291);
 
-/** ~4 × 3 km caldera. Inner pit is Halemaʻumaʻu, west of center. */
-export const KILAUEA_RX = 3.1;
-export const KILAUEA_RZ = 2.2;
-export const PIT_R = 1.15;
+/** ~4 × 3 km caldera. Inner pit is Halemaʻumaʻu, west of center. Authored at WORLD 240. */
+export const KILAUEA_RX = wu(3.1);
+export const KILAUEA_RZ = wu(2.2);
+export const PIT_R = wu(1.15);
 
 export function inKilaueaCaldera(x: number, z: number) {
   const dx = (x - CAL.x) / KILAUEA_RX;
@@ -30,11 +30,11 @@ export function kilaueaBowlY(x: number, z: number, y0: number) {
   const e = dx * dx + dz * dz;
   if (e >= 1.08) return y0;
   const t = Math.min(1, (1.08 - e) / 0.16);
-  let drop = t * 0.7;
+  let drop = t * hu(0.7);
   const px = (x - PIT.x) / PIT_R;
   const pz = (z - PIT.z) / PIT_R;
   const pe = px * px + pz * pz;
-  if (pe < 1) drop += Math.min(1, (1 - pe) / 0.35) * 0.55;
+  if (pe < 1) drop += Math.min(1, (1 - pe) / 0.35) * hu(0.55);
   return y0 - drop;
 }
 

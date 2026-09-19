@@ -62,26 +62,15 @@ function Punaluu() {
 /** Jump gear on the real lip — no separate palisade in the ocean. */
 function KaLae() {
   const p = snapToLand(18.9119, -155.6864);
-  const drop = Math.max(0.55, p.y);
+  if (p.y < 0.18) return null;
+  const drop = Math.max(0.4, p.y);
   return (
     <group position={[p.x, p.y, p.z]}>
-      <mesh position={[0, -Math.min(p.y, 0.55) * 0.7, 0.5]} scale={[1.1, 0.8, 1]}>
-        <sphereGeometry args={[0.2, 10, 7]} />
-        <meshStandardMaterial color="#08080a" roughness={1} />
-      </mesh>
       <GreenHoist y={0} />
-      <mesh position={[0.28, 0.1, 0.1]}>
-        <boxGeometry args={[0.16, 0.14, 0.12]} />
-        <meshStandardMaterial color="#e25a28" roughness={0.55} />
-      </mesh>
       <Ladder x={-0.22} top={0} z={0.38} len={drop * 0.55} />
       <Ladder x={0.1} top={0} z={0.42} len={drop * 0.9} />
       <Truck x={-0.55} z={-0.28} y={0} />
       <Truck x={-1.05} z={-0.65} y={0} />
-      <Truck x={0.7} z={-0.5} y={0} />
-      <Person x={-0.28} z={-0.05} y={0} />
-      <Person x={0.06} z={0.03} y={0} />
-      <Person x={0.28} z={-0.08} y={0} />
     </group>
   );
 }
@@ -140,17 +129,6 @@ function Truck({ x, z, y }: { x: number; z: number; y: number }) {
       <mesh position={[0.07, 0.15, 0]}>
         <boxGeometry args={[0.14, 0.1, 0.15]} />
         <meshStandardMaterial color="#4a5056" roughness={0.5} />
-      </mesh>
-    </group>
-  );
-}
-
-function Person({ x, z, y }: { x: number; z: number; y: number }) {
-  return (
-    <group position={[x, y, z]}>
-      <mesh position={[0, 0.1, 0]}>
-        <capsuleGeometry args={[0.032, 0.09, 3, 6]} />
-        <meshStandardMaterial color="#d8c4a8" roughness={0.8} />
       </mesh>
     </group>
   );

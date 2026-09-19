@@ -195,17 +195,12 @@ def classify(
     biome[grass] = GRASS
     biome[land & ~west & (meters < 2200)] = RAINFOREST
     biome[lava] = LAVA
-    # Kaʻū desert is brown. Caldera floor is painted in kilauea(). Forest N/E of the rim.
-    kau = land & (lat > 19.20) & (lat < 19.43) & (lon > -155.50) & (lon < -155.20) & (meters > 500)
-    rift = land & (lat > 19.34) & (lat < 19.52) & (lon > -155.22) & (lon < -154.82) & (luma < 100) & (g < 90)
-    biome[kau] = SCRUB
-    biome[rift] = LAVA
-    np_forest = land & (lat > 19.40) & (lat < 19.52) & (lon > -155.27) & (lon < -155.16)
-    np_north = land & (lat > 19.428) & (lat < 19.50) & (lon > -155.34) & (lon < -155.18)
-    biome[np_forest | np_north] = RAINFOREST
     biome[alpine] = ALPINE
     biome[snow] = SNOW
     biome[beach] = BEACH
+    # South Point is a grassy cliff, not a beige beach triangle.
+    cape = land & (lat < 19.00) & (lon > -155.73) & (lon < -155.61) & (biome == BEACH)
+    biome[cape] = GRASS
     biome[ocean] = np.where(offshore[ocean] <= 6, REEF, OCEAN)
 
     cloud_west = land & cloudy & (meters < 2800) & west
@@ -311,17 +306,15 @@ def foam(img: Image.Image, ocean: np.ndarray) -> None:
 
 
 def kilauea(img: Image.Image) -> None:
-    """Irregular nested caldera like the map: grey floor, black pit west, sulfur."""
+    """Nested caldera on the rainforest shield — dark enough to see from the air."""
     x, y = project(19.4069, -155.2834)
     d = ImageDraw.Draw(img)
-    d.ellipse((x - 17, y - 12, x + 15, y + 14), fill=(108, 92, 74))
-    d.ellipse((x - 14, y - 9, x + 12, y + 11), fill=(82, 72, 62))
-    d.ellipse((x - 8, y - 4, x + 10, y + 8), fill=(70, 62, 54))
+    d.ellipse((x - 14, y - 10, x + 13, y + 11), fill=(88, 72, 58))
+    d.ellipse((x - 11, y - 8, x + 10, y + 8), fill=(58, 48, 40))
     px, py = project(19.405, -155.291)
-    d.ellipse((px - 9, py - 7, px + 6, py + 6), fill=(32, 26, 22))
-    d.ellipse((px - 5, py - 4, px + 3, py + 3), fill=(22, 18, 16))
-    d.ellipse((px - 2, py - 1.5, px + 2, py + 1.5), fill=(196, 88, 36))
-    d.ellipse((px + 1, py - 5, px + 5, py - 2), fill=(210, 198, 168))
+    d.ellipse((px - 7, py - 5, px + 6, py + 5), fill=(28, 22, 18))
+    d.ellipse((px - 3, py - 2, px + 3, py + 2), fill=(210, 92, 36))
+    d.ellipse((px - 1.4, py - 1, px + 1.4, py + 1), fill=(255, 196, 80))
 
 
 def main() -> None:

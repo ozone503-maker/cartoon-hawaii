@@ -22,11 +22,11 @@ Home spawn: **FlashTown**, Mountain View, Puna — `19.5397°N, 155.1417°W`.
 
 | What | File | Lock |
 |---|---|---|
-| Flight physics | `src/lib/flight/craft.ts` | Thrust, yaw, lift/drop, boost ×2.15. **Jessie scale override (Sep 18):** `maxSpeed` 28→**1.0**, accel 18→**0.65** (coast-to-coast ~2.5–4 min). Retune only — do not rewrite the stepper. |
+| Flight physics | `src/lib/flight/craft.ts` | Thrust, yaw, lift/drop, boost ×2.15. **Jessie world enlarge (Sep 18):** `maxSpeed` **4.0**, accel **2.6** at `WORLD.w=960` (was 1.0 / 0.65 at 240) so coast-to-coast stays ~3–4 min. Retune only — do not rewrite the stepper. |
 | Input | `src/lib/flight/input.ts` | Keyboard + analog stick axes. |
 | Chase camera | `src/components/flight/ChaseCam.tsx` | `LEN = 3.5` (was 2.55), `DEG = 22`. Behind and above, UFO in the lower third. No cockpit. No zoom into MDP’s head. |
 | WebGL boot | `src/components/flight/FlightScene.tsx` | `createRoot` + `await configure` + explicit canvas size. Samsung died on R3F `<Canvas>` / 0×0 / context loss. |
-| World / height | `src/lib/hawaii/world.ts` | `WORLD.w = 240`, `HEIGHT_SCALE = 24/4205`. |
+| World / height | `src/lib/hawaii/world.ts` | `WORLD.w = 960` (4× base 240), `HEIGHT_SCALE = (24×3.75)/4205`, `UFO_LENGTH = 8.8`. Summits = dark cinder — **NO snow**. |
 | Grid | `src/lib/hawaii/geo.ts` | AABB: Upolu N, Ka Lae S, Keahole W, Kumukahi E. |
 | Pins | `src/lib/hawaii/places.ts` | Published coordinates only. |
 | Roads | `src/lib/hawaii/highways.json` | Real belt / saddle / Kohala / Puna. |
@@ -41,9 +41,16 @@ Camera reference (user-locked): UFO in the lower third, ~3–3.5 craft lengths b
 
 ## Island scale feel (Jessie, Sep 18)
 
-Island felt tiny because craft `maxSpeed=28` crossed the ~240-unit GEO frame in ~8 s (~17 km/s effective). Geography (`WORLD.w`, Landsat, places) was fine — **speed was lying about scale**.
+Island felt tiny because volcanoes sat on top of each other in a 240-wide frame. Craft slowdown alone (`broboss/island-scale-feel` / PR #4, `maxSpeed` 28→1.0) was **insufficient** — WORLD had to get bigger.
 
-Retune on `broboss/island-scale-feel`: cruise FlashTown↔Ka Lae / Hilo↔Kona ~2.5–4 min at full throttle (no boost); boost still ~2.15×. ChaseCam `LEN` 2.55→3.5 so more landscape fills the frame. **Phone verify required.**
+**`broboss/world-scale-snow` (world enlarge only — no snow):**
+- `WORLD.w` **240 → 960** (exactly 4×; aspect via `MAP_SIZE`)
+- `HEIGHT_SCALE` **24/4205 → (24×3.75)/4205** (slightly under linear ×4 so peaks don’t eat the sky)
+- `UFO_LENGTH` **2.2 → 8.8**; ChaseCam still `LEN=3.5` / `DEG=22` (pulls back with UFO)
+- Craft `maxSpeed` **1.0 → 4.0**, accel **0.65 → 2.6** so FlashTown↔Ka Lae / Hilo↔Kona stay **~3–4 min** cruise
+- Absolute world-unit props (Kīlauea bowls, Kaʻū coast, falls, forest radii) scaled via `wu()` / `hu()` / `WORLD_SCALE`
+- Summit look: **dark alpine cinder / bare rock** — Jessie override **NO snow** on Mauna Kea / Mauna Loa
+- places lat/lon + Landsat shore unchanged. **Phone verify required.**
 
 ---
 
@@ -159,7 +166,7 @@ python3 scripts/paint-cartoon-atlas.py
 
 ## How to help without wrecking it
 
-1. Keep `FlightScene.tsx` boot, `world.ts` / `geo.ts` / `places.ts` coordinates. Leave `craft.ts` / `ChaseCam` alone except Jessie’s documented island-scale retune.
+1. Keep `FlightScene.tsx` boot, `geo.ts` / `places.ts` coordinates. `world.ts` scale + craft/ChaseCam retunes only per Jessie world-enlarge notes. **No snow on MK/ML.**
 2. **Ka Lae is blocked.** Do not add another box wall in the ocean. Sculpt the Landsat mesh edge; props only on dry ground.
 3. Waterfalls still need a look the user accepts (`Waterfalls.tsx` / `Rivers.tsx`).
 4. Then towns, close terrain, tree polish.

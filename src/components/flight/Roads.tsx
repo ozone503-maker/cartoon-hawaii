@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Line } from "@react-three/drei";
 import { Vector3 } from "three";
 import { HIGHWAYS } from "@/lib/hawaii/highways";
-import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
+import { hu, latLonToWorld, terrainY } from "@/lib/hawaii/world";
 
 export function Roads() {
   const paths = useMemo(() => {
@@ -11,7 +11,7 @@ export function Roads() {
       width: h.w,
       points: h.pts.map(([lat, lon]) => {
         const { x, z } = latLonToWorld(lat, lon);
-        return new Vector3(x, terrainY(x, z) + 0.07, z);
+        return new Vector3(x, terrainY(x, z) + hu(0.07), z);
       }),
     }));
   }, []);

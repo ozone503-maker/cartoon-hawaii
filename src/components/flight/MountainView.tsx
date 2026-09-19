@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Line } from "@react-three/drei";
 import { Vector3 } from "three";
 import { DRIVEWAY, mountainViewWorld } from "@/lib/hawaii/puna";
-import { isCanopy, latLonToWorld, terrainY } from "@/lib/hawaii/world";
+import { hu, isCanopy, latLonToWorld, terrainY, WORLD_SCALE, wu } from "@/lib/hawaii/world";
 
 function hash(i: number) {
   let n = Math.imul(i ^ 0x9e3779b9, 0x85ebca6b);
@@ -29,14 +29,14 @@ export function MountainView() {
     () =>
       DRIVEWAY.map(([lat, lon]) => {
         const { x, z } = latLonToWorld(lat, lon);
-        return new Vector3(x, terrainY(x, z) + 0.08, z);
+        return new Vector3(x, terrainY(x, z) + hu(0.08), z);
       }),
     [],
   );
 
   return (
     <group>
-      <group position={[po.x, y, po.z]} rotation={[0, yaw, 0]}>
+      <group position={[po.x, y, po.z]} rotation={[0, yaw, 0]} scale={WORLD_SCALE}>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.04, 0]}>
           <planeGeometry args={[7.2, 0.7]} />
           <meshStandardMaterial color="#c4b496" roughness={0.78} />
@@ -54,7 +54,7 @@ export function MountainView() {
         <JungleCabin key={lot.i} {...lot} />
       ))}
       <Line points={drive} color="#b08a60" lineWidth={2.2} />
-      <group position={[po.x + rx * 2.2, y, po.z + rz * 2.2]}>
+      <group position={[po.x + rx * wu(2.2), y, po.z + rz * wu(2.2)]} scale={WORLD_SCALE}>
         <mesh position={[0, 0.55, 0]}>
           <cylinderGeometry args={[0.03, 0.04, 1.1, 6]} />
           <meshStandardMaterial color="#6a5648" />
@@ -109,25 +109,25 @@ function jungleLots(cx: number, cz: number): Lot[] {
   const out: Lot[] = [];
   for (let i = 0; i < 22; i++) {
     const a = hash(i) * Math.PI * 2;
-    const r = 3.4 + hash(i + 3) * 9.5;
-    const x = cx + Math.cos(a) * r * 0.85 - 2.4;
+    const r = wu(3.4) + hash(i + 3) * wu(9.5);
+    const x = cx + Math.cos(a) * r * 0.85 - wu(2.4);
     const z = cz + Math.sin(a) * r;
     if (!isCanopy(x, z)) continue;
     const dx = x - cx;
     const dz = z - cz;
-    if (dx * dx + dz * dz < 2.2 * 2.2) continue;
+    if (dx * dx + dz * dz < wu(2.2) * wu(2.2)) continue;
     const ft = latLonToWorld(19.5397, -155.1417);
     const fdx = x - ft.x;
     const fdz = z - ft.z;
-    if (fdx * fdx + fdz * fdz < 3.4 * 3.4) continue;
+    if (fdx * fdx + fdz * fdz < wu(3.4) * wu(3.4)) continue;
     out.push({
       i,
       x,
       z,
       y: terrainY(x, z),
       yaw: hash(i + 9) * 6.2,
-      h: 0.22 + hash(i + 5) * 0.18,
-      w: 0.28 + hash(i + 7) * 0.16,
+      h: hu(0.22) + hash(i + 5) * hu(0.18),
+      w: wu(0.28) + hash(i + 7) * wu(0.16),
     });
   }
   return out;
@@ -140,8 +140,8 @@ function JungleCabin({ x, y, z, yaw, h, w }: Lot) {
         <boxGeometry args={[w, h, w * 0.72]} />
         <meshStandardMaterial color="#c4a07a" roughness={0.85} />
       </mesh>
-      <mesh position={[0, h + 0.03, 0]} rotation={[0.2, 0, 0]}>
-        <boxGeometry args={[w + 0.06, 0.05, w * 0.82]} />
+      <mesh position={[0, h + hu(0.03), 0]} rotation={[0.2, 0, 0]}>
+        <boxGeometry args={[w + wu(0.06), hu(0.05), w * 0.82]} />
         <meshStandardMaterial color="#5a5048" metalness={0.18} roughness={0.5} />
       </mesh>
     </group>

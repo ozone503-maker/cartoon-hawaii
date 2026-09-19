@@ -1,4 +1,4 @@
-import { latLonToWorld } from "./world";
+import { latLonToWorld, wu } from "./world";
 
 /** FlashTown lot — CDP centroid / home pin. */
 export const FLASHTOWN_LL = { lat: 19.5397, lon: -155.1417 } as const;
@@ -7,7 +7,7 @@ export const FLASHTOWN_LL = { lat: 19.5397, lon: -155.1417 } as const;
 export const MOUNTAIN_VIEW_PO = { lat: 19.54925, lon: -155.10907 } as const;
 
 /** Gameplay clearing around the cabin so the UFO can land. Position stays locked. */
-export const CLEARING_R = 2.9;
+export const CLEARING_R = wu(2.9);
 
 export function flashtownWorld() {
   return latLonToWorld(FLASHTOWN_LL.lat, FLASHTOWN_LL.lon);
@@ -28,7 +28,7 @@ export function inMountainViewStrip(x: number, z: number) {
   const p = mountainViewWorld();
   const dx = x - p.x;
   const dz = z - p.z;
-  return dx * dx + dz * dz < 1.6 * 1.6;
+  return dx * dx + dz * dz < wu(1.6) * wu(1.6);
 }
 
 /** Country lane from the lot to Volcano Road. */

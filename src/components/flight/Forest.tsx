@@ -2,15 +2,15 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Color, InstancedMesh, Object3D } from "three";
 import type { CraftState } from "@/lib/flight/craft";
-import { isCanopy, terrainY } from "@/lib/hawaii/world";
+import { hu, isCanopy, terrainY, wu } from "@/lib/hawaii/world";
 import { inFlashTownClearing } from "@/lib/hawaii/puna";
 import { inMaunaKeaSummit } from "@/lib/hawaii/maunakea";
 import { inOpenCoast } from "@/lib/hawaii/coast";
 import { inRiver } from "@/lib/hawaii/rivers";
 import { inKilaueaCinder } from "@/lib/hawaii/kilauea";
 
-const CELL = 1.25;
-const RADIUS = 24;
+const CELL = wu(1.25);
+const RADIUS = wu(24);
 const MAX = { albizia: 120, ohia: 240, koa: 110, lehua: 70 } as const;
 const dummy = new Object3D();
 
@@ -22,10 +22,10 @@ function hash(ix: number, iz: number) {
 
 /** 0 albizia (lowland umbrella) · 1 ʻōhiʻa · 2 koa (higher slopes) */
 function pickKind(elev: number, h: number): 0 | 1 | 2 {
-  if (elev >= 5.5) return h < 0.45 ? 2 : 1;
-  if (elev <= 3.55) return h < 0.42 ? 0 : 1;
+  if (elev >= hu(5.5)) return h < 0.45 ? 2 : 1;
+  if (elev <= hu(3.55)) return h < 0.42 ? 0 : 1;
   if (h < 0.16) return 2;
-  if (h > 0.84 && elev < 4.3) return 0;
+  if (h > 0.84 && elev < hu(4.3)) return 0;
   return 1;
 }
 
@@ -33,7 +33,7 @@ type Spot = { x: number; y: number; z: number; s: number; h: number; kind: 0 | 1
 
 function hide(mesh: InstancedMesh, from: number, cap: number) {
   for (let i = from; i < cap; i++) {
-    dummy.position.set(0, -50, 0);
+    dummy.position.set(0, -200, 0);
     dummy.scale.set(0, 0, 0);
     dummy.rotation.set(0, 0, 0);
     dummy.updateMatrix();
@@ -86,14 +86,14 @@ export function Forest({ craft }: { craft: CraftState }) {
         const dx = cx - craft.x;
         const dz = cz - craft.z;
         const d2 = dx * dx + dz * dz;
-        if (d2 > RADIUS * RADIUS || d2 < 6.5) continue;
+        if (d2 > RADIUS * RADIUS || d2 < wu(6.5) ** 2) continue;
         const hv = hash(gx + ix, gz + iz);
         if (hv < 0.2) continue;
-        const jx = cx + (hv - 0.5) * 0.7;
-        const jz = cz + (hash(gx + ix + 19, gz + iz + 7) - 0.5) * 0.7;
+        const jx = cx + (hv - 0.5) * wu(0.7);
+        const jz = cz + (hash(gx + ix + 19, gz + iz + 7) - 0.5) * wu(0.7);
         if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz) || inMaunaKeaSummit(jx, jz) || inOpenCoast(jx, jz) || inRiver(jx, jz) || inKilaueaCinder(jx, jz)) continue;
         const y = terrainY(jx, jz);
-        spots.push({ x: jx, y, z: jz, s: 0.3 + hv * 0.4, h: hv, kind: pickKind(y, hv) });
+        spots.push({ x: jx, y, z: jz, s: wu(0.3) + hv * wu(0.4), h: hv, kind: pickKind(y, hv) });
       }
     }
 
@@ -112,7 +112,7 @@ export function Forest({ craft }: { craft: CraftState }) {
         a.setMatrixAt(ia, dummy.matrix);
         a.setColorAt(ia, albiziaGreen[Math.floor(t.h * albiziaGreen.length)]!);
         dummy.position.set(t.x, t.y + t.s * 0.7, t.z);
-        dummy.scale.set(0.055, t.s * 1.35, 0.055);
+        dummy.scale.set(wu(0.055), t.s * 1.35, wu(0.055));
         dummy.rotation.set(0, 0, 0);
         dummy.updateMatrix();
         w.setMatrixAt(it, dummy.matrix);
@@ -127,7 +127,7 @@ export function Forest({ craft }: { craft: CraftState }) {
         k.setMatrixAt(ik, dummy.matrix);
         k.setColorAt(ik, koaGreen[Math.floor(t.h * koaGreen.length)]!);
         dummy.position.set(t.x, t.y + t.s * 0.72, t.z);
-        dummy.scale.set(0.065, t.s * 1.4, 0.065);
+        dummy.scale.set(wu(0.065), t.s * 1.4, wu(0.065));
         dummy.rotation.set(0, 0, 0);
         dummy.updateMatrix();
         w.setMatrixAt(it, dummy.matrix);
@@ -142,13 +142,13 @@ export function Forest({ craft }: { craft: CraftState }) {
         o.setMatrixAt(io, dummy.matrix);
         o.setColorAt(io, ohiaGreen[Math.floor(t.h * ohiaGreen.length)]!);
         dummy.position.set(t.x, t.y + t.s * 0.48, t.z);
-        dummy.scale.set(0.07, t.s * 0.9, 0.07);
+        dummy.scale.set(wu(0.07), t.s * 0.9, wu(0.07));
         dummy.rotation.set(0, 0, 0);
         dummy.updateMatrix();
         w.setMatrixAt(it, dummy.matrix);
         w.setColorAt(it, wood[1]!);
         if (t.h > 0.62 && il < MAX.lehua) {
-          dummy.position.set(t.x + (t.h - 0.5) * 0.22, t.y + t.s * 1.35, t.z + (t.h - 0.4) * 0.18);
+          dummy.position.set(t.x + (t.h - 0.5) * wu(0.22), t.y + t.s * 1.35, t.z + (t.h - 0.4) * wu(0.18));
           dummy.scale.set(t.s * 0.18, t.s * 0.16, t.s * 0.18);
           dummy.updateMatrix();
           l.setMatrixAt(il, dummy.matrix);

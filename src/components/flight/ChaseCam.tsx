@@ -3,7 +3,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import type { Fog, PerspectiveCamera } from "three";
 import { Vector3 } from "three";
 import type { CraftState } from "@/lib/flight/craft";
-import { UFO_LENGTH } from "@/lib/hawaii/world";
+import { UFO_LENGTH, WORLD_SCALE } from "@/lib/hawaii/world";
 
 const _desired = new Vector3();
 const _look = new Vector3();
@@ -21,6 +21,7 @@ export function ChaseCam({ craft }: { craft: CraftState }) {
     const cam = camera as PerspectiveCamera;
     const fx = -Math.sin(craft.yaw);
     const fz = -Math.cos(craft.yaw);
+    // UFO_LENGTH already × WORLD_SCALE → chase pulls back with craft.
     const dist = UFO_LENGTH * LEN;
     const height = dist * Math.tan((DEG * Math.PI) / 180);
 
@@ -32,13 +33,14 @@ export function ChaseCam({ craft }: { craft: CraftState }) {
       cam.position.lerp(_desired, 1 - Math.exp(-4.8 * dt));
     }
 
-    _look.set(craft.x + fx * UFO_LENGTH * 0.85, craft.y + 0.22, craft.z + fz * UFO_LENGTH * 0.85);
+    const lookY = UFO_LENGTH * 0.1;
+    _look.set(craft.x + fx * UFO_LENGTH * 0.85, craft.y + lookY, craft.z + fz * UFO_LENGTH * 0.85);
     cam.lookAt(_look);
 
     const fog = scene.fog as Fog | null;
     if (fog) {
-      fog.near = 36;
-      fog.far = 160;
+      fog.near = 36 * WORLD_SCALE;
+      fog.far = 160 * WORLD_SCALE;
     }
   });
 

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { DoubleSide } from "three";
 import type { Vector3 } from "three";
 import type { Fall, FallProfile } from "@/lib/hawaii/rivers";
-import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
+import { hu, latLonToWorld, terrainY, wu } from "@/lib/hawaii/world";
 
 /** Thin white/cyan sheet — phone-safe (no toon, no transmission). */
 const WATER = {
@@ -54,17 +54,17 @@ function getPose(fall: Fall, points: Vector3[], riverId: string) {
   const yaw = Math.atan2(next.x - prev.x, next.z - prev.z);
   const fx = Math.sin(yaw);
   const fz = Math.cos(yaw);
-  const lip = terrainY(x, z) + 0.07;
+  const lip = terrainY(x, z) + hu(0.07);
 
   const isWailuku = riverId === "wailuku" || riverId === "hookelekele";
   const isTall = fall.profile === "akaka" || fall.profile === "waipio-horsetail";
-  const maxSearch = isTall ? 3.0 : isWailuku ? 4.2 : 5.5;
+  const maxSearch = isTall ? wu(3.0) : isWailuku ? wu(4.2) : wu(5.5);
   const target = isTall ? fall.h * 0.96 : isWailuku ? fall.h * 0.86 : fall.h * 0.76;
   let bestY = lip;
-  let bestRun = 0.55;
+  let bestRun = wu(0.55);
 
-  for (let r = 0.4; r <= maxSearch; r += 0.2) {
-    const y = terrainY(x + fx * r, z + fz * r) + 0.05;
+  for (let r = wu(0.4); r <= maxSearch; r += wu(0.2)) {
+    const y = terrainY(x + fx * r, z + fz * r) + hu(0.05);
     if (y < bestY) {
       bestY = y;
       bestRun = r;
@@ -72,36 +72,36 @@ function getPose(fall: Fall, points: Vector3[], riverId: string) {
     if (lip - y >= target) break;
   }
 
-  const terrainDrop = Math.max(0.34, lip - bestY);
+  const terrainDrop = Math.max(hu(0.34), lip - bestY);
   let drop = Math.max(terrainDrop, fall.h * 0.82);
   let run = bestRun;
 
   switch (fall.profile) {
     case "akaka":
       drop = Math.max(drop, fall.h);
-      run = Math.min(run, Math.max(0.22, drop * 0.12));
+      run = Math.min(run, Math.max(wu(0.22), drop * 0.12));
       break;
     case "waipio-horsetail":
       drop = Math.max(drop, fall.h * 1.05);
-      run = Math.min(run, Math.max(0.26, drop * 0.16));
+      run = Math.min(run, Math.max(wu(0.26), drop * 0.16));
       break;
     case "rainbow":
       drop = Math.max(drop, fall.h * 0.92);
-      run = Math.min(run, Math.max(0.34, drop * 0.28));
+      run = Math.min(run, Math.max(wu(0.34), drop * 0.28));
       break;
     case "umauma":
       drop = Math.max(drop, fall.h * 0.9);
       run = Math.max(run, drop * 0.75);
       break;
     case "peepee":
-      drop = Math.max(0.4, Math.min(drop, fall.h * 1.3));
-      run = Math.max(1.05, run);
+      drop = Math.max(hu(0.4), Math.min(drop, fall.h * 1.3));
+      run = Math.max(wu(1.05), run);
       break;
     default:
-      if (isWailuku) run = Math.min(run, Math.max(0.5, drop * 0.48));
+      if (isWailuku) run = Math.min(run, Math.max(wu(0.5), drop * 0.48));
   }
 
-  return { x, z, y: lip, yaw, run, drop, width: Math.max(0.14, fall.w) };
+  return { x, z, y: lip, yaw, run, drop, width: Math.max(wu(0.14), fall.w) };
 }
 
 function ProfileFall({ fall, drop, run, width }: { fall: Fall; drop: number; run: number; width: number }) {

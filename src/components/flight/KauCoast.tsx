@@ -1,5 +1,5 @@
 import { DoubleSide } from "three";
-import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
+import { hu, latLonToWorld, terrainY, WORLD_SCALE } from "@/lib/hawaii/world";
 import { snapToLand } from "@/lib/hawaii/coast";
 import { Puuhonua } from "./Puuhonua";
 
@@ -36,7 +36,7 @@ function Punaluu() {
     [0.05, 0.28],
   ] as const;
   return (
-    <group position={[x, y, z]}>
+    <group position={[x, y, z]} scale={WORLD_SCALE}>
       <mesh rotation={[-Math.PI / 2, 0, 0.35]} position={[0.1, 0.04, 0.15]} scale={[1.7, 0.85, 1]}>
         <circleGeometry args={[1, 20]} />
         <meshStandardMaterial color="#1a1818" roughness={0.98} />
@@ -58,10 +58,10 @@ function Punaluu() {
 /** Jump gear on the real lip — no separate palisade in the ocean. */
 function KaLae() {
   const p = snapToLand(18.9119, -155.6864);
-  const drop = Math.max(0.55, p.y);
+  const drop = Math.max(hu(0.55), p.y);
   return (
-    <group position={[p.x, p.y, p.z]}>
-      <mesh position={[0, -Math.min(p.y, 0.55) * 0.7, 0.5]} scale={[1.1, 0.8, 1]}>
+    <group position={[p.x, p.y, p.z]} scale={WORLD_SCALE}>
+      <mesh position={[0, -Math.min(p.y / WORLD_SCALE, 0.55) * 0.7, 0.5]} scale={[1.1, 0.8, 1]}>
         <sphereGeometry args={[0.2, 10, 7]} />
         <meshStandardMaterial color="#08080a" roughness={1} />
       </mesh>
@@ -70,8 +70,8 @@ function KaLae() {
         <boxGeometry args={[0.16, 0.14, 0.12]} />
         <meshStandardMaterial color="#e25a28" roughness={0.55} />
       </mesh>
-      <Ladder x={-0.22} top={0} z={0.38} len={drop * 0.55} />
-      <Ladder x={0.1} top={0} z={0.42} len={drop * 0.9} />
+      <Ladder x={-0.22} top={0} z={0.38} len={(drop / WORLD_SCALE) * 0.55} />
+      <Ladder x={0.1} top={0} z={0.42} len={(drop / WORLD_SCALE) * 0.9} />
       <Truck x={-0.55} z={-0.28} y={0} />
       <Truck x={-1.05} z={-0.65} y={0} />
       <Truck x={0.7} z={-0.5} y={0} />
@@ -156,7 +156,7 @@ function Papakolea() {
   // Green-sand cove in a *broken* cone on the east cape — not a donut in the ocean.
   const p = snapToLand(18.9364, -155.6464);
   return (
-    <group position={[p.x, p.y, p.z]}>
+    <group position={[p.x, p.y, p.z]} scale={WORLD_SCALE}>
       <mesh rotation={[-Math.PI / 2, 0, 0.4]} position={[0.1, 0.03, 0.2]} scale={[0.95, 0.55, 1]}>
         <circleGeometry args={[1, 16]} />
         <meshStandardMaterial color="#6a7a38" roughness={0.95} />

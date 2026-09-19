@@ -1,12 +1,12 @@
-import { hasAlbedo, latLonToWorld, sampleAlbedo, terrainY } from "./world";
+import { hasAlbedo, hu, latLonToWorld, sampleAlbedo, terrainY, wu } from "./world";
 
-/** Open coast — no rainforest canopy. Pins stay on the real shoreline. */
+/** Open coast — no rainforest canopy. Pins stay on the real shoreline. Radii at WORLD 240. */
 const ZONES: { lat: number; lon: number; r: number }[] = [
-  { lat: 19.1358, lon: -155.5044, r: 2.4 }, // Punaluʻu black sand
-  { lat: 18.9108, lon: -155.6813, r: 8.5 }, // Ka Lae
-  { lat: 18.9364, lon: -155.6464, r: 2.2 }, // Papakōlea
-  { lat: 19.9919, lon: -155.8244, r: 1.6 }, // Hāpuna
-  { lat: 19.4217, lon: -155.9106, r: 2.2 }, // Puʻuhonua lava flat
+  { lat: 19.1358, lon: -155.5044, r: wu(2.4) }, // Punaluʻu black sand
+  { lat: 18.9108, lon: -155.6813, r: wu(8.5) }, // Ka Lae
+  { lat: 18.9364, lon: -155.6464, r: wu(2.2) }, // Papakōlea
+  { lat: 19.9919, lon: -155.8244, r: wu(1.6) }, // Hāpuna
+  { lat: 19.4217, lon: -155.9106, r: wu(2.2) }, // Puʻuhonua lava flat
 ];
 
 const pts = ZONES.map((z) => ({ ...latLonToWorld(z.lat, z.lon), r2: z.r * z.r }));
@@ -36,7 +36,7 @@ export function kaLaeShoreLat(lon: number) {
     const b = latLonToWorld(lat + 0.005, lon);
     const y = terrainY(a.x, a.z);
     const yn = terrainY(b.x, b.z);
-    if (y > 0.07 && yn >= y - 0.01) {
+    if (y > hu(0.07) && yn >= y - hu(0.01)) {
       shoreCache.set(key, lat);
       return lat;
     }
@@ -53,11 +53,11 @@ export function kaLaeShoreLat(lon: number) {
  */
 export function kauCliffY(lat: number, lon: number, y0: number) {
   if (lon < -155.75 || lon > -155.61 || lat > 19.03 || lat < 18.88) return y0;
-  if (y0 <= 0.02) return y0;
-  if (y0 > 0.12 && y0 < 0.7) {
+  if (y0 <= hu(0.02)) return y0;
+  if (y0 > hu(0.12) && y0 < hu(0.7)) {
     const { x, z } = latLonToWorld(lat, lon);
-    const south = terrainY(x, z + 1.6);
-    const west = terrainY(x - 1.6, z);
+    const south = terrainY(x, z + wu(1.6));
+    const west = terrainY(x - wu(1.6), z);
     if (south < y0 * 0.4 || west < y0 * 0.4) return y0 * 1.12;
   }
   return y0;
@@ -65,8 +65,8 @@ export function kauCliffY(lat: number, lon: number, y0: number) {
 
 function isDryLand(x: number, z: number) {
   const y = terrainY(x, z);
-  if (y < 0.15) return false;
-  if (!hasAlbedo()) return y > 0.18;
+  if (y < hu(0.15)) return false;
+  if (!hasAlbedo()) return y > hu(0.18);
   const { r, g, b } = sampleAlbedo(x, z);
   // Cyan / blue water albedo — not the jump lip (b > r).
   if (b > r + 8 && g >= r - 10) return false;

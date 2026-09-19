@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { BufferGeometry, DoubleSide, Float32BufferAttribute, Vector3 } from "three";
 import { RIVERS, type Fall } from "@/lib/hawaii/rivers";
-import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
+import { hu, latLonToWorld, terrainY, wu } from "@/lib/hawaii/world";
 import { Waterfall } from "./Waterfalls";
 
 /** Terrain-hugging polyline; river Y drops at each fall so ribbons don't laser flat. */
@@ -11,17 +11,17 @@ function drape(pts: [number, number][], falls: Fall[]) {
     const a = latLonToWorld(pts[i]![0], pts[i]![1]);
     const b = latLonToWorld(pts[i + 1]![0], pts[i + 1]![1]);
     const span = Math.hypot(b.x - a.x, b.z - a.z);
-    const n = Math.max(4, Math.ceil(span / 0.22));
+    const n = Math.max(4, Math.ceil(span / wu(0.22)));
     for (let k = 0; k < n; k++) {
       const t = k / n;
       const x = a.x + (b.x - a.x) * t;
       const z = a.z + (b.z - a.z) * t;
-      out.push(new Vector3(x, terrainY(x, z) + 0.055, z));
+      out.push(new Vector3(x, terrainY(x, z) + hu(0.055), z));
     }
   }
   const last = pts[pts.length - 1]!;
   const end = latLonToWorld(last[0], last[1]);
-  out.push(new Vector3(end.x, terrainY(end.x, end.z) + 0.055, end.z));
+  out.push(new Vector3(end.x, terrainY(end.x, end.z) + hu(0.055), end.z));
 
   for (const f of falls) {
     const fp = latLonToWorld(f.lat, f.lon);

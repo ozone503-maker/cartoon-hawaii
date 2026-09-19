@@ -1,5 +1,5 @@
 import { flashtownWorld, CLEARING_R } from "@/lib/hawaii/puna";
-import { terrainY } from "@/lib/hawaii/world";
+import { terrainY, WORLD_SCALE } from "@/lib/hawaii/world";
 
 /**
  * Homestead at the surveyed FlashTown pin. The UFO lands on the pad;
@@ -10,9 +10,9 @@ export function FlashTown() {
   const y = terrainY(p.x, p.z);
 
   return (
-    <group position={[p.x, y, p.z]}>
+    <group position={[p.x, y, p.z]} scale={WORLD_SCALE}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]} receiveShadow>
-        <circleGeometry args={[CLEARING_R, 36]} />
+        <circleGeometry args={[CLEARING_R / WORLD_SCALE, 36]} />
         <meshStandardMaterial color="#7a9a4a" roughness={0.92} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.045, 0]}>

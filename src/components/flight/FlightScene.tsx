@@ -17,7 +17,7 @@ import { KauCoast } from "./KauCoast";
 import { Rivers } from "./Rivers";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
-import { latLonToWorld, loadAlbedo, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE, UFO_LENGTH, WORLD } from "@/lib/hawaii/world";
+import { latLonToWorld, loadAlbedo, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE, UFO_LENGTH, WORLD, WORLD_SCALE, hu, wu } from "@/lib/hawaii/world";
 import { HOME_ID, PLACES, placeById } from "@/lib/hawaii/places";
 import { useHawaii } from "@/lib/hawaii/store";
 
@@ -28,7 +28,7 @@ function chaseStart(c: CraftState) {
   const height = dist * Math.tan((22 * Math.PI) / 180);
   return {
     cam: [c.x - fx * dist, c.y + height, c.z - fz * dist] as [number, number, number],
-    look: [c.x + fx * UFO_LENGTH * 0.85, c.y + 0.22, c.z + fz * UFO_LENGTH * 0.85] as [number, number, number],
+    look: [c.x + fx * UFO_LENGTH * 0.85, c.y + UFO_LENGTH * 0.1, c.z + fz * UFO_LENGTH * 0.85] as [number, number, number],
   };
 }
 
@@ -61,14 +61,14 @@ function Pads() {
   const pads = useMemo(() => {
     return PLACES.filter((p) => p.kind === "airport").map((p) => {
       const { x, z } = latLonToWorld(p.lat, p.lon);
-      return { ...p, x, z, y: terrainY(x, z) + 0.08 };
+      return { ...p, x, z, y: terrainY(x, z) + hu(0.08) };
     });
   }, []);
   return (
     <group>
       {pads.map((p) => (
         <mesh key={p.id} position={[p.x, p.y, p.z]} rotation={[-Math.PI / 2, 0, 0]}>
-          <circleGeometry args={[0.7, 20]} />
+          <circleGeometry args={[wu(0.7), 20]} />
           <meshStandardMaterial color="#f4ecd6" emissive="#f4ecd6" emissiveIntensity={0.35} />
         </mesh>
       ))}
@@ -103,8 +103,8 @@ function Scene() {
     <>
       <color attach="background" args={["#7ec8ee"]} />
       <hemisphereLight args={["#fff8ee", "#7ec8a8", 1.05]} />
-      <directionalLight position={[60, 80, 28]} intensity={1.85} color="#fff4d0" />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.35, 0]}>
+      <directionalLight position={[60 * WORLD_SCALE, 80 * WORLD_SCALE, 28 * WORLD_SCALE]} intensity={1.85} color="#fff4d0" />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, hu(-0.35), 0]}>
         <planeGeometry args={[WORLD.w * 4, WORLD.d * 4]} />
         <meshBasicMaterial color="#1a8ab8" />
       </mesh>
@@ -196,7 +196,7 @@ export function FlightCanvas() {
         dpr: 1,
         frameloop: "always",
         size: { width: w, height: h, top: 0, left: 0 },
-        camera: { fov: 48, near: 0.12, far: 520, position: look.cam },
+        camera: { fov: 48, near: 0.12 * WORLD_SCALE, far: 520 * WORLD_SCALE, position: look.cam },
         gl: {
           antialias: false,
           alpha: false,

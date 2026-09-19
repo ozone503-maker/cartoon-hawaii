@@ -1,4 +1,4 @@
-import { latLonToWorld, terrainY } from "@/lib/hawaii/world";
+import { latLonToWorld, terrainY, WORLD_SCALE } from "@/lib/hawaii/world";
 
 /**
  * Puʻuhonua o Hōnaunau — Place of Refuge at the bottom of the South Kona slope.
@@ -8,7 +8,7 @@ export function Puuhonua() {
   const { x, z } = latLonToWorld(19.4217, -155.9106);
   const y = terrainY(x, z);
   return (
-    <group position={[x, y, z]}>
+    <group position={[x, y, z]} scale={WORLD_SCALE}>
       <mesh rotation={[-Math.PI / 2, 0, 0.15]} position={[-0.15, 0.03, 0]} scale={[1.35, 0.9, 1]}>
         <circleGeometry args={[1, 18]} />
         <meshStandardMaterial color="#3a322c" roughness={0.98} />

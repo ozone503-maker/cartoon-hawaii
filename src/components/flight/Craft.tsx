@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import type { Group } from "three";
 import type { CraftState } from "@/lib/flight/craft";
-import { UFO_LENGTH, terrainY } from "@/lib/hawaii/world";
+import { hu, UFO_LENGTH, terrainY } from "@/lib/hawaii/world";
 
 const SKIN = "#6eb4cc";
 const SKIN_DEEP = "#5aa3bc";
@@ -30,7 +30,7 @@ export function Craft({ craft }: { craft: CraftState }) {
     g.rotation.x = craft.vy * 0.018;
     g.rotation.z = bank.current;
     if (shadow.current) {
-      const gy = terrainY(craft.x, craft.z) + 0.05;
+      const gy = terrainY(craft.x, craft.z) + hu(0.05);
       shadow.current.position.set(craft.x, gy, craft.z);
     }
   });

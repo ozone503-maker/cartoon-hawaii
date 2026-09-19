@@ -1,15 +1,45 @@
 import { GEO, MAP_SIZE, project, unproject, type LatLon } from "./geo";
 
-/** World units for the full Landsat frame (including ocean margin). */
+/**
+ * Authoring reference width (pre–Jessie enlarge). Absolute world-unit props
+ * authored at this scale multiply by WORLD_SCALE.
+ */
+export const WORLD_BASE_W = 240;
+
+/**
+ * Full Landsat frame width in world units.
+ * 960 = 4× WORLD_BASE_W so Mauna Kea ↔ Mauna Loa spacing reads as a real island
+ * (craft-slowdown alone was insufficient — volcanoes still felt stacked).
+ */
 export const WORLD = {
-  w: 240,
-  d: (240 * MAP_SIZE.h) / MAP_SIZE.w,
+  w: 960,
+  d: (960 * MAP_SIZE.h) / MAP_SIZE.w,
 } as const;
 
-/** 4205 m (Mauna Kea) maps to this many world units — mild exaggeration so shields read. */
-export const HEIGHT_SCALE = 24 / 4205;
+/** Linear scale from WORLD_BASE_W → WORLD.w (horizontal / craft / prop sizes). */
+export const WORLD_SCALE = WORLD.w / WORLD_BASE_W; // 4
 
-export const UFO_LENGTH = 2.2;
+/**
+ * Vertical exaggeration multiplier vs the old 24/4205 authoring.
+ * Slightly under ×4 so peaks keep relative height to width without eating the sky.
+ */
+export const HEIGHT_MULT = 3.75;
+
+/** 4205 m (Mauna Kea) → world units. Old was 24/4205; now × HEIGHT_MULT. */
+export const HEIGHT_SCALE = (24 * HEIGHT_MULT) / 4205;
+
+/** Craft length — scales with WORLD so relative size stays similar. */
+export const UFO_LENGTH = 2.2 * WORLD_SCALE;
+
+/** Scale a value authored at WORLD_BASE_W (240) into current world units. */
+export function wu(n: number) {
+  return n * WORLD_SCALE;
+}
+
+/** Scale a vertical value authored against old HEIGHT_SCALE (24/4205). */
+export function hu(n: number) {
+  return n * HEIGHT_MULT;
+}
 
 export function latLonToWorld(lat: number, lon: number): { x: number; z: number } {
   const p = project(lat, lon);
@@ -90,7 +120,8 @@ function height01(px: number, py: number) {
   return heightPx[(y * hw + x) * 4]! / 255;
 }
 
-export function terrainY(x: number, z: number): number {
+/** Heightmap elevation in metres (0–4205). */
+export function terrainMeters(x: number, z: number): number {
   if (!heightPx || !hw) return 0;
   const u = ((x + WORLD.w / 2) / WORLD.w) * (hw - 1);
   const v = ((z + WORLD.d / 2) / WORLD.d) * (hh - 1);
@@ -98,11 +129,15 @@ export function terrainY(x: number, z: number): number {
   const y0 = Math.floor(v);
   const fx = u - x0;
   const fy = v - y0;
-  const meters =
+  return (
     ((height01(x0, y0) * (1 - fx) + height01(x0 + 1, y0) * fx) * (1 - fy) +
       (height01(x0, y0 + 1) * (1 - fx) + height01(x0 + 1, y0 + 1) * fx) * fy) *
-    4205;
-  return meters * HEIGHT_SCALE;
+    4205
+  );
+}
+
+export function terrainY(x: number, z: number): number {
+  return terrainMeters(x, z) * HEIGHT_SCALE;
 }
 
 export function hasAlbedo() {
@@ -123,8 +158,8 @@ export function sampleAlbedo(x: number, z: number): { r: number; g: number; b: n
 /** True where the Landsat pixel is vegetation on land — no invented forests. */
 export function isCanopy(x: number, z: number): boolean {
   const h = terrainY(x, z);
-  if (h < 0.22 || h > 9) return false;
-  if (!colorPx) return h < 6.5;
+  if (h < hu(0.22) || h > hu(9)) return false;
+  if (!colorPx) return h < hu(6.5);
   const { r, g, b } = sampleAlbedo(x, z);
   if (g < 48 || r > 210) return false;
   return g > r + 6 && g >= b - 4 && 2 * g - r - b > 10;

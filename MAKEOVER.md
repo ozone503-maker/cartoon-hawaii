@@ -4,6 +4,8 @@
 
 Repo: https://github.com/ozone503-maker/cartoon-hawaii · branch `main`
 
+**Grok makeover bot (Sep 17 evening): token cap, no commit landed.** Continue from this list. First pickup after the cap: Kīlauea caldera + real ITO/KOA/MUE strips + Punaluʻu walked to the water.
+
 User will fly it on a **Samsung phone**. No `MeshToonMaterial`, no `transmission`, no 0×0 canvas. Read `HANDOFF.md` frozen table first.
 
 When a row is actually done, the user has to see it from the chase camera (~100–400 m AGL) and sign off. Desktop-only “looks fine” already burned us.
@@ -139,8 +141,8 @@ Rivers: continuous terrain-hugging ribbon; **Y drops at falls** (no laser flat).
 | **Mauna Kea summit** | 19.8207, -155.4681 | OK-ISH | Puʻu Wēkiu = cinder, **no dome**. Telescopes on the **north ridge** (Keck, Subaru, Gemini, CFHT, IFA pins in `maunakea.ts`). Access road. Lake Waiau. Visitor center ~9k ft. Sacred — don’t cartoon-trash the peak. |
 | MK cinder cones | summit plateau | THIN | Real puʻu field, not one fake disc. |
 | **Mauna Loa** | 19.4756, -155.6081 | THIN | Broad shield, Mokuʻāweoweo caldera, 2022 flow toward Saddle. Barely looks like a peak until you’re on it. |
-| **Kīlauea caldera / Halemaʻumaʻu** | 19.4069, -155.2834 | **NEEDS PHONE** | Terrain nested bowl (`kilauea.ts`) + steam + small pit glow (no glowing pancake). Black floor wash; NE rim ʻōhiʻa. Park roads / Jaggar still thin. |
-| **Kīlauea Iki** | 19.41, -155.25 | **NEEDS PHONE** | Bowl + black floor + thin pali lip. |
+| **Kīlauea caldera / Halemaʻumaʻu** | 19.4069, -155.2834 | IN PROGRESS | Nested pit via atlas hole + terrain bowl (`kilauea.ts`); small Halemaʻumaʻu glow only — no oval/plastic dish. Still needs park roads / rainforest rim from the air. |
+| **Kīlauea Iki** | 19.41, -155.25 | MISSING | Crater hike, 1959, pali + floor. |
 | **Chain of Craters** | park → ocean | MISSING | Pit craters, Hōlei, sea lava. |
 | **East rift / 2018** | Leilani → Kapoho | **NEEDS PHONE** | Dark fissure ribbons + Kapoho shelf; no rebuilt Puʻu ʻŌʻō. |
 | **Puʻu ʻŌʻō** | collapsed | MISSING | Don’t rebuild the old cone as if 2018 never happened. |

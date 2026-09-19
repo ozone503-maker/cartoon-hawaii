@@ -1,5 +1,5 @@
 import { DoubleSide } from "three";
-import { hu, latLonToWorld, terrainY, WORLD_SCALE } from "@/lib/hawaii/world";
+import { hu, WORLD_SCALE } from "@/lib/hawaii/world";
 import { snapToLand } from "@/lib/hawaii/coast";
 import { Puuhonua } from "./Puuhonua";
 
@@ -41,7 +41,7 @@ function Punaluu() {
         <circleGeometry args={[1, 20]} />
         <meshStandardMaterial color="#1a1818" roughness={0.98} />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0.35]} position={[0.15, 0.05, 0.22]} scale={[1.15, 0.5, 1]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0.35]} position={[0.2, 0.04, 0.5]} scale={[1.6, 0.7, 1]}>
         <circleGeometry args={[1, 16]} />
         <meshStandardMaterial color="#0e0e10" roughness={1} />
       </mesh>
@@ -74,10 +74,6 @@ function KaLae() {
       <Ladder x={0.1} top={0} z={0.42} len={(drop / WORLD_SCALE) * 0.9} />
       <Truck x={-0.55} z={-0.28} y={0} />
       <Truck x={-1.05} z={-0.65} y={0} />
-      <Truck x={0.7} z={-0.5} y={0} />
-      <Person x={-0.28} z={-0.05} y={0} />
-      <Person x={0.06} z={0.03} y={0} />
-      <Person x={0.28} z={-0.08} y={0} />
     </group>
   );
 }
@@ -136,17 +132,6 @@ function Truck({ x, z, y }: { x: number; z: number; y: number }) {
       <mesh position={[0.07, 0.15, 0]}>
         <boxGeometry args={[0.14, 0.1, 0.15]} />
         <meshStandardMaterial color="#4a5056" roughness={0.5} />
-      </mesh>
-    </group>
-  );
-}
-
-function Person({ x, z, y }: { x: number; z: number; y: number }) {
-  return (
-    <group position={[x, y, z]}>
-      <mesh position={[0, 0.1, 0]}>
-        <capsuleGeometry args={[0.032, 0.09, 3, 6]} />
-        <meshStandardMaterial color="#d8c4a8" roughness={0.8} />
       </mesh>
     </group>
   );

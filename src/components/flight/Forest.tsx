@@ -6,8 +6,8 @@ import { hu, isCanopy, terrainY, wu } from "@/lib/hawaii/world";
 import { inFlashTownClearing } from "@/lib/hawaii/puna";
 import { inMaunaKeaSummit } from "@/lib/hawaii/maunakea";
 import { inOpenCoast } from "@/lib/hawaii/coast";
-import { inRiver } from "@/lib/hawaii/rivers";
 import { inKilaueaCinder } from "@/lib/hawaii/kilauea";
+import { inRiver } from "@/lib/hawaii/rivers";
 
 const CELL = wu(1.25);
 const RADIUS = wu(24);

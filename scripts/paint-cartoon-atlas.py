@@ -175,6 +175,7 @@ def classify(
 
     yy, xx = np.mgrid[0:h, 0:w]
     lon = GEO["lonMin"] + ((xx - ISLAND_PX["x"]) / ISLAND_PX["w"]) * (GEO["lonMax"] - GEO["lonMin"])
+    lat = GEO["latMax"] - ((yy - ISLAND_PX["y"]) / ISLAND_PX["h"]) * (GEO["latMax"] - GEO["latMin"])
     west = lon < -155.72
     kona_lava = (lon < -155.88) & (meters < 500)
 
@@ -197,6 +198,9 @@ def classify(
     biome[alpine] = ALPINE
     biome[snow] = SNOW
     biome[beach] = BEACH
+    # South Point is a grassy cliff, not a beige beach triangle.
+    cape = land & (lat < 19.00) & (lon > -155.73) & (lon < -155.61) & (biome == BEACH)
+    biome[cape] = GRASS
     biome[ocean] = np.where(offshore[ocean] <= 6, REEF, OCEAN)
 
     cloud_west = land & cloudy & (meters < 2800) & west
@@ -302,11 +306,15 @@ def foam(img: Image.Image, ocean: np.ndarray) -> None:
 
 
 def kilauea(img: Image.Image) -> None:
+    """Nested caldera on the rainforest shield — dark enough to see from the air."""
     x, y = project(19.4069, -155.2834)
     d = ImageDraw.Draw(img)
-    d.ellipse((x - 11, y - 8, x + 11, y + 8), fill=(42, 28, 24))
-    d.ellipse((x - 5, y - 3.5, x + 5, y + 3.5), fill=(210, 92, 36))
-    d.ellipse((x - 2.2, y - 1.5, x + 2.2, y + 1.5), fill=(255, 196, 80))
+    d.ellipse((x - 14, y - 10, x + 13, y + 11), fill=(88, 72, 58))
+    d.ellipse((x - 11, y - 8, x + 10, y + 8), fill=(58, 48, 40))
+    px, py = project(19.405, -155.291)
+    d.ellipse((px - 7, py - 5, px + 6, py + 5), fill=(28, 22, 18))
+    d.ellipse((px - 3, py - 2, px + 3, py + 2), fill=(210, 92, 36))
+    d.ellipse((px - 1.4, py - 1, px + 1.4, py + 1), fill=(255, 196, 80))
 
 
 def main() -> None:

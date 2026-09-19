@@ -214,7 +214,7 @@ Do **one landscape system** at a time, verify on phone, then move. Don’t open 
 
 ## Frozen (do not “make over”)
 
-- `src/lib/flight/craft.ts` flight stepper shape (spawn/snap/ceiling) — **Jessie world enlarge:** speeds retuned for `WORLD.w=960` (`maxSpeed` 4.0, accel 2.6, ~3–4 min coast-to-coast); do not bump for “fun”
+- `src/lib/flight/craft.ts` flight stepper shape (spawn/snap/ceiling) — **Jessie zippy cruise:** bases ×3 for `WORLD.w=960` (`maxSpeed` 12, accel 7.8, ~1 min / ~45–60s coast-to-coast); retune coeffs only, do not rewrite stepper
 - `src/components/flight/ChaseCam.tsx` (`LEN 3.5`, `DEG 22`) — no cockpit zoom
 - `src/components/flight/FlightScene.tsx` Samsung boot
 - MDP alien + saucer in `Craft.tsx`
@@ -226,7 +226,7 @@ Do **one landscape system** at a time, verify on phone, then move. Don’t open 
 
 ## Island scale (Jessie override)
 
-Craft slowdown alone was not enough — volcanoes still felt stacked. **WORLD enlarged** 240→**960** (4×) with proportional height (×3.75), UFO (→8.8), ChaseCam pull-back via UFO, craft retune (`maxSpeed` 4.0) so cruise stays ~3–4 min. Absolute 240-scale props audited via `wu`/`hu`. Summit = dark cinder — **NO snow** (Jessie). Landsat / places unchanged. **Phone verify required.**
+Craft slowdown alone was not enough — volcanoes still felt stacked. **WORLD enlarged** 240→**960** (4×) with proportional height (×3.75), UFO (→8.8), ChaseCam pull-back via UFO. Later **zippy cruise:** craft bases ×3 (`maxSpeed` 12) so crossings ~1 min / ~45–60s. Absolute 240-scale props audited via `wu`/`hu`. Summit = dark cinder — **NO snow** (Jessie). Landsat / places unchanged. **Phone verify required.**
 
 ---
 

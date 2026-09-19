@@ -47,8 +47,8 @@ export function setSteerOverride(v: number | null) {
 }
 
 /**
- * WORLD.w 240→960 (×4). Speeds scale with WORLD_SCALE so FlashTown↔Ka Lae /
- * Hilo↔Kona stay ~3–4 min at full throttle (no boost). Boost still ~2.15×.
+ * WORLD.w 240→960 (×4). Base coeffs ×3 for zippy sightseeing so FlashTown↔Ka Lae /
+ * Hilo↔Kona take ~1 min at full throttle (no boost) — was ~3–4 min. Boost still ~2.15×.
  * Spawn / ground snap / ceiling shape unchanged — speeds/accels/turn only.
  */
 export function stepCraft(c: CraftState, dt: number) {
@@ -56,16 +56,17 @@ export function stepCraft(c: CraftState, dt: number) {
   const steer = steerOverride ?? axes.steer;
   c.steer = steer;
   const boost = axes.boost ? 2.15 : 1;
-  // Was maxSpeed=1.0 / accel=0.65 at WORLD.w=240; × WORLD_SCALE for new units.
-  const maxSpeed = 1.0 * WORLD_SCALE * boost;
-  const accel = 0.65 * WORLD_SCALE * boost;
+  // Base 3.0 / 1.95 (was 1.0 / 0.65) × WORLD_SCALE; cruise ~3× faster after WORLD 4×.
+  const maxSpeed = 3.0 * WORLD_SCALE * boost;
+  const accel = 1.95 * WORLD_SCALE * boost;
 
   c.speed += axes.throttle * accel * dt;
   if (axes.throttle === 0) c.speed *= Math.exp(-2.4 * dt);
-  c.speed = Math.max(-0.45 * WORLD_SCALE, Math.min(maxSpeed, c.speed));
+  c.speed = Math.max(-1.35 * WORLD_SCALE, Math.min(maxSpeed, c.speed));
 
-  // Turn authority ramps with speed; reference scales with WORLD so cruise stays snappy.
-  const turnRef = 0.4 * WORLD_SCALE;
+  // Turn authority ramps with speed; turnRef ×3 with base cruise so full yaw ~same rad/s
+  // still arrives by ~40% of unboosted max (not mushy at the new top end).
+  const turnRef = 1.2 * WORLD_SCALE;
   const turn = 1.55 * (0.35 + Math.min(1, Math.abs(c.speed) / turnRef));
   c.yaw += steer * turn * dt;
 
@@ -74,7 +75,7 @@ export function stepCraft(c: CraftState, dt: number) {
   c.x += fx * c.speed * dt;
   c.z += fz * c.speed * dt;
 
-  const liftAccel = 0.6 * WORLD_SCALE;
+  const liftAccel = 1.8 * WORLD_SCALE;
   c.vy += axes.lift * liftAccel * dt;
   if (axes.lift === 0) c.vy *= Math.exp(-3.2 * dt);
   c.vy = Math.max(-0.5 * WORLD_SCALE, Math.min(0.5 * WORLD_SCALE, c.vy));

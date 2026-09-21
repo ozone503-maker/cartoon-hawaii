@@ -22,7 +22,7 @@ Home spawn: **FlashTown**, Mountain View, Puna — `19.5397°N, 155.1417°W`.
 
 | What | File | Lock |
 |---|---|---|
-| Flight physics | `src/lib/flight/craft.ts` | Thrust, yaw, lift/drop, boost ×2.15. **Jessie zippy cruise (Sep 18):** base coeffs ×3 → `maxSpeed` **12**, accel **7.8** at `WORLD.w=960` (bases 3.0 / 1.95 × WORLD_SCALE) so coast-to-coast ~**1 min** / ~45–60s. Retune only — do not rewrite the stepper. |
+| Flight physics | `src/lib/flight/craft.ts` | Thrust, yaw, lift/drop, boost ×2.15. **Jessie 21 Sep:** `maxSpeed` **20**, accel **16** at `WORLD.w=960` (~30 s FlashTown↔Ka Lae). 3–4 min cruise was too slow to demo. Retune only — do not rewrite the stepper. |
 | Input | `src/lib/flight/input.ts` | Keyboard + analog stick axes. |
 | Chase camera | `src/components/flight/ChaseCam.tsx` | `LEN = 3.5` (was 2.55), `DEG = 22`. Behind and above, UFO in the lower third. No cockpit. No zoom into MDP’s head. |
 | WebGL boot | `src/components/flight/FlightScene.tsx` | `createRoot` + `await configure` + explicit canvas size. Samsung died on R3F `<Canvas>` / 0×0 / context loss. |

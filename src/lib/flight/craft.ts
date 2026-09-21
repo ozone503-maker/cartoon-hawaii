@@ -47,27 +47,23 @@ export function setSteerOverride(v: number | null) {
 }
 
 /**
- * WORLD.w 240→960 (×4). Base coeffs ×3 for zippy sightseeing so FlashTown↔Ka Lae /
- * Hilo↔Kona take ~1 min at full throttle (no boost) — was ~3–4 min. Boost still ~2.15×.
- * Spawn / ground snap / ceiling shape unchanged — speeds/accels/turn only.
+ * Demo pace on the 4× island: FlashTown↔Ka Lae ~30 s at full throttle,
+ * ~14 s with boost. 3–4 min cruise was too slow to show anyone.
  */
 export function stepCraft(c: CraftState, dt: number) {
   const axes = readAxes();
   const steer = steerOverride ?? axes.steer;
   c.steer = steer;
   const boost = axes.boost ? 2.15 : 1;
-  // Base 3.0 / 1.95 (was 1.0 / 0.65) × WORLD_SCALE; cruise ~3× faster after WORLD 4×.
-  const maxSpeed = 3.0 * WORLD_SCALE * boost;
-  const accel = 1.95 * WORLD_SCALE * boost;
+  const maxSpeed = 5.0 * WORLD_SCALE * boost;
+  const accel = 4.0 * WORLD_SCALE * boost;
 
   c.speed += axes.throttle * accel * dt;
   if (axes.throttle === 0) c.speed *= Math.exp(-2.4 * dt);
-  c.speed = Math.max(-1.35 * WORLD_SCALE, Math.min(maxSpeed, c.speed));
+  c.speed = Math.max(-2.2 * WORLD_SCALE, Math.min(maxSpeed, c.speed));
 
-  // Turn authority ramps with speed; turnRef ×3 with base cruise so full yaw ~same rad/s
-  // still arrives by ~40% of unboosted max (not mushy at the new top end).
-  const turnRef = 1.2 * WORLD_SCALE;
-  const turn = 1.55 * (0.35 + Math.min(1, Math.abs(c.speed) / turnRef));
+  const turnRef = 1.6 * WORLD_SCALE;
+  const turn = 1.7 * (0.4 + Math.min(1, Math.abs(c.speed) / turnRef));
   c.yaw += steer * turn * dt;
 
   const fx = -Math.sin(c.yaw);
@@ -75,10 +71,10 @@ export function stepCraft(c: CraftState, dt: number) {
   c.x += fx * c.speed * dt;
   c.z += fz * c.speed * dt;
 
-  const liftAccel = 1.8 * WORLD_SCALE;
+  const liftAccel = 3.0 * WORLD_SCALE;
   c.vy += axes.lift * liftAccel * dt;
   if (axes.lift === 0) c.vy *= Math.exp(-3.2 * dt);
-  c.vy = Math.max(-0.5 * WORLD_SCALE, Math.min(0.5 * WORLD_SCALE, c.vy));
+  c.vy = Math.max(-2.5 * WORLD_SCALE, Math.min(2.5 * WORLD_SCALE, c.vy));
   c.y += c.vy * dt;
 
   const ground = terrainY(c.x, c.z);

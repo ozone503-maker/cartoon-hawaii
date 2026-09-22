@@ -31,7 +31,7 @@ Home spawn: **FlashTown**, Mountain View, Puna — `19.5397°N, 155.1417°W`.
 | Pins | `src/lib/hawaii/places.ts` | Published coordinates only. |
 | Roads | `src/lib/hawaii/highways.json` | Real belt / saddle / Kohala / Puna. |
 | Rivers (positions) | `src/lib/hawaii/rivers.ts` | Real windward streams. Mouths meet the bay — they are not waterfalls. |
-| MDP + saucer | `src/components/flight/Craft.tsx` | Grey-blue alien (`#6aaec8`), large cranium, thin neck, silver saucer, cyan ring, bubble dome. **Not** a cream robot. **Not** a teal blob filling the dome. |
+| MDP + saucer | `src/components/flight/Craft.tsx` | Glossy candy-blue alien (`#3ec8e8`, metalness ~0.8), giant cranium, thin neck, black almond eyes, chrome saucer, cyan ring, bubble dome. Portrait ref: standing blue MDP. Chase cam still sees the **back** of the head. **Not** Minecraft boxes. **Not** a cream robot. |
 | Analog stick | `src/components/flight/TouchPad.tsx` | One circle, 4 quarters, diagonals work. Lightning = **boost**, not eject. Up = lift, down = drop. |
 | Cartoon atlas | `public/maps/hawaii-cartoon.jpg` | Ground texture. Coastline from Landsat, not freehand. |
 

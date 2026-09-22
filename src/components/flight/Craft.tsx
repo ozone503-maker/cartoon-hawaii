@@ -94,20 +94,16 @@ function Hull() {
 function Cockpit() {
   return (
     <group>
-      <mesh position={[0, 0.22, 0.16]}>
-        <cylinderGeometry args={[0.2, 0.22, 0.1, 16]} />
-        <meshStandardMaterial color="#1c2228" metalness={0.45} roughness={0.4} />
-      </mesh>
-      <mesh position={[0, 0.36, 0.2]} rotation={[0.28, 0, 0]}>
-        <boxGeometry args={[0.3, 0.22, 0.05]} />
-        <meshStandardMaterial color="#14181c" metalness={0.35} roughness={0.35} />
+      <mesh position={[0, 0.16, 0.12]}>
+        <sphereGeometry args={[0.16, 14, 10]} />
+        <meshStandardMaterial color="#1a2026" metalness={0.4} roughness={0.38} />
       </mesh>
       <mesh position={[0, 0.28, -0.4]} rotation={[0.48, 0, 0]}>
-        <boxGeometry args={[0.72, 0.08, 0.28]} />
-        <meshStandardMaterial color="#2a3238" metalness={0.5} roughness={0.32} />
+        <cylinderGeometry args={[0.28, 0.34, 0.08, 20]} />
+        <meshStandardMaterial color="#2a3238" metalness={0.55} roughness={0.28} />
       </mesh>
       <mesh position={[0, 0.335, -0.38]} rotation={[0.48, 0, 0]}>
-        <planeGeometry args={[0.22, 0.15]} />
+        <circleGeometry args={[0.1, 16]} />
         <meshStandardMaterial color="#1a6a88" emissive="#0d8a9e" emissiveIntensity={1.4} toneMapped={false} />
       </mesh>
     </group>
@@ -164,9 +160,17 @@ function Mdp() {
         <meshStandardMaterial {...SKIN_MAT} />
       </mesh>
       {/* giant glossy cranium */}
-      <mesh position={[0, 0.58, 0.07]} scale={[1.02, 1.22, 1.08]}>
-        <sphereGeometry args={[0.2, 24, 20]} />
+      <mesh position={[0, 0.58, 0.1]} scale={[1.12, 1.28, 1.15]}>
+        <sphereGeometry args={[0.22, 24, 20]} />
         <meshStandardMaterial {...SKIN_DARK} />
+      </mesh>
+      <mesh position={[-0.12, 0.32, 0.12]} scale={[0.55, 0.42, 0.5]}>
+        <sphereGeometry args={[0.12, 12, 10]} />
+        <meshStandardMaterial {...SKIN_MAT} />
+      </mesh>
+      <mesh position={[0.12, 0.32, 0.12]} scale={[0.55, 0.42, 0.5]}>
+        <sphereGeometry args={[0.12, 12, 10]} />
+        <meshStandardMaterial {...SKIN_MAT} />
       </mesh>
       <mesh position={[0.06, 0.7, -0.02]} scale={[0.45, 0.32, 0.28]}>
         <sphereGeometry args={[0.12, 12, 10]} />

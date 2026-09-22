@@ -1,4 +1,3 @@
-import { DoubleSide } from "three";
 import { hu, WORLD_SCALE } from "@/lib/hawaii/world";
 import { snapToLand } from "@/lib/hawaii/coast";
 import { Puuhonua } from "./Puuhonua";
@@ -138,26 +137,16 @@ function Truck({ x, z, y }: { x: number; z: number; y: number }) {
 }
 
 function Papakolea() {
-  // Green-sand cove in a *broken* cone on the east cape — not a donut in the ocean.
   const p = snapToLand(18.9364, -155.6464);
   return (
     <group position={[p.x, p.y, p.z]} scale={WORLD_SCALE}>
-      <mesh rotation={[-Math.PI / 2, 0, 0.4]} position={[0.1, 0.03, 0.2]} scale={[0.95, 0.55, 1]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0.35]} position={[0.12, 0.04, 0.2]} scale={[1.05, 0.62, 1]}>
         <circleGeometry args={[1, 16]} />
         <meshStandardMaterial color="#6a7a38" roughness={0.95} />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0.25]} position={[0.15, 0.05, 0.28]} scale={[0.55, 0.32, 1]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0.2]} position={[0.18, 0.05, 0.32]} scale={[0.58, 0.34, 1]}>
         <circleGeometry args={[1, 14]} />
         <meshStandardMaterial color="#8a9a3c" roughness={0.92} />
-      </mesh>
-      {/* Landward arc only (thetaLength < 2π) — open to the sea */}
-      <mesh position={[0.0, 0.2, -0.2]} rotation={[0, 0.55, 0]}>
-        <cylinderGeometry args={[0.48, 0.62, 0.36, 12, 1, true, 0.35, Math.PI * 1.35]} />
-        <meshStandardMaterial color="#8a5a38" roughness={0.92} side={DoubleSide} />
-      </mesh>
-      <mesh position={[-0.35, 0.14, -0.05]} rotation={[0.15, 0.2, 0.1]}>
-        <boxGeometry args={[0.55, 0.22, 0.28]} />
-        <meshStandardMaterial color="#7a4a30" roughness={0.95} />
       </mesh>
     </group>
   );

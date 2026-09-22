@@ -135,13 +135,11 @@ def sculpt_ka_lae_cape(
     tip = cape & (lon >= -155.668) & (lon < -155.655)
     east = cape & (lon >= -155.655)
 
-    # Lip floors (meters). West jump tallest; tip medium; east lower until rim.
-    lip = np.where(west, 72.0, np.where(tip, 52.0, 40.0))
-    # Within ~0.9 km of ocean: land IS the cliff top (not a ramp from sea level).
-    coastal = cape & (dist_km < 0.9)
-    # Inland Kaʻū terrace beyond the lip band.
-    terrace = 28.0 + dist_km * 26.0
-    far = np.clip((dist_km - 0.7) / 2.2, 0.0, 1.0)
+    # Cartoon-readable palis (real ~15–40 m vanishes on the 4× mesh).
+    lip = np.where(west, 240.0, np.where(tip, 210.0, 165.0))
+    coastal = cape & (dist_km < 1.15)
+    terrace = 36.0 + dist_km * 28.0
+    far = np.clip((dist_km - 0.85) / 1.8, 0.0, 1.0)
     target = np.where(coastal, lip * (1.0 - far) + terrace * far, terrace)
 
     # Papakōlea: low green-sand cove floor; broken cone rim on landward side.

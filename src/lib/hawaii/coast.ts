@@ -51,15 +51,7 @@ export function kaLaeShoreLat(lon: number) {
  * Do NOT dig a lat-band moat (failed approach). Optional mild exaggerate
  * of an existing drop so the lip reads from chase-cam — ocean stays ≥ 0.
  */
-export function kauCliffY(lat: number, lon: number, y0: number) {
-  if (lon < -155.75 || lon > -155.61 || lat > 19.03 || lat < 18.88) return y0;
-  if (y0 <= hu(0.02)) return y0;
-  if (y0 > hu(0.12) && y0 < hu(0.7)) {
-    const { x, z } = latLonToWorld(lat, lon);
-    const south = terrainY(x, z + wu(1.6));
-    const west = terrainY(x - wu(1.6), z);
-    if (south < y0 * 0.4 || west < y0 * 0.4) return y0 * 1.12;
-  }
+export function kauCliffY(_lat: number, _lon: number, y0: number) {
   return y0;
 }
 

@@ -65,8 +65,8 @@ function usePhotoGround(cartoon: Texture | null, usgs: Texture | null) {
             `#include <map_fragment>
              vec3 real = texture2D(usgsMap, vMapUv).rgb;
              float luma = dot(real, vec3(0.22, 0.62, 0.16));
-             diffuseColor.rgb *= mix(0.58, 1.22, luma);
-             diffuseColor.rgb = mix(diffuseColor.rgb, real * vec3(1.02, 1.06, 0.9), 0.32);
+             diffuseColor.rgb *= mix(0.95, 1.12, luma);
+             diffuseColor.rgb = mix(diffuseColor.rgb, real * vec3(1.05, 1.08, 0.95), 0.1);
             `,
           );
       };

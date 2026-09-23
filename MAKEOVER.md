@@ -24,7 +24,7 @@ When a row is actually done, the user has to see it from the chase camera (~100�
 
 ## Suggested order
 
-1. **Look** — portrait light, haze, denser palms/ʻōhiʻa, cartoon colors × Landsat ridge detail (not a raw satellite). **22 Sep.** Phone check. Hills still won’t be a movie still until you sign off.
+1. **Look** — sunny, almost no fog. Landsat only as a light ridge hint (do not darken). **Jessie 22 Sep:** the close haze was too dark. Ka Lae cliff stays.
 2. **Ka Lae** — heightmap lip + dense cape. Needs Jessie at 100–400 m. No raft.
 3. **Kīlauea** — nested map hole + glow only.
 4. **Waterfalls** — hillside sheets. Unsigned.

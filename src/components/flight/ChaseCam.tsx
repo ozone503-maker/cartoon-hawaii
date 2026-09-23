@@ -39,8 +39,8 @@ export function ChaseCam({ craft }: { craft: CraftState }) {
 
     const fog = scene.fog as Fog | null;
     if (fog) {
-      fog.near = 48 * WORLD_SCALE;
-      fog.far = 210 * WORLD_SCALE;
+      fog.near = 160 * WORLD_SCALE;
+      fog.far = 480 * WORLD_SCALE;
     }
   });
 

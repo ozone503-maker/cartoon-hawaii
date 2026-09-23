@@ -1,5 +1,13 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { BufferAttribute, Color, PlaneGeometry, SRGBColorSpace, Texture, TextureLoader } from "three";
+import {
+  BufferAttribute,
+  Color,
+  MeshStandardMaterial,
+  PlaneGeometry,
+  SRGBColorSpace,
+  Texture,
+  TextureLoader,
+} from "three";
 import { hu, latLonToWorld, terrainMeters, terrainY, WORLD, worldToLatLon } from "@/lib/hawaii/world";
 import { kauCliffY } from "@/lib/hawaii/coast";
 import { kilaueaBowlY } from "@/lib/hawaii/kilauea";
@@ -13,10 +21,7 @@ function tintForMeters(m: number, c: Color) {
   else c.set("#5a5048");
 }
 
-function drape(
-  g: PlaneGeometry,
-  yOf: (x: number, z: number) => number,
-) {
+function drape(g: PlaneGeometry, yOf: (x: number, z: number) => number) {
   const pos = g.attributes.position!;
   const uv = g.attributes.uv!;
   for (let i = 0; i < pos.count; i++) {
@@ -30,24 +35,61 @@ function drape(
   g.computeVertexNormals();
 }
 
+function loadMap(url: string, set: (t: Texture) => void) {
+  const loader = new TextureLoader();
+  const t = loader.load(url, (tex) => {
+    tex.colorSpace = SRGBColorSpace;
+    tex.anisotropy = 1;
+    set(tex);
+  });
+  return t;
+}
+
+/** Cartoon colors, Landsat ridges. Not a raw satellite dump. */
+function usePhotoGround(cartoon: Texture | null, usgs: Texture | null) {
+  const material = useMemo(() => {
+    const m = new MeshStandardMaterial({
+      map: cartoon ?? undefined,
+      vertexColors: !cartoon,
+      color: cartoon ? "#ffffff" : "#4ea84a",
+      roughness: 0.78,
+      metalness: 0,
+    });
+    if (cartoon && usgs) {
+      m.onBeforeCompile = (shader) => {
+        shader.uniforms.usgsMap = { value: usgs };
+        shader.fragmentShader = shader.fragmentShader
+          .replace("#include <common>", "#include <common>\nuniform sampler2D usgsMap;")
+          .replace(
+            "#include <map_fragment>",
+            `#include <map_fragment>
+             vec3 real = texture2D(usgsMap, vMapUv).rgb;
+             float luma = dot(real, vec3(0.22, 0.62, 0.16));
+             diffuseColor.rgb *= mix(0.58, 1.22, luma);
+             diffuseColor.rgb = mix(diffuseColor.rgb, real * vec3(1.02, 1.06, 0.9), 0.32);
+            `,
+          );
+      };
+      m.needsUpdate = true;
+    }
+    return m;
+  }, [cartoon, usgs]);
+
+  useLayoutEffect(() => () => material.dispose(), [material]);
+  return material;
+}
+
 export function Island() {
   const [map, setMap] = useState<Texture | null>(null);
+  const [usgs, setUsgs] = useState<Texture | null>(null);
 
   useEffect(() => {
-    const loader = new TextureLoader();
-    const t = loader.load(
-      "/maps/hawaii-cartoon.jpg?v=atlas9",
-      (tex) => {
-        tex.colorSpace = SRGBColorSpace;
-        tex.anisotropy = 1;
-        setMap(tex);
-      },
-      undefined,
-      () => {
-        /* keep vertex-color fallback */
-      },
-    );
-    return () => t.dispose();
+    const a = loadMap("/maps/hawaii-cartoon.jpg?v=atlas7", setMap);
+    const b = loadMap("/maps/hawaii-usgs.jpg", setUsgs);
+    return () => {
+      a.dispose();
+      b.dispose();
+    };
   }, []);
 
   const geometry = useMemo(() => {
@@ -86,9 +128,11 @@ export function Island() {
     const g = new PlaneGeometry(w, d, 80, 64);
     g.rotateX(-Math.PI / 2);
     g.translate(cx, 0, cz);
-    drape(g, (x, z) => terrainY(x, z));
+    drape(g, (x, z) => terrainY(x, z) + 0.06);
     return g;
   }, []);
+
+  const ground = usePhotoGround(map, usgs);
 
   useLayoutEffect(() => {
     return () => {
@@ -97,36 +141,13 @@ export function Island() {
     };
   }, [geometry, cape]);
 
-  const mat = (
-    <meshStandardMaterial
-      map={map ?? undefined}
-      vertexColors={!map}
-      color={map ? "#f4efe2" : "#4ea84a"}
-      roughness={0.74}
-      metalness={0.02}
-      polygonOffset
-      polygonOffsetFactor={-1}
-      polygonOffsetUnits={-2}
-    />
-  );
-
   return (
     <group>
-      <mesh geometry={geometry} receiveShadow>
-        <meshStandardMaterial
-          map={map ?? undefined}
-          vertexColors={!map}
-          color={map ? "#ffffff" : "#3d8a4a"}
-          roughness={0.72}
-          metalness={0}
-        />
-      </mesh>
-      <mesh geometry={cape} receiveShadow>
-        {mat}
-      </mesh>
+      <mesh geometry={geometry} material={ground} receiveShadow />
+      <mesh geometry={cape} material={ground} receiveShadow />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, hu(-0.25), 0]}>
         <planeGeometry args={[WORLD.w * 3, WORLD.d * 3]} />
-        <meshStandardMaterial color="#1e7eae" roughness={0.22} metalness={0.16} />
+        <meshStandardMaterial color="#176894" roughness={0.18} metalness={0.12} />
       </mesh>
     </group>
   );

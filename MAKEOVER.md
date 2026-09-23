@@ -24,7 +24,7 @@ When a row is actually done, the user has to see it from the chase camera (~100�
 
 ## Suggested order
 
-1. **Look** — warm low sun, longer fog, rounder canopy, coastal palms, glossy water. **Shipped 22 Sep.** Atlas is still flat cartoon — hills won’t match the portrait until the ground texture has real ridge detail. Phone check before more props.
+1. **Look** — portrait light, haze, denser palms/ʻōhiʻa, cartoon colors × Landsat ridge detail (not a raw satellite). **22 Sep.** Phone check. Hills still won’t be a movie still until you sign off.
 2. **Ka Lae** — heightmap lip + dense cape. Needs Jessie at 100–400 m. No raft.
 3. **Kīlauea** — nested map hole + glow only.
 4. **Waterfalls** — hillside sheets. Unsigned.

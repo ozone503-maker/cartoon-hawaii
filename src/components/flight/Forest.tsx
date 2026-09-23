@@ -9,9 +9,9 @@ import { inOpenCoast } from "@/lib/hawaii/coast";
 import { inKilaueaCinder } from "@/lib/hawaii/kilauea";
 import { inRiver } from "@/lib/hawaii/rivers";
 
-const CELL = wu(1.25);
-const RADIUS = wu(24);
-const MAX = { albizia: 100, ohia: 200, koa: 90, lehua: 60, palm: 80 } as const;
+const CELL = wu(1.05);
+const RADIUS = wu(30);
+const MAX = { albizia: 120, ohia: 260, koa: 100, lehua: 70, palm: 120 } as const;
 const dummy = new Object3D();
 
 function hash(ix: number, iz: number) {
@@ -83,8 +83,8 @@ export function Forest({ craft }: { craft: CraftState }) {
 
     const spots: Spot[] = [];
     const span = Math.ceil(RADIUS / CELL);
-    for (let iz = -span; iz <= span && spots.length < 420; iz++) {
-      for (let ix = -span; ix <= span && spots.length < 420; ix++) {
+    for (let iz = -span; iz <= span && spots.length < 560; iz++) {
+      for (let ix = -span; ix <= span && spots.length < 560; ix++) {
         const cx = (gx + ix) * CELL;
         const cz = (gz + iz) * CELL;
         const dx = cx - craft.x;
@@ -92,7 +92,7 @@ export function Forest({ craft }: { craft: CraftState }) {
         const d2 = dx * dx + dz * dz;
         if (d2 > RADIUS * RADIUS || d2 < wu(6.5) ** 2) continue;
         const hv = hash(gx + ix, gz + iz);
-        if (hv < 0.2) continue;
+        if (hv < 0.1) continue;
         const jx = cx + (hv - 0.5) * wu(0.7);
         const jz = cz + (hash(gx + ix + 19, gz + iz + 7) - 0.5) * wu(0.7);
         if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz) || inMaunaKeaSummit(jx, jz) || inRiver(jx, jz) || inKilaueaCinder(jx, jz)) continue;

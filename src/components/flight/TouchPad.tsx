@@ -56,8 +56,14 @@ function Stick() {
       setAxes({ t: 0, s: 0 });
       return;
     }
-    const t = Math.max(-1, Math.min(1, -ny));
-    const s = Math.max(-1, Math.min(1, -nx));
+    const shape = (v: number) => {
+      const a = Math.abs(v);
+      if (a < DEAD) return 0;
+      const u = Math.min(1, (a - DEAD) / (1 - DEAD));
+      return Math.sign(v) * Math.pow(u, 0.4);
+    };
+    const t = shape(Math.max(-1, Math.min(1, -ny)));
+    const s = shape(Math.max(-1, Math.min(1, -nx)));
     setAxes({ t, s });
     setStick(t, s);
   };

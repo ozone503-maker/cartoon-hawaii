@@ -214,7 +214,7 @@ No `MeshToonMaterial`. Instanced, modest counts, Samsung-safe.
 
 ## Frozen (do not “make over”)
 
-- `src/lib/flight/craft.ts` flight stepper shape (spawn/snap/ceiling) — **Jessie 21 Sep:** `maxSpeed` **20**, accel **16** (~30 s FlashTown↔Ka Lae; boost ~14 s). Do not slow back to 3–4 min.
+- `src/lib/flight/craft.ts` flight stepper shape (spawn/snap/ceiling) — **Jessie 22 Sep:** `maxSpeed` **56**, accel **48** (~12 s FlashTown↔Ka Lae). Do not slow it.
 - `src/components/flight/ChaseCam.tsx` (`LEN 3.5`, `DEG 22`) — no cockpit zoom
 - `src/components/flight/FlightScene.tsx` Samsung boot
 - MDP alien + saucer in `Craft.tsx`

@@ -47,16 +47,16 @@ export function setSteerOverride(v: number | null) {
 }
 
 /**
- * Demo pace on the 4× island: FlashTown↔Ka Lae ~30 s at full throttle,
- * ~14 s with boost. 3–4 min cruise was too slow to show anyone.
+ * Demo pace on the 4× island: FlashTown↔Ka Lae ~12 s at full throttle,
+ * ~6 s with boost. 30 s still felt like a crawl on the phone.
  */
 export function stepCraft(c: CraftState, dt: number) {
   const axes = readAxes();
   const steer = steerOverride ?? axes.steer;
   c.steer = steer;
   const boost = axes.boost ? 2.15 : 1;
-  const maxSpeed = 5.0 * WORLD_SCALE * boost;
-  const accel = 4.0 * WORLD_SCALE * boost;
+  const maxSpeed = 14 * WORLD_SCALE * boost;
+  const accel = 12 * WORLD_SCALE * boost;
 
   c.speed += axes.throttle * accel * dt;
   if (axes.throttle === 0) c.speed *= Math.exp(-2.4 * dt);

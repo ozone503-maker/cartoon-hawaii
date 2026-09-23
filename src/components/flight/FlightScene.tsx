@@ -101,13 +101,17 @@ function Scene() {
 
   return (
     <>
-      <color attach="background" args={["#8ec8e6"]} />
-      <fog attach="fog" args={["#9fd0e4", 48 * WORLD_SCALE, 190 * WORLD_SCALE]} />
-      <hemisphereLight args={["#fff6e8", "#5f8a52", 1.25]} />
-      <directionalLight position={[80 * WORLD_SCALE, 110 * WORLD_SCALE, 40 * WORLD_SCALE]} intensity={2.15} color="#ffe6b0" />
+      <color attach="background" args={["#9ec8e4"]} />
+      <fog attach="fog" args={["#c5dce6", 90 * WORLD_SCALE, 320 * WORLD_SCALE]} />
+      <hemisphereLight args={["#e7f4ff", "#6d9a48", 0.95]} />
+      <directionalLight
+        position={[150 * WORLD_SCALE, 48 * WORLD_SCALE, 36 * WORLD_SCALE]}
+        intensity={2.55}
+        color="#fff2d2"
+      />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, hu(-0.35), 0]}>
         <planeGeometry args={[WORLD.w * 4, WORLD.d * 4]} />
-        <meshBasicMaterial color="#1a8ab8" />
+        <meshStandardMaterial color="#1e7eae" roughness={0.22} metalness={0.18} />
       </mesh>
       {ready ? (
         <Island />
@@ -205,7 +209,9 @@ export function FlightCanvas() {
           failIfMajorPerformanceCaveat: false,
         },
         onCreated: (state) => {
-          state.gl.setClearColor(0x7ec8ee, 1);
+          state.gl.setClearColor(0x9ec8e4, 1);
+          state.gl.toneMapping = THREE.ACESFilmicToneMapping;
+          state.gl.toneMappingExposure = 1.12;
           state.camera.lookAt(look.look[0], look.look[1], look.look[2]);
           state.gl.domElement.addEventListener(
             "webglcontextlost",

@@ -21,7 +21,7 @@ export function MiniMap() {
       className="absolute right-3 top-24 z-30 hidden overflow-hidden rounded-lg border border-cream/30 shadow-lg sm:block"
       style={{ width: 132, height: 152 }}
     >
-      <img src="/maps/hawaii-cartoon.jpg?v=atlas8" alt="" className="size-full object-cover" />
+      <img src="/maps/hawaii-cartoon.jpg?v=atlas9" alt="" className="size-full object-cover" />
       <span
         className="absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-coral ring-2 ring-cream"
         style={{ left: `${left}%`, top: `${top}%` }}

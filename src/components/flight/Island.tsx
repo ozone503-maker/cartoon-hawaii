@@ -36,7 +36,7 @@ export function Island() {
   useEffect(() => {
     const loader = new TextureLoader();
     const t = loader.load(
-      "/maps/hawaii-cartoon.jpg?v=atlas8",
+      "/maps/hawaii-cartoon.jpg?v=atlas9",
       (tex) => {
         tex.colorSpace = SRGBColorSpace;
         tex.anisotropy = 1;
@@ -101,9 +101,9 @@ export function Island() {
     <meshStandardMaterial
       map={map ?? undefined}
       vertexColors={!map}
-      color={map ? "#ffffff" : "#3d8a4a"}
-      roughness={0.72}
-      metalness={0}
+      color={map ? "#f4efe2" : "#4ea84a"}
+      roughness={0.74}
+      metalness={0.02}
       polygonOffset
       polygonOffsetFactor={-1}
       polygonOffsetUnits={-2}
@@ -126,7 +126,7 @@ export function Island() {
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, hu(-0.25), 0]}>
         <planeGeometry args={[WORLD.w * 3, WORLD.d * 3]} />
-        <meshStandardMaterial color="#1a8ab8" roughness={0.28} metalness={0.04} />
+        <meshStandardMaterial color="#1e7eae" roughness={0.22} metalness={0.16} />
       </mesh>
     </group>
   );

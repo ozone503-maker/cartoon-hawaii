@@ -11,7 +11,7 @@ import { inRiver } from "@/lib/hawaii/rivers";
 
 const CELL = wu(1.25);
 const RADIUS = wu(24);
-const MAX = { albizia: 120, ohia: 240, koa: 110, lehua: 70 } as const;
+const MAX = { albizia: 100, ohia: 200, koa: 90, lehua: 60, palm: 80 } as const;
 const dummy = new Object3D();
 
 function hash(ix: number, iz: number) {
@@ -29,7 +29,7 @@ function pickKind(elev: number, h: number): 0 | 1 | 2 {
   return 1;
 }
 
-type Spot = { x: number; y: number; z: number; s: number; h: number; kind: 0 | 1 | 2 };
+type Spot = { x: number; y: number; z: number; s: number; h: number; kind: 0 | 1 | 2 | 3 };
 
 function hide(mesh: InstancedMesh, from: number, cap: number) {
   for (let i = from; i < cap; i++) {
@@ -48,6 +48,8 @@ export function Forest({ craft }: { craft: CraftState }) {
   const koa = useRef<InstancedMesh>(null);
   const trunk = useRef<InstancedMesh>(null);
   const lehua = useRef<InstancedMesh>(null);
+  const palm = useRef<InstancedMesh>(null);
+  const frond = useRef<InstancedMesh>(null);
   const last = useRef("");
   const albiziaGreen = useMemo(() => [new Color("#9ee08a"), new Color("#b4eb9c"), new Color("#86d478")], []);
   const ohiaGreen = useMemo(() => [new Color("#2f9a3e"), new Color("#3cb14a"), new Color("#4cbf5c")], []);
@@ -56,7 +58,7 @@ export function Forest({ craft }: { craft: CraftState }) {
 
   useLayoutEffect(() => {
     return () => {
-      for (const r of [albizia, ohia, koa, trunk, lehua]) {
+      for (const r of [albizia, ohia, koa, trunk, lehua, palm, frond]) {
         r.current?.geometry.dispose();
         const m = r.current?.material;
         if (m && !Array.isArray(m)) m.dispose();
@@ -70,7 +72,9 @@ export function Forest({ craft }: { craft: CraftState }) {
     const k = koa.current;
     const w = trunk.current;
     const l = lehua.current;
-    if (!a || !o || !k || !w || !l) return;
+    const p = palm.current;
+    const f = frond.current;
+    if (!a || !o || !k || !w || !l || !p || !f) return;
     const gx = Math.round(craft.x / CELL);
     const gz = Math.round(craft.z / CELL);
     const key = `${gx},${gz}`;
@@ -91,8 +95,14 @@ export function Forest({ craft }: { craft: CraftState }) {
         if (hv < 0.2) continue;
         const jx = cx + (hv - 0.5) * wu(0.7);
         const jz = cz + (hash(gx + ix + 19, gz + iz + 7) - 0.5) * wu(0.7);
-        if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz) || inMaunaKeaSummit(jx, jz) || inOpenCoast(jx, jz) || inRiver(jx, jz) || inKilaueaCinder(jx, jz)) continue;
+        if (!isCanopy(jx, jz) || inFlashTownClearing(jx, jz) || inMaunaKeaSummit(jx, jz) || inRiver(jx, jz) || inKilaueaCinder(jx, jz)) continue;
         const y = terrainY(jx, jz);
+        const coast = inOpenCoast(jx, jz);
+        if (coast) {
+          if (y < hu(0.05) || y > hu(3.2) || hv < 0.55) continue;
+          spots.push({ x: jx, y, z: jz, s: wu(0.35) + hv * wu(0.25), h: hv, kind: 3 });
+          continue;
+        }
         spots.push({ x: jx, y, z: jz, s: wu(0.3) + hv * wu(0.4), h: hv, kind: pickKind(y, hv) });
       }
     }
@@ -102,11 +112,26 @@ export function Forest({ craft }: { craft: CraftState }) {
     let ik = 0;
     let it = 0;
     let il = 0;
+    let ip = 0;
 
     for (const t of spots) {
+      if (t.kind === 3 && ip < MAX.palm) {
+        dummy.position.set(t.x, t.y + t.s * 1.7, t.z);
+        dummy.scale.set(wu(0.035), t.s * 3.4, wu(0.035));
+        dummy.rotation.set(0.04, t.h * 4, 0);
+        dummy.updateMatrix();
+        p.setMatrixAt(ip, dummy.matrix);
+        dummy.position.set(t.x, t.y + t.s * 3.45, t.z);
+        dummy.scale.set(t.s * 1.7, t.s * 0.42, t.s * 1.7);
+        dummy.rotation.set(0.12, t.h * 6, 0.05);
+        dummy.updateMatrix();
+        f.setMatrixAt(ip, dummy.matrix);
+        ip++;
+        continue;
+      }
       if (t.kind === 0 && ia < MAX.albizia) {
         dummy.position.set(t.x, t.y + t.s * 1.35, t.z);
-        dummy.scale.set(t.s * 2.35, t.s * 0.34, t.s * 2.35);
+        dummy.scale.set(t.s * 2.15, t.s * 0.62, t.s * 2.15);
         dummy.rotation.set(0.04, t.h * 5, 0.03);
         dummy.updateMatrix();
         a.setMatrixAt(ia, dummy.matrix);
@@ -164,6 +189,8 @@ export function Forest({ craft }: { craft: CraftState }) {
     hide(k, ik, MAX.koa);
     hide(w, it, MAX.albizia + MAX.ohia + MAX.koa);
     hide(l, il, MAX.lehua);
+    hide(p, ip, MAX.palm);
+    hide(f, ip, MAX.palm);
     if (a.instanceColor) a.instanceColor.needsUpdate = true;
     if (o.instanceColor) o.instanceColor.needsUpdate = true;
     if (k.instanceColor) k.instanceColor.needsUpdate = true;
@@ -176,19 +203,27 @@ export function Forest({ craft }: { craft: CraftState }) {
     <group>
       <instancedMesh ref={albizia} args={[undefined, undefined, MAX.albizia]} frustumCulled={false}>
         <sphereGeometry args={[0.55, 10, 6]} />
-        <meshStandardMaterial vertexColors roughness={0.48} />
+        <meshStandardMaterial vertexColors roughness={0.42} />
       </instancedMesh>
       <instancedMesh ref={ohia} args={[undefined, undefined, MAX.ohia]} frustumCulled={false}>
-        <sphereGeometry args={[0.52, 8, 7]} />
-        <meshStandardMaterial vertexColors roughness={0.7} />
+        <sphereGeometry args={[0.52, 10, 8]} />
+        <meshStandardMaterial vertexColors roughness={0.5} />
       </instancedMesh>
       <instancedMesh ref={koa} args={[undefined, undefined, MAX.koa]} frustumCulled={false}>
-        <sphereGeometry args={[0.48, 8, 8]} />
-        <meshStandardMaterial vertexColors roughness={0.66} />
+        <sphereGeometry args={[0.48, 10, 8]} />
+        <meshStandardMaterial vertexColors roughness={0.48} />
       </instancedMesh>
       <instancedMesh ref={trunk} args={[undefined, undefined, trunkMax]} frustumCulled={false}>
-        <cylinderGeometry args={[1, 1.2, 1, 6]} />
-        <meshStandardMaterial vertexColors roughness={0.88} />
+        <cylinderGeometry args={[1, 1.15, 1, 6]} />
+        <meshStandardMaterial vertexColors roughness={0.72} />
+      </instancedMesh>
+      <instancedMesh ref={palm} args={[undefined, undefined, MAX.palm]} frustumCulled={false}>
+        <cylinderGeometry args={[1, 1.25, 1, 6]} />
+        <meshStandardMaterial color="#c4a06a" roughness={0.7} />
+      </instancedMesh>
+      <instancedMesh ref={frond} args={[undefined, undefined, MAX.palm]} frustumCulled={false}>
+        <sphereGeometry args={[0.5, 8, 6]} />
+        <meshStandardMaterial color="#3cb85a" roughness={0.45} />
       </instancedMesh>
       <instancedMesh ref={lehua} args={[undefined, undefined, MAX.lehua]} frustumCulled={false}>
         <sphereGeometry args={[0.22, 6, 5]} />

@@ -24,7 +24,9 @@ export const TELESCOPES = [
 
 /** Last stretch of Mauna Kea Access Road onto the ridge. */
 export const ACCESS_ROAD: [number, number][] = [
-  [19.7606, -155.456],
+  [19.6882, -155.4597],
+  [19.702, -155.456],
+  [19.76, -155.456],
   [19.782, -155.468],
   [19.802, -155.478],
   [19.814, -155.48],

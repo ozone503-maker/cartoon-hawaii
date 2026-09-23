@@ -313,7 +313,7 @@ export function MapView() {
         }}
       >
         <img
-          src={basemap === "usgs" ? "/maps/hawaii-usgs.jpg?v=landsat" : "/maps/hawaii-cartoon.jpg?v=atlas7"}
+          src={basemap === "usgs" ? "/maps/hawaii-usgs.jpg?v=landsat" : "/maps/hawaii-cartoon.jpg?v=atlas8"}
           alt={
             basemap === "usgs"
               ? "NASA Landsat photograph of Hawaiʻi Island"

@@ -20,7 +20,22 @@ When a row is actually done, the user has to see it from the chase camera (~100�
 4. Waterfalls ride the **green hillside**. They are inland unless the real fall is a valley wall (Waipiʻo, Pololū).
 5. Keep `FlightScene.tsx` boot, `geo.ts` AABB, `places.ts` coordinates. `WORLD` enlarge + craft/ChaseCam retunes per Jessie (Sep 18). **No snow caps on MK/ML** — dark cinder only.
 
-**Look target:** cartoon Brobots world on top of real geography — not Minecraft, not raw satellite, not a prop sitting in the water.
+**Look target:** the glossy portrait Jessie sent — candy-blue MDP, chrome saucer, **real hills with photo texture**, palms, warm light. Not Minecraft tiles, not a raw Landsat dump, not a prop in the water.
+
+## Suggested order
+
+1. **Look** — portrait-grade atlas (Landsat texture + cartoon color), warm sun, fog. Phone check before more props.
+2. **Ka Lae** — heightmap lip + dense cape. Needs Jessie at 100–400 m. No raft.
+3. **Kīlauea** — nested map hole + glow only.
+4. **Waterfalls** — hillside sheets. Unsigned.
+5. **Hilo + Kona** — not tin boxes.
+6. **Waipiʻo + Pololū palis.**
+7. **Punaluʻu black / Papakōlea green / Hāpuna white.**
+8. **Mauna Loa + saddle.** Dark cinder, no snow.
+9. **ITO / KOA / MUE strips.**
+10. **Wet vs dry** — Puna jungle vs Waimea ranch vs Kona gold.
+
+Do one row, phone fly, yes or no.
 
 ---
 
@@ -194,21 +209,6 @@ No `MeshToonMaterial`. Instanced, modest counts, Samsung-safe.
 | ITO / KOA / MUE | THIN | Need actual strips |
 | Hilo harbor / Coconut Island | MISSING | |
 | Place of Refuge kiʻi / Great Wall | THIN in `Puuhonua.tsx` | |
-
----
-
-## Suggested order for the makeover bot
-
-Do **one landscape system** at a time, verify on phone, then move. Don’t open five cliffs at once.
-
-1. **Terrain edge** — Ka Lae cape + Papakōlea + Punaluʻu: heightmap sculpt landed (ocean=0); **await Jessie phone sign-off** (FlashTown spawn + fly 100–400 m AGL). Not DONE.
-2. **Kīlauea** — bowl + steam + Iki + 2018 rift + Volcano Village grove landed on `broboss/waterfalls-kilauea` — **await phone**.
-3. **Towns** — Hilo bay, Kona waterfront, then Pāhoa / Waimea / Honokaʻa as distinct plantation towns.
-4. **Windward palis** — Waipiʻo + Pololū + Hāmākua cliff line (this is the “entire coastline” look the user wants, on the **north**, not faked at Ka Lae).
-5. **Waterfalls** — hillside sheets + river Y-drop on `broboss/waterfalls-kilauea` — **await phone**.
-6. **Beaches** — black / green / white as three different materials on the real coves.
-7. **Mauna Loa + Hualālai + saddle** polish.
-8. **Tree and ranch** pass.
 
 ---
 

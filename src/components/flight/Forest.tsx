@@ -176,7 +176,7 @@ export function Forest({ craft }: { craft: CraftState }) {
     <group>
       <instancedMesh ref={albizia} args={[undefined, undefined, MAX.albizia]} frustumCulled={false}>
         <sphereGeometry args={[0.55, 10, 6]} />
-        <meshStandardMaterial vertexColors roughness={0.62} />
+        <meshStandardMaterial vertexColors roughness={0.48} />
       </instancedMesh>
       <instancedMesh ref={ohia} args={[undefined, undefined, MAX.ohia]} frustumCulled={false}>
         <sphereGeometry args={[0.52, 8, 7]} />

@@ -317,6 +317,20 @@ def kilauea(img: Image.Image) -> None:
     d.ellipse((px - 1.4, py - 1, px + 1.4, py + 1), fill=(255, 196, 80))
 
 
+def portrait_grade(img: Image.Image, usgs: np.ndarray, land: np.ndarray) -> Image.Image:
+    """Photo texture under cartoon color — hills like the glossy portrait, not flat tiles."""
+    photo = Image.fromarray(usgs).filter(ImageFilter.GaussianBlur(1.2))
+    soft = photo.filter(ImageFilter.GaussianBlur(7))
+    p = np.asarray(photo).astype(np.float32)
+    detail = p - np.asarray(soft).astype(np.float32)
+    c = np.asarray(img).astype(np.float32)
+    mixed = c * 0.28 + p * 0.72 + detail * 0.45
+    mixed[:, :, 0] = np.clip(mixed[:, :, 0] * 1.05 + 6, 0, 255)
+    mixed[:, :, 1] = np.clip(mixed[:, :, 1] * 1.03 + 2, 0, 255)
+    out = np.where(land[:, :, None], mixed, c)
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+
+
 def main() -> None:
     usgs = np.asarray(Image.open(USGS).convert("RGB"))
     height = np.asarray(Image.open(HEIGHT).convert("L")).astype(np.float32) / 255.0
@@ -357,6 +371,7 @@ def main() -> None:
     data = json.loads(HIGHWAYS.read_text())
     paint_roads_airports(img, data)
     paint_towns(img, data, land)
+    img = portrait_grade(img, usgs, land)
     img.save(OUT, quality=92, optimize=True)
     print("wrote", OUT, img.size)
 

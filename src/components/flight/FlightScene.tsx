@@ -101,9 +101,10 @@ function Scene() {
 
   return (
     <>
-      <color attach="background" args={["#7ec8ee"]} />
-      <hemisphereLight args={["#fff8ee", "#7ec8a8", 1.05]} />
-      <directionalLight position={[60 * WORLD_SCALE, 80 * WORLD_SCALE, 28 * WORLD_SCALE]} intensity={1.85} color="#fff4d0" />
+      <color attach="background" args={["#8ec8e6"]} />
+      <fog attach="fog" args={["#9fd0e4", 48 * WORLD_SCALE, 190 * WORLD_SCALE]} />
+      <hemisphereLight args={["#fff6e8", "#5f8a52", 1.25]} />
+      <directionalLight position={[80 * WORLD_SCALE, 110 * WORLD_SCALE, 40 * WORLD_SCALE]} intensity={2.15} color="#ffe6b0" />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, hu(-0.35), 0]}>
         <planeGeometry args={[WORLD.w * 4, WORLD.d * 4]} />
         <meshBasicMaterial color="#1a8ab8" />

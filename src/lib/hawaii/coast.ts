@@ -55,6 +55,42 @@ export function kauCliffY(_lat: number, _lon: number, y0: number) {
   return y0;
 }
 
+function isBeachLand(x: number, z: number) {
+  const y = terrainY(x, z);
+  if (y < hu(0.05)) return false;
+  if (!hasAlbedo()) return true;
+  const { r, g, b } = sampleAlbedo(x, z);
+  if (b > r + 12 && g > r - 6) return false;
+  return true;
+}
+
+/**
+ * Last dry pixel walking toward the sea. dLat/dLon is one step seaward.
+ * Ka Lae uses snapToLand (south tip). Beaches must not use that — it walks north.
+ */
+export function beachLip(lat: number, lon: number, dLat: number, dLon: number) {
+  let la = lat;
+  let lo = lon;
+  let w = latLonToWorld(la, lo);
+  if (!isBeachLand(w.x, w.z)) {
+    for (let i = 0; i < 90 && !isBeachLand(w.x, w.z); i++) {
+      la -= dLat;
+      lo -= dLon;
+      w = latLonToWorld(la, lo);
+    }
+  }
+  for (let i = 0; i < 90; i++) {
+    const nla = la + dLat;
+    const nlo = lo + dLon;
+    const n = latLonToWorld(nla, nlo);
+    if (!isBeachLand(n.x, n.z)) break;
+    la = nla;
+    lo = nlo;
+    w = n;
+  }
+  return { x: w.x, z: w.z, y: Math.max(terrainY(w.x, w.z), hu(0.04)) };
+}
+
 function isDryLand(x: number, z: number) {
   const y = terrainY(x, z);
   if (y < hu(0.15)) return false;

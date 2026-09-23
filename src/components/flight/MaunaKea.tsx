@@ -23,7 +23,7 @@ export function MaunaKea() {
 
   return (
     <group>
-      <Peak />
+      <CinderField />
       {TELESCOPES.map((t) => (
         <Observatory key={t.id} {...t} />
       ))}
@@ -33,20 +33,31 @@ export function MaunaKea() {
   );
 }
 
-function Peak() {
-  const p = summitWorld();
-  const y = terrainY(p.x, p.z);
-  // Dark alpine cinder / bare rock — NO snow (Jessie override).
+/** Red and gray cinder cones around the summit plateau. No snow, no disc. */
+const CONES: { lat: number; lon: number; r: number; h: number; c: string }[] = [
+  { lat: 19.8207, lon: -155.4681, r: 0.62, h: 0.48, c: "#8a4030" },
+  { lat: 19.8148, lon: -155.4782, r: 0.78, h: 0.55, c: "#7a3828" },
+  { lat: 19.8238, lon: -155.4555, r: 0.5, h: 0.36, c: "#6a4538" },
+  { lat: 19.8115, lon: -155.4615, r: 0.66, h: 0.42, c: "#5c4036" },
+  { lat: 19.8282, lon: -155.4815, r: 0.52, h: 0.34, c: "#8a5340" },
+  { lat: 19.8088, lon: -155.471, r: 0.46, h: 0.3, c: "#6a4a3c" },
+  { lat: 19.8186, lon: -155.4865, r: 0.42, h: 0.28, c: "#7a4e3a" },
+  { lat: 19.826, lon: -155.463, r: 0.4, h: 0.26, c: "#5a463c" },
+];
+
+function CinderField() {
   return (
-    <group position={[p.x, y, p.z]} scale={WORLD_SCALE}>
-      <mesh position={[0, 0.12, 0]}>
-        <coneGeometry args={[0.42, 0.28, 8]} />
-        <meshStandardMaterial color="#6a5248" roughness={0.95} />
-      </mesh>
-      <mesh position={[0, 0.28, 0]}>
-        <sphereGeometry args={[0.16, 10, 8]} />
-        <meshStandardMaterial color="#5a5048" roughness={0.92} />
-      </mesh>
+    <group>
+      {CONES.map((cone) => {
+        const { x, z } = latLonToWorld(cone.lat, cone.lon);
+        const y = terrainY(x, z);
+        return (
+          <mesh key={`${cone.lat}-${cone.lon}`} position={[x, y + cone.h * WORLD_SCALE * 0.45, z]} scale={WORLD_SCALE}>
+            <coneGeometry args={[cone.r, cone.h, 10]} />
+            <meshStandardMaterial color={cone.c} roughness={0.96} />
+          </mesh>
+        );
+      })}
     </group>
   );
 }

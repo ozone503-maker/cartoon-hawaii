@@ -11,6 +11,7 @@ import {
 import { hu, latLonToWorld, terrainMeters, terrainY, WORLD, worldToLatLon } from "@/lib/hawaii/world";
 import { kauCliffY } from "@/lib/hawaii/coast";
 import { kilaueaBowlY } from "@/lib/hawaii/kilauea";
+import { maunaLoaBowlY } from "@/lib/hawaii/maunaloa";
 
 function tintForMeters(m: number, c: Color) {
   if (m < 5) c.set("#1a8ab8");
@@ -103,7 +104,7 @@ export function Island() {
       const z = pos.getZ(i);
       const y0 = terrainY(x, z);
       const ll = worldToLatLon(x, z);
-      const y = kilaueaBowlY(x, z, kauCliffY(ll.lat, ll.lon, y0));
+      const y = maunaLoaBowlY(x, z, kilaueaBowlY(x, z, kauCliffY(ll.lat, ll.lon, y0)));
       pos.setY(i, y);
       const m = terrainMeters(x, z);
       if (y < hu(0.02)) c.set("#1a8ab8");

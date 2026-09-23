@@ -137,6 +137,7 @@ function RainbowFalls({ drop, run, width }: { drop: number; run: number; width: 
       <WaterSheet drop={drop} run={run} width={w} strands={4} opacity={0.68} />
       <Pool drop={drop} run={run} width={w * 1.15} mist />
       <RainbowHint drop={drop} run={run} width={w} />
+      <FallPark kind="rainbow" />
     </group>
   );
 }
@@ -191,6 +192,7 @@ function AkakaFalls({ drop, run, width }: { drop: number; run: number; width: nu
       <GorgeWalls drop={drop} run={run} width={w * 2.2} sheer />
       <WaterSheet drop={drop} run={run} width={w} strands={2} opacity={0.6} narrow />
       <Pool drop={drop} run={run} width={w * 1.1} mist compact />
+      <FallPark kind="akaka" />
     </group>
   );
 }
@@ -216,6 +218,7 @@ function UmaumaFalls({ drop, run, width }: { drop: number; run: number; width: n
         );
       })}
       <MistBlob y={-drop + 0.08} z={run} r={Math.max(0.12, width * 0.55)} />
+      <FallPark kind="umauma" />
     </group>
   );
 }
@@ -434,6 +437,50 @@ function RainbowHint({ drop, run, width }: { drop: number; run: number; width: n
           <meshBasicMaterial color={c} transparent opacity={0.14} />
         </mesh>
       ))}
+    </group>
+  );
+}
+
+/** State-park rim from the aerials: lawn, canopy, lookout. On the lip. */
+function FallPark({ kind }: { kind: "rainbow" | "akaka" | "umauma" }) {
+  const lawn = wu(kind === "akaka" ? 2.4 : 1.8);
+  const trees: [number, number][] =
+    kind === "akaka"
+      ? [
+          [-1.4, -0.6],
+          [1.5, -0.4],
+          [-0.8, -1.5],
+          [1.1, -1.4],
+          [0.2, -2.0],
+        ]
+      : [
+          [-1.1, -0.5],
+          [1.2, -0.3],
+          [-0.3, -1.3],
+          [1.3, -1.2],
+        ];
+  return (
+    <group>
+      <mesh position={[0, 0.05, -lawn * 0.35]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[lawn, 18]} />
+        <meshStandardMaterial color={kind === "umauma" ? "#2f8a3c" : "#49a84a"} roughness={0.9} />
+      </mesh>
+      {trees.map(([x, z], i) => (
+        <group key={i} position={[x * lawn * 0.55, 0, z * lawn * 0.45]}>
+          <mesh position={[0, wu(0.55), 0]}>
+            <cylinderGeometry args={[wu(0.04), wu(0.06), wu(1.1), 6]} />
+            <meshStandardMaterial color="#5a3a22" />
+          </mesh>
+          <mesh position={[0, wu(1.15), 0]}>
+            <sphereGeometry args={[wu(0.55 + (i % 3) * 0.08), 10, 8]} />
+            <meshStandardMaterial color={i % 2 ? "#1f7a32" : "#2e9a40"} roughness={0.7} />
+          </mesh>
+        </group>
+      ))}
+      <mesh position={[kind === "akaka" ? lawn * 0.55 : -lawn * 0.15, wu(0.08), -wu(0.2)]}>
+        <boxGeometry args={[wu(0.7), wu(0.06), wu(0.35)]} />
+        <meshStandardMaterial color="#c4a06a" roughness={0.6} />
+      </mesh>
     </group>
   );
 }

@@ -17,7 +17,7 @@ import { KauCoast } from "./KauCoast";
 import { Rivers } from "./Rivers";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
-import { latLonToWorld, loadAlbedo, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE, UFO_LENGTH, WORLD, WORLD_SCALE, hu, wu } from "@/lib/hawaii/world";
+import { latLonToWorld, loadAlbedo, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE, UFO_LENGTH, WORLD, WORLD_SCALE, GROUND_SCALE, hu, wu } from "@/lib/hawaii/world";
 import { HOME_ID, PLACES, placeById } from "@/lib/hawaii/places";
 import { useHawaii } from "@/lib/hawaii/store";
 
@@ -102,7 +102,7 @@ function Scene() {
   return (
     <>
       <color attach="background" args={["#7ec8ee"]} />
-      <fog attach="fog" args={["#c5e4f2", 160 * WORLD_SCALE, 480 * WORLD_SCALE]} />
+      <fog attach="fog" args={["#c5e4f2", 160 * WORLD_SCALE * GROUND_SCALE, 480 * WORLD_SCALE * GROUND_SCALE]} />
       <hemisphereLight args={["#f4fbff", "#7eb86a", 1.45]} />
       <directionalLight
         position={[140 * WORLD_SCALE, 80 * WORLD_SCALE, 40 * WORLD_SCALE]}
@@ -201,7 +201,7 @@ export function FlightCanvas() {
         dpr: 1,
         frameloop: "always",
         size: { width: w, height: h, top: 0, left: 0 },
-        camera: { fov: 48, near: 0.12 * WORLD_SCALE, far: 520 * WORLD_SCALE, position: look.cam },
+        camera: { fov: 48, near: 0.12 * WORLD_SCALE, far: 520 * WORLD_SCALE * GROUND_SCALE, position: look.cam },
         gl: {
           antialias: false,
           alpha: false,

@@ -3,7 +3,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import type { Fog, PerspectiveCamera } from "three";
 import { Vector3 } from "three";
 import type { CraftState } from "@/lib/flight/craft";
-import { UFO_LENGTH, WORLD_SCALE } from "@/lib/hawaii/world";
+import { UFO_LENGTH, WORLD_SCALE, GROUND_SCALE } from "@/lib/hawaii/world";
 
 const _desired = new Vector3();
 const _look = new Vector3();
@@ -39,8 +39,8 @@ export function ChaseCam({ craft }: { craft: CraftState }) {
 
     const fog = scene.fog as Fog | null;
     if (fog) {
-      fog.near = 160 * WORLD_SCALE;
-      fog.far = 480 * WORLD_SCALE;
+      fog.near = 160 * WORLD_SCALE * GROUND_SCALE;
+      fog.far = 480 * WORLD_SCALE * GROUND_SCALE;
     }
   });
 

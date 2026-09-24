@@ -1,29 +1,34 @@
 import { GEO, MAP_SIZE, project, unproject, type LatLon } from "./geo";
 
 /**
- * Authoring reference width (pre–Jessie enlarge). Absolute world-unit props
- * authored at this scale multiply by WORLD_SCALE.
+ * Authoring reference width (pre–Jessie enlarge). Craft, props, and speed
+ * stay on WORLD_SCALE. Do not derive that from WORLD.w — tying them together
+ * made the “bigger island” a no-op (ship, camera, and speed grew too).
  */
 export const WORLD_BASE_W = 240;
 
+/** Craft / prop / speed scale. Frozen. The island width is separate. */
+export const WORLD_SCALE = 4;
+
 /**
- * Full Landsat frame width in world units.
- * 960 = 4× WORLD_BASE_W so Mauna Kea ↔ Mauna Loa spacing reads as a real island
- * (craft-slowdown alone was insufficient — volcanoes still felt stacked).
+ * Ground frame. 960 was 4× the authoring width, but the craft scaled with it,
+ * so Ka Lae → Upolu was still ~18 seconds and the island felt like a table.
+ * 3840 keeps the ship and the stick where they are and makes the ground 4× larger.
  */
 export const WORLD = {
-  w: 960,
-  d: (960 * MAP_SIZE.h) / MAP_SIZE.w,
+  w: 3840,
+  d: (3840 * MAP_SIZE.h) / MAP_SIZE.w,
 } as const;
 
-/** Linear scale from WORLD_BASE_W → WORLD.w (horizontal / craft / prop sizes). */
-export const WORLD_SCALE = WORLD.w / WORLD_BASE_W; // 4
+/** Ground size relative to the 960-wide frame fog and camera-far were tuned on. */
+export const GROUND_SCALE = WORLD.w / 960;
 
 /**
- * Vertical exaggeration multiplier vs the old 24/4205 authoring.
- * Slightly under ×4 so peaks keep relative height to width without eating the sky.
+ * Vertical scale vs the old 24/4205 authoring.
+ * With the wider ground, 5.5 puts Mauna Kea about 1.15× its real height-to-width
+ * instead of the old ~3× spike.
  */
-export const HEIGHT_MULT = 3.75;
+export const HEIGHT_MULT = 5.5;
 
 /** 4205 m (Mauna Kea) → world units. Old was 24/4205; now × HEIGHT_MULT. */
 export const HEIGHT_SCALE = (24 * HEIGHT_MULT) / 4205;

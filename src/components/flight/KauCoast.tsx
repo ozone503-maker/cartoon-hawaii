@@ -1,5 +1,7 @@
-import { hu, WORLD_SCALE } from "@/lib/hawaii/world";
-import { beachLip, snapToLand } from "@/lib/hawaii/coast";
+import { useMemo } from "react";
+import { BufferGeometry, Color, DoubleSide, Float32BufferAttribute } from "three";
+import { hu, latLonToWorld, terrainY, WORLD_SCALE } from "@/lib/hawaii/world";
+import { beachLip, kaLaeShoreLat, snapToLand } from "@/lib/hawaii/coast";
 import { Puuhonua } from "./Puuhonua";
 
 /**
@@ -11,6 +13,7 @@ export function KauCoast() {
   return (
     <group>
       <Punaluu />
+      <SouthPali />
       <KaLae />
       <Papakolea />
       <Hapuna />
@@ -92,23 +95,69 @@ function Pololu() {
   );
 }
 
-/** Jump gear on the real lip — no separate palisade in the ocean. */
+/** The whole south shore, not a rounded bank. Ocean side stays at the water. */
+function SouthPali() {
+  const geo = useMemo(() => {
+    const lips: { x: number; y: number; z: number; fx: number; fz: number }[] = [];
+    for (let lon = -155.74; lon <= -155.625; lon += 0.0032) {
+      const shore = kaLaeShoreLat(lon);
+      const lip = latLonToWorld(shore + 0.0014, lon);
+      const y = terrainY(lip.x, lip.z);
+      if (y < hu(0.4)) continue;
+      const foot = latLonToWorld(shore - 0.00045, lon);
+      lips.push({ x: lip.x, y, z: lip.z, fx: foot.x, fz: foot.z });
+    }
+    const g = new BufferGeometry();
+    const bands = ["#3a342e", "#5a524a", "#7d756b", "#4a433c"];
+    const pos: number[] = [];
+    const col: number[] = [];
+    const idx: number[] = [];
+    const color = new Color();
+    for (let i = 0; i < lips.length - 1; i++) {
+      const a = lips[i]!;
+      const b = lips[i + 1]!;
+      for (let k = 0; k < bands.length; k++) {
+        const t0 = k / bands.length;
+        const t1 = (k + 1) / bands.length;
+        const base = pos.length / 3;
+        const push = (p: typeof a, t: number) => {
+          pos.push(
+            p.fx + (p.x - p.fx) * t,
+            hu(0.02) + (p.y - hu(0.02)) * t,
+            p.fz + (p.z - p.fz) * t,
+          );
+          color.set(bands[k]!);
+          col.push(color.r, color.g, color.b);
+        };
+        push(a, t0);
+        push(a, t1);
+        push(b, t0);
+        push(b, t1);
+        idx.push(base, base + 2, base + 1, base + 2, base + 3, base + 1);
+      }
+    }
+    g.setAttribute("position", new Float32BufferAttribute(pos, 3));
+    g.setAttribute("color", new Float32BufferAttribute(col, 3));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    return g;
+  }, []);
+
+  return (
+    <mesh geometry={geo}>
+      <meshStandardMaterial vertexColors roughness={0.96} side={DoubleSide} />
+    </mesh>
+  );
+}
+
+/** Jump gear on the lip. The cliff is the coast, not this prop. */
 function KaLae() {
   const p = snapToLand(18.9119, -155.6864);
   const drop = Math.max(hu(0.55), p.y);
   return (
     <group position={[p.x, p.y, p.z]} scale={WORLD_SCALE}>
-      <mesh position={[0, -Math.min(p.y / WORLD_SCALE, 0.55) * 0.7, 0.5]} scale={[1.1, 0.8, 1]}>
-        <sphereGeometry args={[0.2, 10, 7]} />
-        <meshStandardMaterial color="#08080a" roughness={1} />
-      </mesh>
       <GreenHoist y={0} />
-      <mesh position={[0.28, 0.1, 0.1]}>
-        <boxGeometry args={[0.16, 0.14, 0.12]} />
-        <meshStandardMaterial color="#e25a28" roughness={0.55} />
-      </mesh>
-      <Ladder x={-0.22} top={0} z={0.38} len={(drop / WORLD_SCALE) * 0.55} />
-      <Ladder x={0.1} top={0} z={0.42} len={(drop / WORLD_SCALE) * 0.9} />
+      <Ladder x={-0.22} top={0} z={0.15} len={(drop / WORLD_SCALE) * 0.35} />
       <Truck x={-0.55} z={-0.28} y={0} />
       <Truck x={-1.05} z={-0.65} y={0} />
     </group>

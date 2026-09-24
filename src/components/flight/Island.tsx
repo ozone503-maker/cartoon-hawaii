@@ -7,11 +7,12 @@ import {
   SRGBColorSpace,
   Texture,
   TextureLoader,
+  Vector2,
 } from "three";
 import { hu, latLonToWorld, terrainMeters, terrainY, WORLD, worldToLatLon } from "@/lib/hawaii/world";
 import { kauCliffY } from "@/lib/hawaii/coast";
-import { kilaueaBowlY } from "@/lib/hawaii/kilauea";
-import { maunaLoaBowlY } from "@/lib/hawaii/maunaloa";
+import { HALEMAUMAU_WORLD, KILAUEA_RX, KILAUEA_RZ, KILAUEA_WORLD, PIT_R, kilaueaBowlY } from "@/lib/hawaii/kilauea";
+import { MAUNA_LOA_ANG, MAUNA_LOA_RX, MAUNA_LOA_RZ, MAUNA_LOA_WORLD, maunaLoaBowlY } from "@/lib/hawaii/maunaloa";
 
 function tintForMeters(m: number, c: Color) {
   if (m < 5) c.set("#1a8ab8");
@@ -56,18 +57,54 @@ function usePhotoGround(cartoon: Texture | null, usgs: Texture | null) {
       roughness: 0.78,
       metalness: 0,
     });
-    if (cartoon && usgs) {
+    if (cartoon) {
       m.onBeforeCompile = (shader) => {
-        shader.uniforms.usgsMap = { value: usgs };
+        if (usgs) shader.uniforms.usgsMap = { value: usgs };
+        shader.uniforms.uWorld = { value: new Vector2(WORLD.w, WORLD.d) };
+        shader.uniforms.uCal = { value: new Vector2(KILAUEA_WORLD.x, KILAUEA_WORLD.z) };
+        shader.uniforms.uCalR = { value: new Vector2(KILAUEA_RX, KILAUEA_RZ) };
+        shader.uniforms.uPit = { value: new Vector2(HALEMAUMAU_WORLD.x, HALEMAUMAU_WORLD.z) };
+        shader.uniforms.uPitR = { value: PIT_R };
+        shader.uniforms.uMl = { value: new Vector2(MAUNA_LOA_WORLD.x, MAUNA_LOA_WORLD.z) };
+        shader.uniforms.uMlR = { value: new Vector2(MAUNA_LOA_RX, MAUNA_LOA_RZ) };
+        shader.uniforms.uMlAng = { value: MAUNA_LOA_ANG };
         shader.fragmentShader = shader.fragmentShader
-          .replace("#include <common>", "#include <common>\nuniform sampler2D usgsMap;")
+          .replace(
+            "#include <common>",
+            `#include <common>
+             ${usgs ? "uniform sampler2D usgsMap;" : ""}
+             uniform vec2 uWorld;
+             uniform vec2 uCal;
+             uniform vec2 uCalR;
+             uniform vec2 uPit;
+             uniform float uPitR;
+             uniform vec2 uMl;
+             uniform vec2 uMlR;
+             uniform float uMlAng;`,
+          )
           .replace(
             "#include <map_fragment>",
             `#include <map_fragment>
-             vec3 real = texture2D(usgsMap, vMapUv).rgb;
+             ${
+               usgs
+                 ? `vec3 real = texture2D(usgsMap, vMapUv).rgb;
              float luma = dot(real, vec3(0.22, 0.62, 0.16));
              diffuseColor.rgb *= mix(0.95, 1.12, luma);
-             diffuseColor.rgb = mix(diffuseColor.rgb, real * vec3(1.05, 1.08, 0.95), 0.1);
+             diffuseColor.rgb = mix(diffuseColor.rgb, real * vec3(1.05, 1.08, 0.95), 0.1);`
+                 : ""
+             }
+             vec2 xz = vec2(vMapUv.x * uWorld.x - uWorld.x * 0.5, (1.0 - vMapUv.y) * uWorld.y - uWorld.y * 0.5);
+             vec2 cd = (xz - uCal) / uCalR;
+             float bowl = smoothstep(1.08, 0.72, dot(cd, cd));
+             diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.07, 0.06, 0.055), bowl);
+             float pit = smoothstep(1.0, 0.15, dot((xz - uPit) / uPitR, (xz - uPit) / uPitR));
+             diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.11, 0.035, 0.02), pit);
+             float cs = cos(uMlAng);
+             float sn = sin(uMlAng);
+             vec2 md0 = xz - uMl;
+             vec2 md = vec2(md0.x * cs + md0.y * sn, -md0.x * sn + md0.y * cs) / uMlR;
+             float loa = smoothstep(1.05, 0.55, dot(md, md));
+             diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.10, 0.07, 0.06), loa);
             `,
           );
       };

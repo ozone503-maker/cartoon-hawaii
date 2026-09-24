@@ -94,7 +94,7 @@ export function Island() {
   }, []);
 
   const geometry = useMemo(() => {
-    const g = new PlaneGeometry(WORLD.w, WORLD.d, 160, 184);
+    const g = new PlaneGeometry(WORLD.w, WORLD.d, 320, 368);
     g.rotateX(-Math.PI / 2);
     const pos = g.attributes.position!;
     const col = new Float32Array(pos.count * 3);

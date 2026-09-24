@@ -1,5 +1,5 @@
 import { HOME_ID, placeById } from "@/lib/hawaii/places";
-import { HEIGHT_SCALE, hu, latLonToWorld, terrainY, UFO_LENGTH, WORLD_SCALE } from "@/lib/hawaii/world";
+import { HEIGHT_SCALE, hu, latLonToWorld, terrainY, UFO_LENGTH, WORLD_SCALE, GROUND_SCALE } from "@/lib/hawaii/world";
 import { readAxes } from "./input";
 
 export type CraftState = {
@@ -47,23 +47,24 @@ export function setSteerOverride(v: number | null) {
 }
 
 /**
- * Demo pace on the 4× island: FlashTown↔Ka Lae ~12 s at full throttle,
- * ~6 s with boost. 30 s still felt like a crawl on the phone.
+ * Same cruise as the 960-wide island (~12 s FlashTown↔Ka Lae, boost ~6 s).
+ * Ground grew ×4 without the ship. Leaving speed behind made it a crawl.
  */
 export function stepCraft(c: CraftState, dt: number) {
   const axes = readAxes();
   const steer = steerOverride ?? axes.steer;
   c.steer = steer;
   const boost = axes.boost ? 2.15 : 1;
-  const maxSpeed = 14 * WORLD_SCALE * boost;
-  const accel = 12 * WORLD_SCALE * boost;
+  const pace = WORLD_SCALE * GROUND_SCALE;
+  const maxSpeed = 14 * pace * boost;
+  const accel = 12 * pace * boost;
 
   c.speed += axes.throttle * accel * dt;
   if (axes.throttle === 0) c.speed *= Math.exp(-2.4 * dt);
-  c.speed = Math.max(-2.2 * WORLD_SCALE, Math.min(maxSpeed, c.speed));
+  c.speed = Math.max(-2.2 * pace, Math.min(maxSpeed, c.speed));
 
-  const turnRef = 1.6 * WORLD_SCALE;
-  const turn = 1.7 * (0.4 + Math.min(1, Math.abs(c.speed) / turnRef));
+  const turnRef = 1.6 * pace;
+  const turn = 4.0 * (0.4 + Math.min(1, Math.abs(c.speed) / turnRef));
   c.yaw += steer * turn * dt;
 
   const fx = -Math.sin(c.yaw);
@@ -71,10 +72,10 @@ export function stepCraft(c: CraftState, dt: number) {
   c.x += fx * c.speed * dt;
   c.z += fz * c.speed * dt;
 
-  const liftAccel = 3.0 * WORLD_SCALE;
+  const liftAccel = 3.0 * pace;
   c.vy += axes.lift * liftAccel * dt;
   if (axes.lift === 0) c.vy *= Math.exp(-3.2 * dt);
-  c.vy = Math.max(-2.5 * WORLD_SCALE, Math.min(2.5 * WORLD_SCALE, c.vy));
+  c.vy = Math.max(-2.5 * pace, Math.min(2.5 * pace, c.vy));
   c.y += c.vy * dt;
 
   const ground = terrainY(c.x, c.z);

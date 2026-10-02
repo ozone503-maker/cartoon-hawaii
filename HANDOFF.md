@@ -47,7 +47,7 @@ A photograph of a cliff was turned into a wall of quads. A waterfall photo was t
 
 `public/maps/hawaii-aerial.jpg` (about 3578×4096) exists and is **not** wired to the flight mesh. Even that file is only about 40 m per pixel. From altitude it would finally read as Hawaiʻi. On the ground it would still be soft. One bigger JPG is not the fix.
 
-`MAKEOVER.md` is an older punch list (more trees, more cones, more stamps). Following it again will produce another week of the same picture. Ignore it as an art plan.
+`MAKEOVER.md` is an older punch list (more trees, more cones, more stamps). Following it again will produce another week of the same picture. Use it for place names only.
 
 ## The job
 
@@ -71,10 +71,10 @@ Then **delete or hide** the sphere trees, box towns, disc waterfalls, and cone s
 - Kīlauea is a shield with a caldera about 4 km by 3 km, black lava, Halemaʻumaʻu on the west side of the floor. Not a brown tube, not a green hole, not one orange pixel.
 - Ka Lae / South Point is a cliff along the south shore, not a rounded green cape and not a cliff at Puʻuhonua. The jump and the green hoist are on the lip. Papakōlea (green sand) is the cove just east of the tip. Punaluʻu is black sand at sea level. Nāʻālehu is up the slope, not on the beach.
 - Puʻuhonua o Hōnaunau is a low lava flat. The long slope from Ocean View through Captain Cook is the same kind of slope, not a sea cliff.
-- Waterfalls are real streams falling off real lips (Akaka, Rainbow Falls, Boiling Pots, Umauma, Waiʻaleale is Kauaʻi — do not put it here). The Wailuku runs from the saddle side down through Boiling Pots and Rainbow Falls to Hilo Bay.
-- FlashTown is the home lot at Mountain View (19.5397, -155.1417), not a second island.
+- Waterfalls are real streams falling off real lips (ʻAkaka, Rainbow Falls, Boiling Pots, Umauma). The Wailuku runs from the saddle side down through Boiling Pots and Rainbow Falls to Hilo Bay. A river mouth is not a waterfall.
+- FlashTown is the home lot at Mountain View (19.5397, -155.1417), not a second island and not the highway village.
 - Do not grow `WORLD.w` again and do not scale the UFO with it.
-- Do not restart the repo. Do not replace React Three Fiber with a new engine unless the tile ground cannot be sampled in the current mesh. If you must change the renderer, keep `latLonToWorld` and the heightmap.
+- Do not restart the repo. Do not replace React Three Fiber unless a tile ground cannot be sampled on the current mesh. If you change the renderer, keep `latLonToWorld` and the heightmap.
 
 ## How to know you failed
 
@@ -86,3 +86,32 @@ Then **delete or hide** the sphere trees, box towns, disc waterfalls, and cone s
 ## How to know you are done
 
 From the chase camera, over Kīlauea, Ka Lae, Hilo, and the saddle, a person who knows the island can name the place without reading the HUD. The craft, the stick, and the lat/lon readout still behave as they do on `main` today.
+
+## Locks that are still true
+
+Home spawn is FlashTown, the jungle lot at Mountain View: 19.5397, -155.1417. The highway village is a different pin.
+
+| What | File | Lock |
+|---|---|---|
+| Camera | `ChaseCam.tsx` | Behind and above. About 3.5 craft lengths back, about 22° down. UFO in the lower third. No cockpit. Do not zoom into MDP’s head. |
+| MDP | `Craft.tsx` | Glossy cyan `#3ec8e8`, big cranium, thin neck, black eyes, chrome saucer, bubble. The camera sees the back of the head. |
+| Stick | `TouchPad.tsx` | One circle, four quarters, diagonals work. Lightning is **boost**, not eject. |
+| Phone boot | `FlightScene.tsx` | Samsung died on a 0×0 canvas and on `MeshToonMaterial`. Keep `createRoot`, a real canvas size, `antialias: false`, `dpr: 1`, `meshStandardMaterial` only. |
+| Summits | height + mesh | Dark cinder. **No snow.** |
+
+`WORLD.w` is **3840** now, not 960. `HEIGHT_MULT` is **5.5**. `UFO_LENGTH` is still 8.8. Older notes that say 960 are stale. Do not "restore" 960.
+
+## Approaches that already failed
+
+Do not do these again. The human has seen each one.
+
+- A box wall, raft, or second mesh in the ocean at Ka Lae. The cliff has to be the island’s own south edge. The Landsat cape is the land. Props (green hoist, ladders, trucks) go on the dry lip only. Jump pin 18.9119, -155.6864. Papakōlea 18.9364, -155.6464.
+- Digging a trench so a fake wall looks separated from the island. That made a moat.
+- A waterfall built as a brown tower, an ice cube, a fence, or a laser-blue line. Real falls: Rainbow 19.7194, -155.1094; Boiling Pots 19.7153, -155.1306; ʻAkaka 19.8539, -155.1522; Umauma 19.8917, -155.1408. They sit on the hillside. Mouths of rivers are not waterfalls.
+- Slowing the ship to make the island feel bigger.
+- Raising `WORLD.w` while also scaling the ship, the camera, and the speed. The island stays the same size in the window.
+- Another coat of sphere trees and tin-roof boxes. The human already called that Minecraft.
+
+## Phone check
+
+If the HUD sticks at `0 m AGL · hd 0°`, the render loop is dead. A healthy spawn is about 19.540°N, 155.142°W, heading near 313°, a few hundred meters up. Desktop-only "it works" has already burned a week.

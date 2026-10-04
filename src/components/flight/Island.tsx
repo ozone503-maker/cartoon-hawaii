@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useThree } from "@react-three/fiber";
 import {
   BufferAttribute,
   Color,
@@ -37,14 +38,26 @@ function drape(g: PlaneGeometry, yOf: (x: number, z: number) => number) {
   g.computeVertexNormals();
 }
 
-function loadMap(url: string, set: (t: Texture) => void) {
+function loadMap(url: string, set: (t: Texture) => void, anisotropy = 1) {
   const loader = new TextureLoader();
   const t = loader.load(url, (tex) => {
     tex.colorSpace = SRGBColorSpace;
-    tex.anisotropy = 1;
+    tex.anisotropy = anisotropy;
     set(tex);
   });
   return t;
+}
+
+/**
+ * Ground picture: real satellite imagery lined up to the same frame as
+ * hawaii-usgs.jpg (see scripts/build-satellite-ground.py). About 39 m per texel
+ * at full size. Phones that cannot hold a 4096-tall texture, or report little
+ * memory, get the half-size copy.
+ */
+function groundUrl(maxTextureSize: number) {
+  const mem = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
+  const small = maxTextureSize < 4096 || (mem !== undefined && mem < 4);
+  return small ? "/maps/hawaii-satellite-2k.jpg?v=sat1" : "/maps/hawaii-satellite.jpg?v=sat1";
 }
 
 /** Cartoon colors, Landsat ridges. Not a raw satellite dump. */
@@ -118,17 +131,16 @@ function usePhotoGround(cartoon: Texture | null, usgs: Texture | null) {
 }
 
 export function Island() {
+  const gl = useThree((st) => st.gl);
   const [map, setMap] = useState<Texture | null>(null);
-  const [usgs, setUsgs] = useState<Texture | null>(null);
 
   useEffect(() => {
-    const a = loadMap("/maps/hawaii-cartoon.jpg?v=atlas7", setMap);
-    const b = loadMap("/maps/hawaii-usgs.jpg", setUsgs);
+    const aniso = Math.min(8, gl.capabilities.getMaxAnisotropy());
+    const a = loadMap(groundUrl(gl.capabilities.maxTextureSize), setMap, aniso);
     return () => {
       a.dispose();
-      b.dispose();
     };
-  }, []);
+  }, [gl]);
 
   const geometry = useMemo(() => {
     const g = new PlaneGeometry(WORLD.w, WORLD.d, 320, 368);
@@ -170,7 +182,7 @@ export function Island() {
     return g;
   }, []);
 
-  const ground = usePhotoGround(map, usgs);
+  const ground = usePhotoGround(map, null);
 
   useLayoutEffect(() => {
     return () => {

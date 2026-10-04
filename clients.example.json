@@ -1,0 +1,13 @@
+{
+  "_comment": "One entry per client site. ownerKey is that owner's private password (openssl rand -hex 24). Never commit the real clients.json.",
+  "ozone-test": {
+    "repo": "ozone503-maker/brobots-space-academy-test",
+    "baseBranch": "main",
+    "siteName": "Brobots Space Academy (test copy)",
+    "siteUrl": "https://YOUR-TEST-PROJECT.vercel.app",
+    "ownerName": "Jessie",
+    "ownerKey": "REPLACE-WITH-24-BYTES-OF-HEX-FROM-openssl-rand",
+    "supportName": "Jessie",
+    "allowedOrigins": []
+  }
+}

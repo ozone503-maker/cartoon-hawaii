@@ -2,12 +2,9 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createRoot, events, extend, unmountComponentAtNode, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Island } from "./Island";
+import { GroundTiles } from "./GroundTiles";
 import { Craft } from "./Craft";
-import { Forest } from "./Forest";
-import { Settlements } from "./Settlements";
 import { FlashTown } from "./FlashTown";
-import { MountainView } from "./MountainView";
-import { PunaGrove } from "./PunaGrove";
 import { Roads } from "./Roads";
 import { Caldera } from "./Caldera";
 import { MaunaKea } from "./MaunaKea";
@@ -122,17 +119,14 @@ function Scene() {
         </mesh>
       )}
       <FlashTown />
-      <PunaGrove />
+      <GroundTiles craft={craft} />
       <Craft craft={craft} />
       <ChaseCam craft={craft} />
       <Sim craft={craft} />
       {rest ? (
         <>
-          <Forest craft={craft} />
           <Roads />
           <Rivers />
-          <Settlements />
-          <MountainView />
           <MaunaKea />
           <Caldera />
           <Locations />

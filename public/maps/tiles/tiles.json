@@ -1,0 +1,565 @@
+{
+ "frame": {
+  "widthPx": 11180,
+  "heightPx": 12800,
+  "scaleVsGameMap": 10,
+  "gameMapSize": [
+   1118,
+   1280
+  ],
+  "projection": "Equirectangular (plate carree) in WGS84 lat/lon, identical to src/lib/hawaii/geo.ts project(): x_game = 36 + (lon-(-156.0614))/1.2554*1046, y_game = 36 + (20.268-lat)/1.3572*1208; tile pixel X = x_game*10 (pixel edges, top-left origin).",
+  "geo": {
+   "latMin": 18.9108,
+   "latMax": 20.268,
+   "lonMin": -156.0614,
+   "lonMax": -154.806
+  },
+  "islandPx": {
+   "x": 36,
+   "y": 36,
+   "w": 1046,
+   "h": 1208
+  },
+  "lonWest": -156.1046068833652,
+  "lonEast": -154.7627931166348,
+  "latNorth": 20.308446357615896,
+  "latSouth": 18.870353642384107,
+  "degPerPx": {
+   "lon": 0.00012001912045888914,
+   "lat": 0.00011235099337748364
+  },
+  "pixelToLatLon": "lon = lonWest + (X + 0.5) * degPerPx.lon ; lat = latNorth - (Y + 0.5) * degPerPx.lat  (X,Y = frame pixel index, center of pixel). Game coords: x_game = X/10, y_game = Y/10 (edges)."
+ },
+ "tileSize": 4096,
+ "cols": 3,
+ "rows": 4,
+ "padColor": "#061e52",
+ "metersPerPixel": {
+  "note": "Pixels are fixed steps in degrees, so ground size varies with latitude (x shrinks going north; y almost constant). Pixels are not quite square. Values on the WGS84 ellipsoid.",
+  "north": {
+   "lat": 20.3084,
+   "x": 12.535,
+   "y": 12.438
+  },
+  "center": {
+   "lat": 19.5894,
+   "x": 12.592,
+   "y": 12.437
+  },
+  "south": {
+   "lat": 18.8704,
+   "x": 12.647,
+   "y": 12.436
+  }
+ },
+ "imagery": {
+  "source": "Sentinel-2 L2A cloud-free median composite, 72 scenes 2025-10-03..2026-10-01 (Earth Search sentinel-2-l2a), native 10 m, bilinear-resampled to this grid; offshore water blended to #061e52 from ~400 m to ~1.6 km off the coast; no-data filled #061e52.",
+  "attribution": "Contains modified Copernicus Sentinel data 2025-2026"
+ },
+ "height": {
+  "source": "Copernicus DEM GLO-30 (native 1 arc-second ~30 m, DSM incl. canopy/buildings), bilinear-resampled to this grid, so detail is 30 m not 12 m.",
+  "encoding": "uint16 PNG, value = meters above sea level (EGM2008), 1 unit = 1 m; sea and padding = 0",
+  "minM": 0,
+  "maxM": 4204,
+  "attribution": "Copernicus DEM GLO-30 (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the EU and ESA"
+ },
+ "tiles": [
+  {
+   "row": 0,
+   "col": 0,
+   "satFile": "sat-r0-c0.jpg",
+   "heightFile": "h-r0-c0.png",
+   "originPx": [
+    0,
+    0
+   ],
+   "widthPx": 4096,
+   "heightPx": 4096,
+   "paddingPx": {
+    "right": 0,
+    "bottom": 0
+   },
+   "gameRect": {
+    "x": 0.0,
+    "y": 0.0,
+    "w": 409.6,
+    "h": 409.6
+   },
+   "corners": {
+    "NW": [
+     20.3084464,
+     -156.1046069
+    ],
+    "NE": [
+     20.3084464,
+     -155.6130086
+    ],
+    "SW": [
+     19.8482567,
+     -156.1046069
+    ],
+    "SE": [
+     19.8482567,
+     -155.6130086
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 0,
+   "col": 1,
+   "satFile": "sat-r0-c1.jpg",
+   "heightFile": "h-r0-c1.png",
+   "originPx": [
+    4096,
+    0
+   ],
+   "widthPx": 4096,
+   "heightPx": 4096,
+   "paddingPx": {
+    "right": 0,
+    "bottom": 0
+   },
+   "gameRect": {
+    "x": 409.6,
+    "y": 0.0,
+    "w": 409.6,
+    "h": 409.6
+   },
+   "corners": {
+    "NW": [
+     20.3084464,
+     -155.6130086
+    ],
+    "NE": [
+     20.3084464,
+     -155.1214102
+    ],
+    "SW": [
+     19.8482567,
+     -155.6130086
+    ],
+    "SE": [
+     19.8482567,
+     -155.1214102
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 0,
+   "col": 2,
+   "satFile": "sat-r0-c2.jpg",
+   "heightFile": "h-r0-c2.png",
+   "originPx": [
+    8192,
+    0
+   ],
+   "widthPx": 2988,
+   "heightPx": 4096,
+   "paddingPx": {
+    "right": 1108,
+    "bottom": 0
+   },
+   "gameRect": {
+    "x": 819.2,
+    "y": 0.0,
+    "w": 298.8,
+    "h": 409.6
+   },
+   "corners": {
+    "NW": [
+     20.3084464,
+     -155.1214102
+    ],
+    "NE": [
+     20.3084464,
+     -154.7627931
+    ],
+    "SW": [
+     19.8482567,
+     -155.1214102
+    ],
+    "SE": [
+     19.8482567,
+     -154.7627931
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 1,
+   "col": 0,
+   "satFile": "sat-r1-c0.jpg",
+   "heightFile": "h-r1-c0.png",
+   "originPx": [
+    0,
+    4096
+   ],
+   "widthPx": 4096,
+   "heightPx": 4096,
+   "paddingPx": {
+    "right": 0,
+    "bottom": 0
+   },
+   "gameRect": {
+    "x": 0.0,
+    "y": 409.6,
+    "w": 409.6,
+    "h": 409.6
+   },
+   "corners": {
+    "NW": [
+     19.8482567,
+     -156.1046069
+    ],
+    "NE": [
+     19.8482567,
+     -155.6130086
+    ],
+    "SW": [
+     19.388067,
+     -156.1046069
+    ],
+    "SE": [
+     19.388067,
+     -155.6130086
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 1,
+   "col": 1,
+   "satFile": "sat-r1-c1.jpg",
+   "heightFile": "h-r1-c1.png",
+   "originPx": [
+    4096,
+    4096
+   ],
+   "widthPx": 4096,
+   "heightPx": 4096,
+   "paddingPx": {
+    "right": 0,
+    "bottom": 0
+   },
+   "gameRect": {
+    "x": 409.6,
+    "y": 409.6,
+    "w": 409.6,
+    "h": 409.6
+   },
+   "corners": {
+    "NW": [
+     19.8482567,
+     -155.6130086
+    ],
+    "NE": [
+     19.8482567,
+     -155.1214102
+    ],
+    "SW": [
+     19.388067,
+     -155.6130086
+    ],
+    "SE": [
+     19.388067,
+     -155.1214102
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 1,
+   "col": 2,
+   "satFile": "sat-r1-c2.jpg",
+   "heightFile": "h-r1-c2.png",
+   "originPx": [
+    8192,
+    4096
+   ],
+   "widthPx": 2988,
+   "heightPx": 4096,
+   "paddingPx": {
+    "right": 1108,
+    "bottom": 0
+   },
+   "gameRect": {
+    "x": 819.2,
+    "y": 409.6,
+    "w": 298.8,
+    "h": 409.6
+   },
+   "corners": {
+    "NW": [
+     19.8482567,
+     -155.1214102
+    ],
+    "NE": [
+     19.8482567,
+     -154.7627931
+    ],
+    "SW": [
+     19.388067,
+     -155.1214102
+    ],
+    "SE": [
+     19.388067,
+     -154.7627931
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 2,
+   "col": 0,
+   "satFile": "sat-r2-c0.jpg",
+   "heightFile": "h-r2-c0.png",
+   "originPx": [
+    0,
+    8192
+   ],
+   "widthPx": 4096,
+   "heightPx": 4096,
+   "paddingPx": {
+    "right": 0,
+    "bottom": 0
+   },
+   "gameRect": {
+    "x": 0.0,
+    "y": 819.2,
+    "w": 409.6,
+    "h": 409.6
+   },
+   "corners": {
+    "NW": [
+     19.388067,
+     -156.1046069
+    ],
+    "NE": [
+     19.388067,
+     -155.6130086
+    ],
+    "SW": [
+     18.9278774,
+     -156.1046069
+    ],
+    "SE": [
+     18.9278774,
+     -155.6130086
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 2,
+   "col": 1,
+   "satFile": "sat-r2-c1.jpg",
+   "heightFile": "h-r2-c1.png",
+   "originPx": [
+    4096,
+    8192
+   ],
+   "widthPx": 4096,
+   "heightPx": 4096,
+   "paddingPx": {
+    "right": 0,
+    "bottom": 0
+   },
+   "gameRect": {
+    "x": 409.6,
+    "y": 819.2,
+    "w": 409.6,
+    "h": 409.6
+   },
+   "corners": {
+    "NW": [
+     19.388067,
+     -155.6130086
+    ],
+    "NE": [
+     19.388067,
+     -155.1214102
+    ],
+    "SW": [
+     18.9278774,
+     -155.6130086
+    ],
+    "SE": [
+     18.9278774,
+     -155.1214102
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 2,
+   "col": 2,
+   "satFile": "sat-r2-c2.jpg",
+   "heightFile": "h-r2-c2.png",
+   "originPx": [
+    8192,
+    8192
+   ],
+   "widthPx": 2988,
+   "heightPx": 4096,
+   "paddingPx": {
+    "right": 1108,
+    "bottom": 0
+   },
+   "gameRect": {
+    "x": 819.2,
+    "y": 819.2,
+    "w": 298.8,
+    "h": 409.6
+   },
+   "corners": {
+    "NW": [
+     19.388067,
+     -155.1214102
+    ],
+    "NE": [
+     19.388067,
+     -154.7627931
+    ],
+    "SW": [
+     18.9278774,
+     -155.1214102
+    ],
+    "SE": [
+     18.9278774,
+     -154.7627931
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 3,
+   "col": 0,
+   "satFile": "sat-r3-c0.jpg",
+   "heightFile": "h-r3-c0.png",
+   "originPx": [
+    0,
+    12288
+   ],
+   "widthPx": 4096,
+   "heightPx": 512,
+   "paddingPx": {
+    "right": 0,
+    "bottom": 3584
+   },
+   "gameRect": {
+    "x": 0.0,
+    "y": 1228.8,
+    "w": 409.6,
+    "h": 51.2
+   },
+   "corners": {
+    "NW": [
+     18.9278774,
+     -156.1046069
+    ],
+    "NE": [
+     18.9278774,
+     -155.6130086
+    ],
+    "SW": [
+     18.8703536,
+     -156.1046069
+    ],
+    "SE": [
+     18.8703536,
+     -155.6130086
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 3,
+   "col": 1,
+   "satFile": "sat-r3-c1.jpg",
+   "heightFile": "h-r3-c1.png",
+   "originPx": [
+    4096,
+    12288
+   ],
+   "widthPx": 4096,
+   "heightPx": 512,
+   "paddingPx": {
+    "right": 0,
+    "bottom": 3584
+   },
+   "gameRect": {
+    "x": 409.6,
+    "y": 1228.8,
+    "w": 409.6,
+    "h": 51.2
+   },
+   "corners": {
+    "NW": [
+     18.9278774,
+     -155.6130086
+    ],
+    "NE": [
+     18.9278774,
+     -155.1214102
+    ],
+    "SW": [
+     18.8703536,
+     -155.6130086
+    ],
+    "SE": [
+     18.8703536,
+     -155.1214102
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  },
+  {
+   "row": 3,
+   "col": 2,
+   "satFile": "sat-r3-c2.jpg",
+   "heightFile": "h-r3-c2.png",
+   "originPx": [
+    8192,
+    12288
+   ],
+   "widthPx": 2988,
+   "heightPx": 512,
+   "paddingPx": {
+    "right": 1108,
+    "bottom": 3584
+   },
+   "gameRect": {
+    "x": 819.2,
+    "y": 1228.8,
+    "w": 298.8,
+    "h": 51.2
+   },
+   "corners": {
+    "NW": [
+     18.9278774,
+     -155.1214102
+    ],
+    "NE": [
+     18.9278774,
+     -154.7627931
+    ],
+    "SW": [
+     18.8703536,
+     -155.1214102
+    ],
+    "SE": [
+     18.8703536,
+     -154.7627931
+    ]
+   },
+   "cornersNote": "corners are [lat, lon] of the outer edges of the unpadded area"
+  }
+ ],
+ "alignmentCheck": {
+  "method": "land mask of the tiles (downsampled to 1118x1280) vs public/maps/hawaii-usgs.jpg",
+  "geoTsExtrema": "island W/N/S/E extremes land at x=36, y=36, y=1244, x=1082 (DEM) exactly as geo.ts ISLAND_PX predicts",
+  "vsUsgs": "IoU 0.986 (DEM coast) / 0.979 (Sentinel colour mask); median coastline distance 2.0 game px; best global shift +2 px x, 0 px y; per-quadrant shifts 0-1 px"
+ }
+}

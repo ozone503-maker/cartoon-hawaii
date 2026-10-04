@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useThree } from "@react-three/fiber";
 import { PlaneGeometry, SRGBColorSpace, Texture, TextureLoader } from "three";
 import type { CraftState } from "@/lib/flight/craft";
-import { terrainY, WORLD } from "@/lib/hawaii/world";
+import { decodeHeightPng } from "@/lib/hawaii/height-png";
+import { setTileHeight, terrainY, WORLD } from "@/lib/hawaii/world";
 
 const FRAME_W = 11180;
 const FRAME_H = 12800;
@@ -38,18 +39,7 @@ function tileAt(x: number, z: number) {
 
 function wanted(x: number, z: number) {
   const here = tileAt(x, z);
-  const keys = new Set<Key>([tileKey(here.row, here.col)]);
-  const span = 180;
-  for (const [dr, dc] of [[0, 1], [0, -1], [1, 0], [-1, 0]] as const) {
-    const row = here.row + dr;
-    const col = here.col + dc;
-    if (row < 0 || col < 0 || row >= ROWS || col >= COLS) continue;
-    const b = worldBox(row, col);
-    const near =
-      x >= b.x0 - span && x <= b.x1 + span && z >= b.z0 - span && z <= b.z1 + span;
-    if (near) keys.add(tileKey(row, col));
-  }
-  return keys;
+  return new Set<Key>([tileKey(here.row, here.col)]);
 }
 
 function TileMesh({ row, col, map }: { row: number; col: number; map: Texture }) {
@@ -87,6 +77,7 @@ function TileMesh({ row, col, map }: { row: number; col: number; map: Texture })
 export function GroundTiles({ craft }: { craft: CraftState }) {
   const gl = useThree((s) => s.gl);
   const [live, setLive] = useState<Map<Key, Texture>>(new Map());
+  const [heightTick, setHeightTick] = useState(0);
 
   useEffect(() => {
     const loader = new TextureLoader();
@@ -107,6 +98,16 @@ export function GroundTiles({ craft }: { craft: CraftState }) {
         cache.set(key, tex);
         setLive(new Map(cache));
       });
+      void fetch(`/maps/tiles/h-r${row}-c${col}.png`)
+        .then((r) => r.arrayBuffer())
+        .then((buf) => decodeHeightPng(buf, row!, col!, WORLD.w, WORLD.d))
+        .then((tile) => {
+          if (!dead) {
+            setTileHeight(tile);
+            setHeightTick((n) => n + 1);
+          }
+        })
+        .catch(() => setTileHeight(null));
     };
 
     const drop = (key: Key) => {
@@ -128,6 +129,7 @@ export function GroundTiles({ craft }: { craft: CraftState }) {
     return () => {
       dead = true;
       window.clearInterval(id);
+      setTileHeight(null);
       for (const tex of cache.values()) tex.dispose();
     };
   }, [craft, gl]);
@@ -136,7 +138,7 @@ export function GroundTiles({ craft }: { craft: CraftState }) {
     <group>
       {[...live.entries()].map(([key, map]) => {
         const [row, col] = key.split("-").map(Number);
-        return <TileMesh key={key} row={row!} col={col!} map={map} />;
+        return <TileMesh key={`${key}-${heightTick}`} row={row!} col={col!} map={map} />;
       })}
     </group>
   );

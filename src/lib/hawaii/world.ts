@@ -1,4 +1,5 @@
 import { GEO, MAP_SIZE, project, unproject, type LatLon } from "./geo";
+import type { TileHeight } from "./height-png";
 
 /**
  * Authoring reference width (pre–Jessie enlarge). Craft, props, and speed
@@ -125,8 +126,32 @@ function height01(px: number, py: number) {
   return heightPx[(y * hw + x) * 4]! / 255;
 }
 
-/** Heightmap elevation in metres (0–4205). */
+let tileHeight: TileHeight | null = null;
+
+export function setTileHeight(tile: TileHeight | null) {
+  tileHeight = tile;
+}
+
+function tileMeters(x: number, z: number): number | null {
+  const t = tileHeight;
+  if (!t) return null;
+  if (x < t.x0 || x > t.x1 || z < t.z0 || z > t.z1) return null;
+  const u = ((x - t.x0) / (t.x1 - t.x0)) * (t.w - 1);
+  const v = ((z - t.z0) / (t.z1 - t.z0)) * (t.h - 1);
+  const x0 = Math.max(0, Math.min(t.w - 1, Math.floor(u)));
+  const y0 = Math.max(0, Math.min(t.h - 1, Math.floor(v)));
+  const x1 = Math.min(t.w - 1, x0 + 1);
+  const y1 = Math.min(t.h - 1, y0 + 1);
+  const fx = u - x0;
+  const fy = v - y0;
+  const s = (ix: number, iy: number) => t.meters[iy * t.w + ix]!;
+  return (s(x0, y0) * (1 - fx) + s(x1, y0) * fx) * (1 - fy) + (s(x0, y1) * (1 - fx) + s(x1, y1) * fx) * fy;
+}
+
+/** Heightmap elevation in metres (0–4205). The tile under the ship wins. */
 export function terrainMeters(x: number, z: number): number {
+  const tile = tileMeters(x, z);
+  if (tile !== null) return tile;
   if (!heightPx || !hw) return 0;
   const u = ((x + WORLD.w / 2) / WORLD.w) * (hw - 1);
   const v = ((z + WORLD.d / 2) / WORLD.d) * (hh - 1);

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useThree } from "@react-three/fiber";
-import { PlaneGeometry, SRGBColorSpace, Texture, TextureLoader } from "three";
+import { MeshStandardMaterial, PlaneGeometry, SRGBColorSpace, Texture, TextureLoader } from "three";
+import { applyAtmosphere } from "@/lib/flight/atmosphere";
 import type { CraftState } from "@/lib/flight/craft";
 import { decodeHeightPng } from "@/lib/hawaii/height-png";
 import { setTileHeight, terrainY, WORLD } from "@/lib/hawaii/world";
@@ -12,6 +13,8 @@ const COLS = 3;
 const ROWS = 4;
 const COL_W = [4096, 4096, 2988];
 const ROW_H = [4096, 4096, 4096, 512];
+/** Mesh cells per tile edge. 64 was too coarse to hold a ridge line; shading needs real slopes. */
+const TILE_SEGMENTS = 192;
 
 type Key = `${number}-${number}`;
 
@@ -45,7 +48,7 @@ function wanted(x: number, z: number) {
 function TileMesh({ row, col, map }: { row: number; col: number; map: Texture }) {
   const box = worldBox(row, col);
   const geometry = useMemo(() => {
-    const g = new PlaneGeometry(box.x1 - box.x0, box.z1 - box.z0, 64, 64);
+    const g = new PlaneGeometry(box.x1 - box.x0, box.z1 - box.z0, TILE_SEGMENTS, TILE_SEGMENTS);
     g.rotateX(-Math.PI / 2);
     const pos = g.attributes.position!;
     const uv = g.attributes.uv!;
@@ -65,12 +68,16 @@ function TileMesh({ row, col, map }: { row: number; col: number; map: Texture })
     return g;
   }, [box.x0, box.x1, box.z0, box.z1, box.u, box.v]);
 
+  const material = useMemo(
+    () => applyAtmosphere(new MeshStandardMaterial({ map, roughness: 0.86, metalness: 0 }), "ground-tile"),
+    [map],
+  );
+
   useEffect(() => () => geometry.dispose(), [geometry]);
+  useEffect(() => () => material.dispose(), [material]);
 
   return (
-    <mesh geometry={geometry} receiveShadow>
-      <meshStandardMaterial map={map} roughness={0.86} metalness={0} />
-    </mesh>
+    <mesh geometry={geometry} material={material} receiveShadow />
   );
 }
 

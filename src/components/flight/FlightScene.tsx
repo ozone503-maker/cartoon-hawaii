@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { Island } from "./Island";
 import { GroundTiles } from "./GroundTiles";
 import { Craft } from "./Craft";
+import { Atmosphere } from "./Atmosphere";
 import { FlashTown } from "./FlashTown";
 import { Roads } from "./Roads";
 import { Caldera } from "./Caldera";
@@ -13,6 +14,7 @@ import { Locations } from "./Locations";
 import { KauCoast } from "./KauCoast";
 import { Rivers } from "./Rivers";
 import { spawnCraft, snapToGround, stepCraft, setSteerOverride, type CraftState } from "@/lib/flight/craft";
+import { FOG_NEAR, FOG_FAR, HAZE_COLOR, SUN_POSITION } from "@/lib/flight/atmosphere";
 import { attachControlsProbe, bindKeyboard } from "@/lib/flight/input";
 import { latLonToWorld, loadAlbedo, loadHeightmap, terrainY, worldToLatLon, HEIGHT_SCALE, UFO_LENGTH, WORLD, WORLD_SCALE, GROUND_SCALE, hu, wu } from "@/lib/hawaii/world";
 import { HOME_ID, PLACES, placeById } from "@/lib/hawaii/places";
@@ -98,14 +100,11 @@ function Scene() {
 
   return (
     <>
-      <color attach="background" args={["#7ec8ee"]} />
-      <fog attach="fog" args={["#c5e4f2", 160 * WORLD_SCALE * GROUND_SCALE, 480 * WORLD_SCALE * GROUND_SCALE]} />
-      <hemisphereLight args={["#f4fbff", "#7eb86a", 1.45]} />
-      <directionalLight
-        position={[140 * WORLD_SCALE, 80 * WORLD_SCALE, 40 * WORLD_SCALE]}
-        intensity={3.1}
-        color="#fff6e4"
-      />
+      <color attach="background" args={[HAZE_COLOR]} />
+      <fog attach="fog" args={[HAZE_COLOR, FOG_NEAR, FOG_FAR]} />
+      <hemisphereLight args={["#d6ebff", "#8c9b74", 0.95]} />
+      <directionalLight position={SUN_POSITION} intensity={3.3} color="#fff3dc" />
+      <Atmosphere />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, hu(-0.35), 0]}>
         <planeGeometry args={[WORLD.w * 4, WORLD.d * 4]} />
         <meshStandardMaterial color="#1e7eae" roughness={0.22} metalness={0.18} />

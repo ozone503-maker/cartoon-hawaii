@@ -11,6 +11,7 @@ import {
   Vector2,
 } from "three";
 import { hu, latLonToWorld, terrainMeters, terrainY, WORLD, worldToLatLon } from "@/lib/hawaii/world";
+import { applyAtmosphere } from "@/lib/flight/atmosphere";
 import { kauCliffY } from "@/lib/hawaii/coast";
 import { HALEMAUMAU_WORLD, KILAUEA_RX, KILAUEA_RZ, KILAUEA_WORLD, PIT_R, kilaueaBowlY } from "@/lib/hawaii/kilauea";
 import { MAUNA_LOA_ANG, MAUNA_LOA_RX, MAUNA_LOA_RZ, MAUNA_LOA_WORLD, maunaLoaBowlY } from "@/lib/hawaii/maunaloa";
@@ -123,7 +124,7 @@ function usePhotoGround(cartoon: Texture | null, usgs: Texture | null) {
       };
       m.needsUpdate = true;
     }
-    return m;
+    return applyAtmosphere(m, "ground-island");
   }, [cartoon, usgs]);
 
   useLayoutEffect(() => () => material.dispose(), [material]);

@@ -28,10 +28,11 @@ function paeth(a: number, b: number, c: number) {
 }
 
 async function inflate(zlib: Uint8Array) {
-  const raw = zlib.subarray(2, zlib.length - 4);
+  // A PNG IDAT stream is zlib-wrapped, which is what "deflate" expects. Stripping the
+  // 2-byte header and 4-byte checksum first (as this used to) fails with "incorrect header check".
   const stream = new DecompressionStream("deflate");
   const writer = stream.writable.getWriter();
-  void writer.write(raw);
+  void writer.write(new Uint8Array(zlib));
   void writer.close();
   const buf = await new Response(stream.readable).arrayBuffer();
   return new Uint8Array(buf);
